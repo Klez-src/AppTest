@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fitness Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-black to-gray-900 text-gray-200 flex items-center justify-center p-4">
+
+    <!-- Loading Overlay -->
+    <div id="loading-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50 transition-opacity duration-700">
+      <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-blue-500"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content" class="fade-in max-w-md w-full bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-lg p-6 space-y-6 text-gray-200 hidden">
+
+      <div class="text-center space-y-2">
+        <h1 class="text-3xl font-bold text-blue-400">Fitness Plan</h1>
+        <p class="text-sm text-gray-400">Choose your fitness level to view a recommended plan.</p>
+      </div>
+
+      <!-- Select Dropdown -->
+      <select id="fitness-level"
+        class="w-full bg-gray-700 text-white border border-gray-600 rounded-full px-6 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-no-repeat bg-[length:1.5rem] bg-right"
+        style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\' stroke-width=\'2\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E');">
+        <option value="" disabled selected>Select Level</option>
+        <option value="beginner">Beginner</option>
+        <option value="casual">Casual</option>
+        <option value="professional">Pro</option>
+      </select>
+
+      <!-- List Plan Button -->
+      <button id="list-plan"
+        class="w-full uppercase tracking-wide text-base font-semibold py-3 rounded-full bg-blue-600 hover:bg-blue-500 border border-blue-400 shadow hover:scale-105 transition duration-300">
+        List Plan
+      </button>
+
+      <!-- Loading Spinner Placeholder -->
+      <div id="plan-loading" class="hidden w-full flex justify-center py-2">
+        <div class="animate-spin h-6 w-6 border-4 border-blue-400 border-t-transparent rounded-full"></div>
+      </div>
+
+      <!-- Plan Output -->
+      <section id="plan-output"
+        class="hidden fade-in bg-gray-700/60 rounded-xl p-5 space-y-6 border border-gray-600">
+        <h2 class="text-xl font-semibold text-blue-300">Your Plan</h2>
+        <div id="workout-plan"></div>
+        <div id="eating-advice"></div>
+        <div id="additional-tips"></div>
+      </section>
+    </main>
+
+    <script>
+      // Initial loading screen
+      setTimeout(() => {
+        document.getElementById('loading-screen').classList.add('opacity-0');
+        setTimeout(() => {
+          document.getElementById('loading-screen').remove();
+          const main = document.getElementById('main-content');
+          main.classList.remove('hidden');
+          setTimeout(() => main.classList.add('visible'), 10);
+        }, 700);
+      }, 1000);
+
+      // Plan data
+      const fitnessPlans = {
+        beginner: {
+          workout: `
+            <h3 class="text-lg font-bold text-blue-300">Workout</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>3x/week: Squats & Push-ups (10 reps each)</li>
+              <li>2x/week: Walk or rest</li>
+              <li>Daily: Light stretching</li>
+            </ul>
+          `,
+          eating: `
+            <h3 class="text-lg font-bold text-blue-300">Eating</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Chicken or eggs</li>
+              <li>Veggies: Broccoli, carrots</li>
+              <li>Stay hydrated</li>
+            </ul>
+          `,
+          tips: `
+            <h3 class="text-lg font-bold text-blue-300">Tips</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Sleep 8 hours</li>
+              <li>Drink 2 bottles of water daily</li>
+              <li>Stay consistent!</li>
+            </ul>
+          `
+        },
+        casual: {
+          workout: `
+            <h3 class="text-lg font-bold text-blue-300">Workout</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>4x/week: Push-ups, Rows (12 reps)</li>
+              <li>1x/week: Bike or run 20 mins</li>
+              <li>2x/week: Rest</li>
+            </ul>
+          `,
+          eating: `
+            <h3 class="text-lg font-bold text-blue-300">Eating</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Fish or tofu</li>
+              <li>Rice or potatoes</li>
+              <li>3 meals + 1 snack</li>
+            </ul>
+          `,
+          tips: `
+            <h3 class="text-lg font-bold text-blue-300">Tips</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Sleep 7–8 hours</li>
+              <li>Try protein drinks</li>
+              <li>Track workouts weekly</li>
+            </ul>
+          `
+        },
+        professional: {
+          workout: `
+            <h3 class="text-lg font-bold text-blue-300">Workout</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>5x/week: Bench, Squats (10–12 reps)</li>
+              <li>1x/week: Sprint Intervals (30 mins)</li>
+              <li>1x/week: Rest</li>
+            </ul>
+          `,
+          eating: `
+            <h3 class="text-lg font-bold text-blue-300">Eating</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Salmon or lean beef</li>
+              <li>Oats or quinoa</li>
+              <li>5 small meals/day</li>
+            </ul>
+          `,
+          tips: `
+            <h3 class="text-lg font-bold text-blue-300">Tips</h3>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+              <li>Sleep 8–9 hours</li>
+              <li>Hydrate regularly</li>
+              <li>Review progress monthly</li>
+            </ul>
+          `
+        }
+      };
+
+      // On "List Plan" click
+      document.getElementById('list-plan').addEventListener('click', () => {
+        const level = document.getElementById('fitness-level').value;
+        const loader = document.getElementById('plan-loading');
+        const output = document.getElementById('plan-output');
+
+        if (!level) {
+          alert('Please select your fitness level first.');
+          return;
+        }
+
+        // Hide previous output, show loader
+        output.classList.remove('visible');
+        output.classList.add('hidden');
+        loader.classList.remove('hidden');
+
+        // Simulate loading delay
+        setTimeout(() => {
+          const plan = fitnessPlans[level];
+          document.getElementById('workout-plan').innerHTML = plan.workout;
+          document.getElementById('eating-advice').innerHTML = plan.eating;
+          document.getElementById('additional-tips').innerHTML = plan.tips;
+
+          loader.classList.add('hidden');
+          output.classList.remove('hidden');
+          setTimeout(() => output.classList.add('visible'), 10);
+        }, 1000); // 1 second loading
+      });
+    </script>
+  </body>
+</html>
