@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no"
     >
+
     <title>orro</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -111,8 +115,6 @@
 
     <main class="main">
 
-        <!-- WINDOW CONTROLS -->
-
         <div class="window-bar">
 
             <div
@@ -131,7 +133,9 @@
         </div>
 
 
-        <!-- HOME -->
+        <!-- =================================================
+             HOME
+             ================================================= -->
 
         <section
             class="page active"
@@ -142,10 +146,6 @@
 
                 <span>
                     Overview
-                </span>
-
-                <span>
-                    v1.0.0
                 </span>
 
             </div>
@@ -247,7 +247,9 @@
         </section>
 
 
-        <!-- LAUNCH -->
+        <!-- =================================================
+             LAUNCH
+             ================================================= -->
 
         <section
             class="page"
@@ -258,10 +260,6 @@
 
                 <span>
                     Application
-                </span>
-
-                <span>
-                    v1.0.0
                 </span>
 
             </div>
@@ -285,7 +283,7 @@
                     </h2>
 
                     <p>
-                        1.0.0
+                        version 1.0.0 · latest
                     </p>
 
                 </div>
@@ -317,7 +315,9 @@
         </section>
 
 
-        <!-- CHANGELOG -->
+        <!-- =================================================
+             CHANGELOG
+             ================================================= -->
 
         <section
             class="page"
@@ -328,10 +328,6 @@
 
                 <span>
                     Updates
-                </span>
-
-                <span>
-                    v1.0.0
                 </span>
 
             </div>
@@ -411,7 +407,9 @@
         </section>
 
 
-        <!-- SETTINGS -->
+        <!-- =================================================
+             SETTINGS
+             ================================================= -->
 
         <section
             class="page"
@@ -422,10 +420,6 @@
 
                 <span>
                     Preferences
-                </span>
-
-                <span>
-                    orro
                 </span>
 
             </div>
@@ -459,7 +453,7 @@
 
                     <button
                         class="toggle on"
-                        data-toggle
+                        data-setting="rememberSession"
                         aria-label="Remember session"
                     >
                         <span></span>
@@ -485,7 +479,7 @@
 
                     <button
                         class="toggle on"
-                        data-toggle
+                        data-setting="automaticUpdates"
                         aria-label="Automatic updates"
                     >
                         <span></span>
@@ -511,7 +505,7 @@
 
                     <button
                         class="toggle"
-                        data-toggle
+                        data-setting="minimiseOnLaunch"
                         aria-label="Minimise on launch"
                     >
                         <span></span>
@@ -523,9 +517,72 @@
 
         </section>
 
+
+        <!-- =================================================
+             LAUNCHING PAGE
+             ================================================= -->
+
+        <section
+            id="launching-page"
+            class="launching-page"
+        >
+
+            <div class="launching-inner">
+
+                <div class="launching-eyebrow">
+                    ORRO
+                </div>
+
+
+                <div class="launching-title">
+                    Launching
+                </div>
+
+
+                <p class="launching-subtitle">
+                    Preparing your session.
+                </p>
+
+
+                <div class="launch-progress">
+
+                    <div
+                        class="launch-progress-fill"
+                        id="launchProgress"
+                    ></div>
+
+                </div>
+
+
+                <div class="launch-status">
+
+                    <span
+                        class="status-dot"
+                        id="launchStatusDot"
+                    ></span>
+
+                    <span id="launchStatus">
+                        Initialising
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="cancel-launch"
+                    id="cancelLaunch"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </section>
+
     </main>
 
 </div>
+
 
 <script src="script.js"></script>
 
