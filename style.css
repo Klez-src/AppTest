@@ -1,316 +1,35 @@
-/* =========================================================
-   RESET
-   ========================================================= */
-
 * {
     box-sizing: border-box;
-
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     -webkit-user-drag: none;
 }
 
-
 html,
 body {
-
     width: 100%;
     height: 100%;
-
     margin: 0;
     padding: 0;
 
     overflow: hidden;
-}
-
-
-body {
 
     background: #0f100f;
-
-    color: #e5e6e1;
+    color: #d9dad4;
 
     font-family:
+        Inter,
+        "Segoe UI",
         -apple-system,
         BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
         sans-serif;
 
-    -webkit-font-smoothing: antialiased;
-
-    overflow: hidden;
+    font-size: 13px;
 }
 
-
-/* =========================================================
-   LOCKED INTRO
-   ========================================================= */
-
-#intro {
-
+body {
     position: fixed;
-
     inset: 0;
-
-    z-index: 100;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background: #0f100f;
-
-    animation:
-        introExit .65s 3.7s forwards;
-}
-
-
-.intro-word {
-
-    position: relative;
-
-    z-index: 4;
-
-    font-size: 76px;
-
-    line-height: 1;
-
-    font-weight: 400;
-
-    letter-spacing: -6px;
-
-    color: #dedfda;
-
-    animation:
-        wordCollapse 3.7s ease forwards;
-}
-
-
-.intro-dot,
-.intro-ring,
-.intro-ring-two {
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0);
-
-    border-radius: 50%;
-
-    pointer-events: none;
-}
-
-
-.intro-dot {
-
-    width: 4px;
-    height: 4px;
-
-    background: #d9dad5;
-
-    animation:
-        dotExpand 3.7s ease forwards;
-}
-
-
-.intro-ring {
-
-    width: 13px;
-    height: 13px;
-
-    border:
-        1px solid
-        rgba(220,221,216,.34);
-
-    animation:
-        ringOne 3.7s ease forwards;
-}
-
-
-.intro-ring-two {
-
-    width: 20px;
-    height: 20px;
-
-    border:
-        1px solid
-        rgba(220,221,216,.13);
-
-    animation:
-        ringTwo 3.7s ease forwards;
-}
-
-
-@keyframes wordCollapse {
-
-    0% {
-        opacity: 0;
-        transform: scale(.95);
-    }
-
-    25% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    72% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    82% {
-        opacity: 1;
-        transform: scale(.08);
-    }
-
-    88% {
-        opacity: 0;
-        transform: scale(.01);
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-
-@keyframes dotExpand {
-
-    0%,
-    78% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    83% {
-
-        opacity: 1;
-
-        transform:
-            translate(-50%, -50%)
-            scale(1);
-    }
-
-    90% {
-
-        opacity: .14;
-
-        transform:
-            translate(-50%, -50%)
-            scale(35);
-    }
-
-    100% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(80);
-    }
-}
-
-
-@keyframes ringOne {
-
-    0%,
-    78% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    82% {
-
-        opacity: .55;
-
-        transform:
-            translate(-50%, -50%)
-            scale(.8);
-    }
-
-    89% {
-
-        opacity: .18;
-
-        transform:
-            translate(-50%, -50%)
-            scale(8);
-    }
-
-    100% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(34);
-    }
-}
-
-
-@keyframes ringTwo {
-
-    0%,
-    80% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    85% {
-
-        opacity: .27;
-
-        transform:
-            translate(-50%, -50%)
-            scale(.7);
-    }
-
-    92% {
-
-        opacity: .07;
-
-        transform:
-            translate(-50%, -50%)
-            scale(13);
-    }
-
-    100% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(32);
-    }
-}
-
-
-@keyframes introExit {
-
-    to {
-
-        opacity: 0;
-
-        visibility: hidden;
-    }
 }
 
 
@@ -319,40 +38,40 @@ body {
    ========================================================= */
 
 #app {
-
-    position: relative;
+    position: fixed;
+    inset: 0;
 
     width: 100%;
     height: 100%;
 
     display: flex;
 
-    opacity: 0;
+    background: #0f100f;
 
     overflow: hidden;
-
-    animation:
-        appAppear .6s 3.9s ease forwards;
 }
 
 
-@keyframes appAppear {
+/* =========================================================
+   INTRO
+   ========================================================= */
 
-    from {
+#intro {
+    position: fixed;
+    inset: 0;
 
-        opacity: 0;
+    z-index: 1000;
 
-        transform:
-            translateY(5px);
-    }
+    background: #0f100f;
 
-    to {
+    overflow: hidden;
+}
 
-        opacity: 1;
-
-        transform:
-            translateY(0);
-    }
+.intro-word,
+.intro-dot,
+.intro-ring,
+.intro-ring-two {
+    position: absolute;
 }
 
 
@@ -361,41 +80,47 @@ body {
    ========================================================= */
 
 .sidebar {
+    position: relative;
 
-    width: 158px;
-
+    width: 184px;
+    min-width: 184px;
     height: 100%;
 
-    flex-shrink: 0;
+    padding: 27px 15px 18px 15px;
 
-    padding:
-        35px
-        15px
-        24px;
+    border-right: 1px solid #252724;
 
-    border-right:
-        1px solid
-        #242724;
+    background: #0f100f;
 
     display: flex;
-
     flex-direction: column;
 
     overflow: hidden;
 }
 
 
+/* =========================================================
+   BRAND
+   ========================================================= */
+
 .brand {
+    height: 34px;
 
-    padding-left: 9px;
+    display: flex;
+    align-items: center;
 
-    color: #dedfda;
+    padding-left: 5px;
 
-    font-size: 17px;
+    margin-bottom: 26px;
+}
 
-    font-weight: 500;
+.brand-name {
+    color: #d7d8d2;
 
-    letter-spacing: -.6px;
+    font-size: 14px;
+    font-weight: 600;
+
+    letter-spacing: -0.02em;
 }
 
 
@@ -404,100 +129,69 @@ body {
    ========================================================= */
 
 .nav {
-
-    margin-top: 43px;
-
     display: flex;
-
     flex-direction: column;
 
     gap: 3px;
 }
 
-
-.nav.secondary {
-
-    margin-top: auto;
-}
-
-
 .nav-label {
+    margin: 0 0 8px 6px;
 
-    margin:
-        0
-        9px
-        10px;
-
-    color: #4b4e49;
+    color: #464a45;
 
     font-size: 8px;
+    font-weight: 500;
 
     text-transform: uppercase;
-
-    letter-spacing: 1.5px;
+    letter-spacing: 0.2em;
 }
 
-
 .nav-button {
-
-    position: relative;
-
     width: 100%;
-    height: 37px;
+    height: 36px;
 
-    padding:
-        0
-        12px;
+    padding: 0 11px;
 
     border: 0;
-
     border-radius: 7px;
+
+    outline: none;
 
     background: transparent;
 
-    color: #747771;
+    color: #777a75;
 
-    font:
-        inherit;
-
+    font-family: inherit;
     font-size: 11px;
 
     text-align: left;
 
     cursor: pointer;
 
-    outline: none;
-
     transition:
-        color .15s ease,
-        background .15s ease;
+        background 0.15s ease,
+        color 0.15s ease;
 }
-
 
 .nav-button:hover {
-
-    color: #bfc1bb;
-
     background: #141614;
+    color: #bfc1ba;
 }
-
 
 .nav-button.selected {
-
-    color: #dedfd9;
+    position: relative;
 
     background: #191b19;
+    color: #dedfd9;
 }
 
-
 .nav-button.selected::before {
-
     content: "";
 
     position: absolute;
 
     left: 0;
-
     top: 10px;
     bottom: 10px;
 
@@ -505,7 +199,71 @@ body {
 
     border-radius: 2px;
 
-    background: #899288;
+    background: #9da69b;
+}
+
+
+/* =========================================================
+   PREFERENCES
+   ========================================================= */
+
+.preferences {
+    margin-top: 34px;
+}
+
+
+/* =========================================================
+   ACCOUNT
+   ========================================================= */
+
+.account {
+    margin-top: auto;
+
+    min-height: 39px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 5px 6px;
+
+    border-radius: 7px;
+
+    color: #858883;
+
+    cursor: default;
+}
+
+.account-avatar {
+    width: 25px;
+    height: 25px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #30332f;
+    border-radius: 50%;
+
+    background: #151715;
+
+    color: #aeb1aa;
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.account-name {
+    color: #777a75;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -514,25 +272,22 @@ body {
    ========================================================= */
 
 .content {
-
-    position: relative;
-
     flex: 1;
 
     min-width: 0;
-
     height: 100%;
 
-    padding:
-        34px
-        36px;
+    padding: 34px 38px;
 
     overflow: hidden;
 }
 
 
-.view {
+/* =========================================================
+   VIEWS
+   ========================================================= */
 
+.view {
     display: none;
 
     width: 100%;
@@ -541,159 +296,127 @@ body {
     overflow: hidden;
 }
 
-
 .view.active {
-
     display: block;
-
-    animation:
-        viewIn .18s ease;
-}
-
-
-@keyframes viewIn {
-
-    from {
-
-        opacity: 0;
-
-        transform:
-            translateY(3px);
-    }
-
-    to {
-
-        opacity: 1;
-
-        transform:
-            translateY(0);
-    }
 }
 
 
 /* =========================================================
-   TYPOGRAPHY
+   PAGE HEADER
    ========================================================= */
 
-.topline {
+.eyebrow {
+    margin-bottom: 9px;
 
-    color: #5a5d57;
+    color: #555953;
 
-    font-size: 9px;
+    font-size: 8px;
+    font-weight: 500;
 
     text-transform: uppercase;
-
-    letter-spacing: 1.5px;
+    letter-spacing: 0.18em;
 }
-
 
 h1 {
+    margin: 0;
 
-    margin:
-        15px
-        0
-        0;
+    color: #d8d9d3;
 
-    color: #e4e5df;
-
-    font-size: 30px;
-
-    line-height: 1;
-
+    font-size: 29px;
     font-weight: 400;
 
-    letter-spacing: -1.5px;
+    line-height: 1.08;
+
+    letter-spacing: -0.045em;
 }
 
 
-.lead {
+/*
+    THIS is the text directly underneath every
+    main heading.
 
-    margin-top: 9px;
+    Much smaller and quieter than the title.
+*/
 
-    color: #72756f;
+.subtitle {
+    margin: 8px 0 0 0;
 
-    font-size: 12px;
+    color: #686b65;
+
+    font-size: 11px;
+    font-weight: 400;
+
+    line-height: 1.45;
+
+    letter-spacing: 0;
+
+    max-width: 430px;
 }
 
 
 /* =========================================================
-   STATUS
+   HOME
    ========================================================= */
 
-.status-area {
-
-    margin-top: 39px;
-
-    padding-bottom: 20px;
-
-    border-bottom:
-        1px solid
-        #242724;
+.home-status {
+    margin-top: 30px;
 }
 
-
-.status-line {
-
+.status {
     display: flex;
-
     align-items: center;
+    gap: 7px;
 
-    gap: 9px;
+    color: #7d827a;
 
-    color: #a0a39d;
-
-    font-size: 11px;
+    font-size: 9px;
 }
 
-
-.status-light {
-
-    width: 6px;
-    height: 6px;
-
-    flex-shrink: 0;
+.status-dot {
+    width: 5px;
+    height: 5px;
 
     border-radius: 50%;
 
-    background: #849083;
+    background: #8c9a89;
+
+    box-shadow:
+        0 0 0 2px rgba(140, 154, 137, 0.06);
 }
 
+.product-name {
+    margin-top: 13px;
 
-.app-name {
+    color: #c7c9c2;
 
-    margin-top: 17px;
+    font-size: 15px;
+    font-weight: 500;
 
-    color: #dedfda;
-
-    font-size: 24px;
-
-    line-height: 1;
-
-    letter-spacing: -1px;
+    letter-spacing: -0.02em;
 }
 
+.product-version {
+    margin-top: 4px;
 
-.app-version {
+    color: #50534f;
 
-    margin-top: 6px;
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
 
-    color: #555852;
-
-    font-size: 9px;
+    font-size: 8px;
 }
-
 
 .description {
+    margin: 15px 0 0 0;
 
-    max-width: 410px;
+    max-width: 390px;
 
-    margin-top: 15px;
+    color: #686b65;
 
-    color: #777a74;
-
-    font-size: 11px;
-
-    line-height: 1.5;
+    font-size: 10px;
+    line-height: 1.55;
 }
 
 
@@ -702,50 +425,38 @@ h1 {
    ========================================================= */
 
 .primary-button {
-
-    height: 35px;
+    height: 34px;
 
     margin-top: 18px;
 
-    padding:
-        0
-        18px;
+    padding: 0 17px;
 
-    border:
-        1px solid
-        #bfc1bb;
-
+    border: 0;
     border-radius: 5px;
-
-    background: #c9cac5;
-
-    color: #12130f;
-
-    font:
-        inherit;
-
-    font-size: 10px;
-
-    cursor: pointer;
 
     outline: none;
 
-    transition:
-        background .15s ease,
-        transform .1s ease;
-}
+    background: #d4d5d0;
 
+    color: #171817;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
 
 .primary-button:hover {
-
-    background: #dedfd9;
+    background: #e1e2dd;
 }
 
-
 .primary-button:active {
-
-    transform:
-        translateY(1px);
+    transform: translateY(1px);
 }
 
 
@@ -754,120 +465,94 @@ h1 {
    ========================================================= */
 
 .details {
+    margin-top: 28px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #252724;
 
     display: flex;
 
-    gap: 46px;
-
-    margin-top: 18px;
+    gap: 48px;
 }
-
 
 .detail {
-
     display: flex;
-
     flex-direction: column;
-}
 
+    gap: 6px;
+}
 
 .detail span {
+    color: #474a45;
 
-    color: #50534e;
-
-    font-size: 8px;
+    font-size: 7px;
+    font-weight: 500;
 
     text-transform: uppercase;
-
-    letter-spacing: 1px;
+    letter-spacing: 0.16em;
 }
 
-
 .detail strong {
+    color: #858982;
 
-    margin-top: 5px;
-
-    color: #999c96;
-
-    font-size: 10px;
-
+    font-size: 9px;
     font-weight: 400;
 }
 
 
 /* =========================================================
-   LAUNCH
+   LAUNCH PAGE
    ========================================================= */
 
 .launch-area {
+    position: relative;
 
-    height: 255px;
+    margin-top: 35px;
 
-    margin-top: 38px;
+    min-height: 200px;
 
-    padding:
-        28px
-        0;
+    padding-top: 3px;
 
-    border-top:
-        1px solid
-        #242724;
-
-    border-bottom:
-        1px solid
-        #242724;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: space-between;
+    border-top: 1px solid #252724;
 }
-
 
 .launch-name {
+    margin-top: 21px;
 
-    color: #dedfda;
+    color: #c9cbc5;
 
-    font-size: 26px;
-
-    letter-spacing: -1px;
+    font-size: 17px;
+    font-weight: 500;
 }
 
+.launch-meta {
+    margin-top: 4px;
 
-.launch-version {
+    color: #555954;
 
-    margin-top: 5px;
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
 
-    color: #555852;
+    font-size: 8px;
+}
 
-    font-family: monospace;
+.ready {
+    margin-top: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #747a72;
 
     font-size: 9px;
 }
 
-
-.launch-ready {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    margin-top: 20px;
-
-    color: #858982;
-
-    font-size: 10px;
-}
-
-
 .launch-area .primary-button {
-
-    align-self: flex-end;
-
-    margin-top: 0;
+    margin-top: 28px;
 }
 
 
@@ -875,72 +560,62 @@ h1 {
    CHANGELOG
    ========================================================= */
 
-.changelog {
+.changes-list {
+    margin-top: 31px;
 
-    margin-top: 36px;
-
-    border-top:
-        1px solid
-        #242724;
+    border-top: 1px solid #252724;
 }
 
+.change {
+    display: grid;
 
-.release {
+    grid-template-columns: 76px 1fr;
 
-    display: flex;
+    gap: 18px;
 
-    padding:
-        20px
-        0;
+    padding: 18px 0;
 
-    border-bottom:
-        1px solid
-        #242724;
+    border-bottom: 1px solid #252724;
 }
 
+.change-version {
+    color: #858982;
 
-.release-version {
-
-    width: 88px;
-
-    flex-shrink: 0;
-
-    color: #aeb0aa;
-
-    font-family: monospace;
-
-    font-size: 10px;
-}
-
-
-.release-date {
-
-    margin-top: 5px;
-
-    color: #444743;
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
 
     font-size: 8px;
 }
 
+.change-version span {
+    display: block;
 
-.release-title {
+    margin-top: 5px;
 
-    color: #c9cac4;
+    color: #4d504b;
 
-    font-size: 11px;
+    font-family: inherit;
+    font-size: 7px;
+
+    text-transform: uppercase;
 }
 
-
-.release-text {
-
-    max-width: 410px;
-
-    margin-top: 6px;
-
-    color: #656863;
+.change-title {
+    color: #bfc1bb;
 
     font-size: 10px;
+}
 
+.change-description {
+    margin-top: 6px;
+
+    max-width: 370px;
+
+    color: #646862;
+
+    font-size: 9px;
     line-height: 1.55;
 }
 
@@ -949,49 +624,39 @@ h1 {
    SETTINGS
    ========================================================= */
 
-.settings {
+.settings-list {
+    max-width: 470px;
 
-    max-width: 520px;
+    margin-top: 31px;
 
-    margin-top: 34px;
-
-    border-top:
-        1px solid
-        #242724;
+    border-top: 1px solid #252724;
 }
-
 
 .setting {
-
-    min-height: 62px;
+    min-height: 64px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
-    border-bottom:
-        1px solid
-        #242724;
-}
+    gap: 25px;
 
+    border-bottom: 1px solid #252724;
+}
 
 .setting-name {
-
     color: #bfc1bb;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
-
 .setting-info {
-
     margin-top: 5px;
 
-    color: #5d605b;
+    color: #5c605a;
 
-    font-size: 9px;
+    font-size: 8px;
+    line-height: 1.4;
 }
 
 
@@ -1000,59 +665,53 @@ h1 {
    ========================================================= */
 
 .toggle {
-
     position: relative;
 
-    width: 29px;
-    height: 16px;
+    width: 30px;
+    height: 17px;
 
     flex-shrink: 0;
 
-    border: 0;
+    padding: 0;
 
+    border: 0;
     border-radius: 20px;
+
+    outline: none;
 
     background: #292c29;
 
     cursor: pointer;
-
-    outline: none;
 }
 
-
 .toggle::after {
-
     content: "";
 
     position: absolute;
 
-    left: 3px;
     top: 3px;
+    left: 3px;
 
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
 
     border-radius: 50%;
 
     background: #70746f;
 
     transition:
-        transform .18s ease;
+        transform 0.18s ease,
+        background 0.18s ease;
 }
-
 
 .toggle.on {
-
-    background: #9da39c;
+    background: #8f989e;
 }
 
-
 .toggle.on::after {
+    transform: translateX(13px);
 
-    transform:
-        translateX(13px);
-
-    background: #151714;
+    background: #171917;
 }
 
 
@@ -1061,35 +720,33 @@ h1 {
    ========================================================= */
 
 #launchScreen {
-
-    position: absolute;
+    position: fixed;
 
     inset: 0;
 
-    z-index: 200;
+    z-index: 500;
 
     display: none;
 
     width: 100%;
     height: 100%;
 
+    background: #0f100f;
+
+    color: #d9dad4;
+
     overflow: hidden;
 
-    background: #0f100f;
+    opacity: 0;
 }
 
+#launchScreen.visible {
+    display: block;
 
-#launchScreen.active {
-
-    display: flex;
-
-    animation:
-        launchScreenIn .22s ease;
+    animation: launchFadeIn 0.28s ease forwards;
 }
 
-
-@keyframes launchScreenIn {
-
+@keyframes launchFadeIn {
     from {
         opacity: 0;
     }
@@ -1100,177 +757,190 @@ h1 {
 }
 
 
-.launch-screen-content {
+/* =========================================================
+   LAUNCH TOP
+   ========================================================= */
 
-    width: 100%;
-    height: 100%;
+.launch-screen-top {
+    position: absolute;
 
-    padding:
-        52px
-        54px;
+    top: 24px;
+    left: 29px;
+    right: 29px;
 
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    flex-direction: column;
-
-    justify-content: center;
-
-    overflow: hidden;
-}
-
-
-.launch-screen-brand {
-
-    color: #555852;
+    color: #777b75;
 
     font-size: 9px;
 
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
 
-    letter-spacing: 1.7px;
+.launch-screen-top span:last-child {
+    color: #4e524d;
+
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
+
+    font-size: 8px;
 }
 
 
-.launch-screen-title {
+/* =========================================================
+   LAUNCH CENTER
+   ========================================================= */
 
-    margin-top: 17px;
+.launch-screen-center {
+    position: absolute;
 
-    color: #e2e3de;
+    left: 29px;
+    right: 29px;
 
-    font-size: 30px;
+    top: 50%;
 
+    transform: translateY(-50%);
+
+    max-width: 430px;
+}
+
+.launch-eyebrow {
+    margin-bottom: 10px;
+
+    color: #555953;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+.launch-title {
+    color: #d4d5d0;
+
+    font-size: 27px;
     font-weight: 400;
 
-    letter-spacing: -1.3px;
+    line-height: 1.1;
+
+    letter-spacing: -0.04em;
+}
+
+.launch-status {
+    margin-top: 8px;
+
+    color: #686b65;
+
+    font-size: 10px;
+
+    line-height: 1.4;
 }
 
 
-.launch-screen-status {
-
-    margin-top: 7px;
-
-    color: #6d706a;
-
-    font-size: 11px;
-}
-
+/* =========================================================
+   PROGRESS
+   ========================================================= */
 
 .launch-progress {
-
     width: 100%;
     height: 2px;
 
-    margin-top: 43px;
+    margin-top: 27px;
 
     overflow: hidden;
 
-    background: #252825;
+    background: #272a27;
 }
-
 
 .launch-progress-bar {
-
     width: 0%;
-
     height: 100%;
 
-    background: #899288;
+    background: #8f9890;
+
+    transition:
+        width 0.25s linear;
 }
 
 
-.launch-progress-info {
+/* =========================================================
+   LAUNCH BOTTOM
+   ========================================================= */
+
+.launch-bottom {
+    margin-top: 9px;
 
     display: flex;
-
-    align-items: center;
-
     justify-content: space-between;
 
-    margin-top: 11px;
+    color: #555953;
 
-    color: #4f524d;
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
 
-    font-family: monospace;
+    font-size: 7px;
+}
 
-    font-size: 9px;
+#launchPercent {
+    color: #747971;
 }
 
 
 /* =========================================================
-   HARD NO-SCROLL GUARANTEE
+   LAUNCH FOOTER
    ========================================================= */
 
-#app,
-#app *,
-#launchScreen,
-#launchScreen * {
+.launch-screen-footer {
+    position: absolute;
 
-    scrollbar-width: none;
-}
+    left: 29px;
+    right: 29px;
+    bottom: 20px;
 
+    display: flex;
+    justify-content: space-between;
 
-#app::-webkit-scrollbar,
-#app *::-webkit-scrollbar,
-#launchScreen::-webkit-scrollbar,
-#launchScreen *::-webkit-scrollbar {
+    color: #41443f;
 
-    width: 0;
-    height: 0;
+    font-family:
+        "JetBrains Mono",
+        Consolas,
+        monospace;
 
-    display: none;
+    font-size: 7px;
 }
 
 
 /* =========================================================
-   600x425 FIT
+   RESPONSIVE
    ========================================================= */
 
-@media (max-height: 450px) {
+@media (max-width: 650px) {
 
     .sidebar {
+        width: 150px;
+        min-width: 150px;
 
-        padding-top: 28px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
-
-
-    .nav {
-
-        margin-top: 31px;
-    }
-
 
     .content {
-
-        padding:
-            29px
-            32px;
+        padding: 30px 25px;
     }
-
 
     h1 {
-
-        font-size: 28px;
+        font-size: 26px;
     }
 
-
-    .status-area {
-
-        margin-top: 31px;
+    .details {
+        gap: 25px;
+        flex-wrap: wrap;
     }
-
-
-    .launch-area {
-
-        margin-top: 29px;
-
-        height: 225px;
-    }
-
-
-    .changelog,
-    .settings {
-
-        margin-top: 28px;
-    }
-
 }
