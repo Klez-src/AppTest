@@ -3,22 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,user-scalable=no"
-  >
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>orro</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- ==================================================
-       INTRO — UNCHANGED
-       ================================================== -->
+  <!-- INTRO — DO NOT CHANGE -->
 
   <div id="intro">
 
@@ -35,32 +27,17 @@
   </div>
 
 
-  <!-- ==================================================
-       APP
-       ================================================== -->
+  <!-- APP -->
 
   <div id="app">
 
+    <!-- TOP BAR -->
 
-    <!-- ==================================================
-         TOP BAR
-         ================================================== -->
-
-    <header
-      class="topbar drag-region"
-      data-drag
-    >
+    <header class="topbar drag-region" data-drag>
 
       <div class="top-brand">
-
-        <div class="brand-orb">
-          o
-        </div>
-
         <span>orro</span>
-
       </div>
-
 
       <div class="top-right">
 
@@ -81,9 +58,7 @@
     </header>
 
 
-    <!-- ==================================================
-         NAV
-         ================================================== -->
+    <!-- TABS -->
 
     <nav class="nav">
 
@@ -94,7 +69,6 @@
         Home
       </button>
 
-
       <button
         class="nav-item"
         data-view="launch"
@@ -102,14 +76,12 @@
         Launch
       </button>
 
-
       <button
         class="nav-item"
         data-view="changelog"
       >
         Changelog
       </button>
-
 
       <button
         class="nav-item"
@@ -121,31 +93,21 @@
     </nav>
 
 
-    <!-- ==================================================
-         CONTENT
-         ================================================== -->
+    <!-- CONTENT -->
 
     <main class="content">
 
 
-      <!-- ==================================================
-           HOME
-           ================================================== -->
+      <!-- HOME -->
 
       <section
         id="home"
         class="view active"
       >
 
-        <div class="eyebrow">
-          ORRO · DESKTOP
-        </div>
-
-
         <h1>
           Welcome back.
         </h1>
-
 
         <p class="subtitle">
           Everything is ready to go.
@@ -154,34 +116,23 @@
 
         <div class="main-card">
 
-
           <div class="card-header">
 
             <div>
 
               <div class="status">
-
                 <span class="status-dot"></span>
-
                 Ready
-
               </div>
-
 
               <h2>
                 orro
               </h2>
 
-
               <p>
                 Version 1.0.0 · Latest release
               </p>
 
-            </div>
-
-
-            <div class="large-orb">
-              o
             </div>
 
           </div>
@@ -192,7 +143,6 @@
             <span class="card-info">
               Your application is up to date.
             </span>
-
 
             <button
               class="launch-button"
@@ -209,69 +159,36 @@
 
         <div class="bottom-info">
 
-
           <div>
-
-            <span>
-              VERSION
-            </span>
-
-            <strong>
-              1.0.0
-            </strong>
-
+            <span>VERSION</span>
+            <strong>1.0.0</strong>
           </div>
 
-
           <div>
-
-            <span>
-              RELEASE
-            </span>
-
-            <strong>
-              Latest
-            </strong>
-
+            <span>RELEASE</span>
+            <strong>Latest</strong>
           </div>
 
-
           <div>
-
-            <span>
-              STATUS
-            </span>
-
-            <strong class="ready">
-              Ready
-            </strong>
-
+            <span>STATUS</span>
+            <strong class="ready">Ready</strong>
           </div>
-
 
         </div>
 
       </section>
 
 
-      <!-- ==================================================
-           LAUNCH
-           ================================================== -->
+      <!-- LAUNCH -->
 
       <section
         id="launch"
         class="view"
       >
 
-        <div class="eyebrow">
-          ORRO · APPLICATION
-        </div>
-
-
         <h1>
-          Launch.
+          Launch
         </h1>
-
 
         <p class="subtitle">
           Start your orro session.
@@ -280,11 +197,6 @@
 
         <div class="launch-card">
 
-          <div class="launch-icon">
-            o
-          </div>
-
-
           <div class="launch-details">
 
             <h2>
@@ -292,7 +204,7 @@
             </h2>
 
             <span>
-              1.0.0 · Latest
+              Version 1.0.0 · Latest release
             </span>
 
           </div>
@@ -320,24 +232,16 @@
       </section>
 
 
-      <!-- ==================================================
-           CHANGELOG
-           ================================================== -->
+      <!-- CHANGELOG -->
 
       <section
         id="changelog"
         class="view"
       >
 
-        <div class="eyebrow">
-          ORRO · UPDATES
-        </div>
-
-
         <h1>
-          Changelog.
+          Changelog
         </h1>
-
 
         <p class="subtitle">
           Recent changes and releases.
@@ -346,15 +250,13 @@
 
         <div class="release-list">
 
-
           <article class="release">
 
             <div class="release-number">
               01
             </div>
 
-
-            <div>
+            <div class="release-content">
 
               <div class="release-title">
 
@@ -366,14 +268,12 @@
 
               </div>
 
-
               <p>
                 New interface, startup sequence,
                 launcher shell and first public build.
               </p>
 
             </div>
-
 
             <strong>
               1.0.0
@@ -388,13 +288,11 @@
               02
             </div>
 
-
-            <div>
+            <div class="release-content">
 
               <div class="release-title">
                 Interface refinement
               </div>
-
 
               <p>
                 Improved navigation and launch flow.
@@ -402,37 +300,27 @@
 
             </div>
 
-
             <strong>
               0.9.2
             </strong>
 
           </article>
 
-
         </div>
 
       </section>
 
 
-      <!-- ==================================================
-           SETTINGS
-           ================================================== -->
+      <!-- SETTINGS -->
 
       <section
         id="settings"
         class="view"
       >
 
-        <div class="eyebrow">
-          ORRO · PREFERENCES
-        </div>
-
-
         <h1>
-          Settings.
+          Settings
         </h1>
-
 
         <p class="subtitle">
           Configure your experience.
@@ -456,7 +344,6 @@
 
             </div>
 
-
             <button
               class="toggle on"
               data-toggle
@@ -479,7 +366,6 @@
 
             </div>
 
-
             <button
               class="toggle on"
               data-toggle
@@ -501,7 +387,6 @@
               </span>
 
             </div>
-
 
             <button
               class="toggle"
