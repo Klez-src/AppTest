@@ -2,24 +2,45 @@
 
 
 /* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const app = document.getElementById("app");
+
+const navButtons = document.querySelectorAll(".nav-button");
+const views = document.querySelectorAll(".view");
+
+const homeLaunch = document.getElementById("homeLaunch");
+const launchButton = document.getElementById("launchButton");
+
+const launchScreen = document.getElementById("launchScreen");
+
+const launchTitle = document.getElementById("launchTitle");
+const launchStatus = document.getElementById("launchStatus");
+const launchStep = document.getElementById("launchStep");
+const launchPercent = document.getElementById("launchPercent");
+const launchProgressBar = document.getElementById("launchProgressBar");
+const launchTime = document.getElementById("launchTime");
+const launchFooterStatus =
+    document.getElementById("launchFooterStatus");
+
+const toggles = document.querySelectorAll(".toggle");
+
+
+/* =========================================================
    SETTINGS
    ========================================================= */
 
-const DEFAULT_SETTINGS = {
+const SETTINGS_KEY = "orro_settings_v1";
 
-    rememberSession: true,
-
-    automaticUpdates: true,
-
-    minimiseOnLaunch: false,
-
+const defaultSettings = {
+    rememberSession: false,
+    automaticUpdates: false,
     closeAfterLaunch: false
-
 };
 
-
 let settings = {
-    ...DEFAULT_SETTINGS
+    ...defaultSettings
 };
 
 
@@ -31,36 +52,36 @@ function loadSettings() {
 
     try {
 
-        const stored =
-            localStorage.getItem(
-                "orro.settings"
-            );
+        const saved =
+            localStorage.getItem(SETTINGS_KEY);
 
+        if (!saved)
+            return;
 
-        if (stored) {
+        const parsed =
+            JSON.parse(saved);
 
-            const parsed =
-                JSON.parse(stored);
-
-
+        if (
+            parsed &&
+            typeof parsed === "object"
+        ) {
             settings = {
-
-                ...DEFAULT_SETTINGS,
-
+                ...defaultSettings,
                 ...parsed
-
             };
-
         }
 
-    } catch {
+    } catch (error) {
+
+        console.warn(
+            "Could not load orro settings.",
+            error
+        );
 
         settings = {
-            ...DEFAULT_SETTINGS
+            ...defaultSettings
         };
-
     }
-
 }
 
 
@@ -73,87 +94,71 @@ function saveSettings() {
     try {
 
         localStorage.setItem(
-
-            "orro.settings",
-
-            JSON.stringify(
-                settings
-            )
-
+            SETTINGS_KEY,
+            JSON.stringify(settings)
         );
 
-    } catch {
+    } catch (error) {
 
-        // Storage unavailable.
+        console.warn(
+            "Could not save orro settings.",
+            error
+        );
     }
-
 }
 
 
 /* =========================================================
-   UPDATE TOGGLES
+   APPLY SETTINGS
    ========================================================= */
 
-function updateToggles() {
+function applySettings() {
 
-    document
-        .querySelectorAll(".toggle")
-        .forEach(toggle => {
+    toggles.forEach(toggle => {
+
+        const setting =
+            toggle.dataset.setting;
+
+        const enabled =
+            Boolean(settings[setting]);
+
+        toggle.classList.toggle(
+            "on",
+            enabled
+        );
+
+        toggle.setAttribute(
+            "aria-pressed",
+            enabled ? "true" : "false"
+        );
+    });
+}
+
+
+/* =========================================================
+   TOGGLE EVENTS
+   ========================================================= */
+
+toggles.forEach(toggle => {
+
+    toggle.addEventListener(
+        "click",
+        event => {
+
+            event.preventDefault();
+            event.stopPropagation();
 
             const setting =
                 toggle.dataset.setting;
 
+            settings[setting] =
+                !Boolean(settings[setting]);
 
-            toggle.classList.toggle(
-
-                "on",
-
-                Boolean(
-                    settings[setting]
-                )
-
-            );
-
-        });
-
-}
-
-
-/* =========================================================
-   SETTINGS EVENTS
-   ========================================================= */
-
-function setupSettings() {
-
-    document
-        .querySelectorAll(".toggle")
-        .forEach(toggle => {
-
-            toggle.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-
-                    const setting =
-                        toggle.dataset.setting;
-
-
-                    settings[setting] =
-                        !settings[setting];
-
-
-                    saveSettings();
-
-                    updateToggles();
-
-                }
-            );
-
-        });
-
-}
+            saveSettings();
+            applySettings();
+        }
+    );
+});
 
 
 /* =========================================================
@@ -162,171 +167,60 @@ function setupSettings() {
 
 function showView(viewName) {
 
-    document
-        .querySelectorAll(".view")
-        .forEach(view => {
+    views.forEach(view => {
 
-            view.classList.remove(
-                "active"
-            );
-
-        });
-
-
-    const target =
-        document.getElementById(
-            viewName
+        view.classList.toggle(
+            "active",
+            view.id === viewName
         );
+    });
 
 
-    if (!target)
-        return;
+    navButtons.forEach(button => {
 
-
-    target.classList.add(
-        "active"
-    );
-
-
-    document
-        .querySelectorAll(".nav-button")
-        .forEach(button => {
-
-            button.classList.toggle(
-
-                "selected",
-
-                button.dataset.view ===
-                viewName
-
-            );
-
-        });
-
+        button.classList.toggle(
+            "selected",
+            button.dataset.view === viewName
+        );
+    });
 }
 
 
-/* =========================================================
-   NAVIGATION EVENTS
-   ========================================================= */
+navButtons.forEach(button => {
 
-function setupNavigation() {
-
-    document
-        .querySelectorAll(".nav-button")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-
-                    showView(
-                        button.dataset.view
-                    );
-
-                }
-            );
-
-        });
-
-}
-
-
-/* =========================================================
-   NATIVE WEBVIEW2
-   ========================================================= */
-
-function nativeMessage(message) {
-
-    try {
-
-        if (
-
-            window.chrome &&
-
-            window.chrome.webview
-
-        ) {
-
-            window.chrome.webview.postMessage(
-                message
-            );
-
-        }
-
-    } catch {
-
-        // Browser preview.
-    }
-
-}
-
-
-/* =========================================================
-   WINDOW DRAG
-   ========================================================= */
-
-function setupDragging() {
-
-    document.addEventListener(
-
-        "mousedown",
-
+    button.addEventListener(
+        "click",
         event => {
 
-            if (
-                event.button !== 0
-            ) {
-                return;
-            }
+            event.preventDefault();
 
+            const view =
+                button.dataset.view;
 
-            const element =
-                event.target;
-
-
-            /*
-             * Buttons and controls need
-             * their normal click behavior.
-             */
-
-            if (
-
-                element.closest(
-                    "button, input, select, textarea, a"
-                )
-
-            ) {
-
+            if (!view)
                 return;
 
-            }
-
-
-            nativeMessage(
-                "window.drag"
-            );
-
+            showView(view);
         }
-
     );
-
-}
+});
 
 
 /* =========================================================
-   LAUNCH STAGES
+   LAUNCH STATE
    ========================================================= */
 
-const LAUNCH_DURATION =
-    35000;
+let launchTimer = null;
+let launchStarted = false;
+
+const LAUNCH_DURATION = 35000;
 
 
-const launchStages = [
+/* =========================================================
+   LAUNCH PHASES
+   ========================================================= */
 
+const launchPhases = [
     {
         at: 0,
         title: "Preparing",
@@ -335,281 +229,267 @@ const launchStages = [
     },
 
     {
-        at: 3500,
-        title: "Checking",
-        status: "Checking required components",
-        step: "Checking"
+        at: 0.10,
+        title: "Preparing",
+        status: "Checking local environment",
+        step: "Checking environment"
     },
 
     {
-        at: 8000,
-        title: "Loading",
-        status: "Loading launch components",
-        step: "Loading"
+        at: 0.22,
+        title: "Initialising",
+        status: "Preparing orro components",
+        step: "Initialising components"
     },
 
     {
-        at: 13500,
-        title: "Preparing session",
-        status: "Preparing the session",
-        step: "Preparing"
+        at: 0.36,
+        title: "Initialising",
+        status: "Loading application data",
+        step: "Loading data"
     },
 
     {
-        at: 19500,
+        at: 0.50,
         title: "Starting",
-        status: "Starting required components",
-        step: "Starting"
+        status: "Starting launcher services",
+        step: "Starting services"
     },
 
     {
-        at: 26000,
-        title: "Finalising",
+        at: 0.65,
+        title: "Starting",
+        status: "Preparing session",
+        step: "Preparing session"
+    },
+
+    {
+        at: 0.79,
+        title: "Verifying",
+        status: "Checking launch state",
+        step: "Verifying state"
+    },
+
+    {
+        at: 0.91,
+        title: "Finishing",
         status: "Finalising launch",
         step: "Finalising"
     },
 
     {
-        at: 32000,
-        title: "Almost ready",
-        status: "Completing launch sequence",
-        step: "Completing"
-    },
-
-    {
-        at: 35000,
+        at: 0.985,
         title: "Ready",
-        status: "Launch complete",
+        status: "Launch sequence complete",
         step: "Complete"
     }
-
 ];
 
 
-let launchRunning = false;
-
-let launchStartTime = 0;
-
-let launchFrame = null;
-
-
 /* =========================================================
-   LAUNCH ELEMENTS
+   WEBVIEW NATIVE MESSAGING
    ========================================================= */
 
-function launchElements() {
+function sendNativeMessage(message) {
 
-    return {
+    try {
 
-        screen:
-            document.getElementById(
-                "launchScreen"
-            ),
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
 
-        title:
-            document.getElementById(
-                "launchTitle"
-            ),
+            window.chrome.webview.postMessage(
+                message
+            );
 
-        status:
-            document.getElementById(
-                "launchStatus"
-            ),
+            return true;
+        }
 
-        bar:
-            document.getElementById(
-                "launchProgressBar"
-            ),
+    } catch (error) {
 
-        step:
-            document.getElementById(
-                "launchStep"
-            ),
+        console.warn(
+            "Native message failed.",
+            error
+        );
+    }
 
-        percent:
-            document.getElementById(
-                "launchPercent"
-            )
-
-    };
-
+    return false;
 }
 
 
 /* =========================================================
-   UPDATE STAGE
+   FORMAT TIME
    ========================================================= */
 
-function updateLaunchStage(
-    elapsed,
-    elements
-) {
+function formatTime(seconds) {
 
-    let stage =
-        launchStages[0];
+    const safeSeconds =
+        Math.max(
+            0,
+            Math.ceil(seconds)
+        );
 
+    const minutes =
+        Math.floor(
+            safeSeconds / 60
+        );
+
+    const remaining =
+        safeSeconds % 60;
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remaining).padStart(2, "0")
+    );
+}
+
+
+/* =========================================================
+   UPDATE PHASE
+   ========================================================= */
+
+function updateLaunchPhase(progress) {
+
+    let current =
+        launchPhases[0];
 
     for (
         let i = 0;
-        i < launchStages.length;
+        i < launchPhases.length;
         i++
     ) {
 
         if (
-            elapsed >=
-            launchStages[i].at
+            progress >=
+            launchPhases[i].at
         ) {
-
-            stage =
-                launchStages[i];
-
+            current =
+                launchPhases[i];
         }
-
     }
 
 
-    elements.title.textContent =
-        stage.title;
+    launchTitle.textContent =
+        current.title;
 
+    launchStatus.textContent =
+        current.status;
 
-    elements.status.textContent =
-        stage.status;
-
-
-    elements.step.textContent =
-        stage.step;
-
+    launchStep.textContent =
+        current.step;
 }
 
 
 /* =========================================================
-   LAUNCH LOOP
+   OPEN LAUNCH SCREEN
    ========================================================= */
 
-function launchLoop() {
+function openLaunchScreen() {
 
-    if (!launchRunning)
+    if (launchStarted)
         return;
 
-
-    const elements =
-        launchElements();
+    launchStarted = true;
 
 
-    const elapsed =
-        performance.now() -
-        launchStartTime;
+    /* Reset */
 
-
-    const progress =
-        Math.min(
-
-            elapsed /
-            LAUNCH_DURATION,
-
-            1
-
-        );
-
-
-    const percentage =
-        Math.floor(
-            progress * 100
-        );
-
-
-    elements.bar.style.width =
-        percentage + "%";
-
-
-    elements.percent.textContent =
-        percentage + "%";
-
-
-    updateLaunchStage(
-        elapsed,
-        elements
-    );
-
-
-    if (
-        progress >= 1
-    ) {
-
-        finishLaunch();
-
-        return;
-
-    }
-
-
-    launchFrame =
-        requestAnimationFrame(
-            launchLoop
-        );
-
-}
-
-
-/* =========================================================
-   START LAUNCH
-   ========================================================= */
-
-function startLaunch() {
-
-    if (launchRunning)
-        return;
-
-
-    launchRunning = true;
-
-
-    const elements =
-        launchElements();
-
-
-    elements.screen.classList.add(
-        "active"
-    );
-
-
-    elements.bar.style.width =
+    launchProgressBar.style.width =
         "0%";
 
-
-    elements.percent.textContent =
+    launchPercent.textContent =
         "0%";
 
+    launchTime.textContent =
+        "00:35";
 
-    elements.title.textContent =
+    launchTitle.textContent =
         "Preparing";
 
-
-    elements.status.textContent =
+    launchStatus.textContent =
         "Starting launch sequence";
 
-
-    elements.step.textContent =
+    launchStep.textContent =
         "Initialising";
 
+    launchFooterStatus.textContent =
+        "Launching";
 
-    launchStartTime =
+
+    /* Show */
+
+    launchScreen.classList.add(
+        "visible"
+    );
+
+
+    const startTime =
         performance.now();
 
 
-    /*
-     * Do not minimise here.
-     *
-     * The launching screen is supposed
-     * to take over the entire app menu.
-     */
+    function tick(now) {
+
+        const elapsed =
+            now - startTime;
+
+        const progress =
+            Math.min(
+                elapsed / LAUNCH_DURATION,
+                1
+            );
 
 
-    launchFrame =
-        requestAnimationFrame(
-            launchLoop
+        const percent =
+            Math.floor(
+                progress * 100
+            );
+
+
+        const remaining =
+            Math.ceil(
+                (LAUNCH_DURATION - elapsed) /
+                1000
+            );
+
+
+        launchProgressBar.style.width =
+            `${percent}%`;
+
+        launchPercent.textContent =
+            `${percent}%`;
+
+        launchTime.textContent =
+            formatTime(
+                remaining
+            );
+
+
+        updateLaunchPhase(
+            progress
         );
 
+
+        if (progress < 1) {
+
+            launchTimer =
+                requestAnimationFrame(
+                    tick
+                );
+
+            return;
+        }
+
+
+        finishLaunch();
+    }
+
+
+    launchTimer =
+        requestAnimationFrame(
+            tick
+        );
 }
 
 
@@ -619,76 +499,71 @@ function startLaunch() {
 
 function finishLaunch() {
 
-    launchRunning = false;
-
-
-    if (launchFrame !== null) {
+    if (launchTimer) {
 
         cancelAnimationFrame(
-            launchFrame
+            launchTimer
         );
 
-        launchFrame = null;
-
+        launchTimer = null;
     }
 
 
-    const elements =
-        launchElements();
-
-
-    elements.bar.style.width =
+    launchProgressBar.style.width =
         "100%";
 
-
-    elements.percent.textContent =
+    launchPercent.textContent =
         "100%";
 
+    launchTime.textContent =
+        "00:00";
 
-    elements.title.textContent =
+    launchTitle.textContent =
+        "Ready";
+
+    launchStatus.textContent =
+        "Launch sequence complete";
+
+    launchStep.textContent =
+        "Complete";
+
+    launchFooterStatus.textContent =
         "Ready";
 
 
-    elements.status.textContent =
-        "Launch complete";
-
-
-    elements.step.textContent =
-        "Complete";
-
-
     /*
-     * Let the completed state remain
-     * visible very briefly.
-     */
+       Small pause so the user actually sees
+       the completed state.
+    */
 
-    setTimeout(
+    setTimeout(() => {
 
-        () => {
+        if (
+            settings.closeAfterLaunch
+        ) {
 
-            if (
-                settings.closeAfterLaunch
-            ) {
-
-                nativeMessage(
-                    "window.close"
-                );
-
-                return;
-
-            }
-
-
-            elements.screen.classList.remove(
-                "active"
+            sendNativeMessage(
+                "window.close"
             );
 
-        },
+            return;
+        }
 
-        650
 
-    );
+        launchScreen.classList.remove(
+            "visible"
+        );
 
+        setTimeout(() => {
+
+            launchScreen.style.display =
+                "none";
+
+            launchStarted = false;
+
+        }, 280);
+
+    }, 650);
 }
 
 
@@ -696,85 +571,64 @@ function finishLaunch() {
    LAUNCH BUTTONS
    ========================================================= */
 
-function setupLaunchButtons() {
+if (homeLaunch) {
 
-    const homeButton =
-        document.getElementById(
-            "homeLaunch"
-        );
+    homeLaunch.addEventListener(
+        "click",
+        event => {
 
+            event.preventDefault();
 
-    const launchButton =
-        document.getElementById(
-            "launchButton"
-        );
-
-
-    if (homeButton) {
-
-        homeButton.addEventListener(
-
-            "click",
-
-            event => {
-
-                event.stopPropagation();
-
-                startLaunch();
-
-            }
-
-        );
-
-    }
+            openLaunchScreen();
+        }
+    );
+}
 
 
-    if (launchButton) {
+if (launchButton) {
 
-        launchButton.addEventListener(
+    launchButton.addEventListener(
+        "click",
+        event => {
 
-            "click",
+            event.preventDefault();
 
-            event => {
-
-                event.stopPropagation();
-
-                startLaunch();
-
-            }
-
-        );
-
-    }
-
+            openLaunchScreen();
+        }
+    );
 }
 
 
 /* =========================================================
-   STARTUP
+   PREVENT TEXT SELECTION
    ========================================================= */
 
-function initialise() {
+document.addEventListener(
+    "selectstart",
+    event => {
 
-    loadSettings();
+        event.preventDefault();
+    }
+);
 
-    setupSettings();
 
-    updateToggles();
-
-    setupNavigation();
-
-    setupDragging();
-
-    setupLaunchButtons();
-
-}
-
+/* =========================================================
+   PREVENT DRAGGING TEXT / IMAGES
+   ========================================================= */
 
 document.addEventListener(
+    "dragstart",
+    event => {
 
-    "DOMContentLoaded",
-
-    initialise
-
+        event.preventDefault();
+    }
 );
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+loadSettings();
+applySettings();
+showView("home");
