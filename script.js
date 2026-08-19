@@ -1,822 +1,636 @@
-/* =========================================================
-   ORRO LOADER
-   ========================================================= */
+"use strict";
 
 
 /* =========================================================
-   NATIVE WEBVIEW BRIDGE
+   SETTINGS
    ========================================================= */
 
-function nativeMessage(message) {
+const DEFAULT_SETTINGS = {
+    rememberSession: true,
+    automaticUpdates: true,
+    closeAfterLaunch: false
+};
 
-    if (
-        window.chrome &&
-        window.chrome.webview
-    ) {
 
-        window.chrome.webview.postMessage(
-            message
-        );
+let settings = {
+    ...DEFAULT_SETTINGS
+};
 
+
+function loadSettings() {
+
+    try {
+
+        const saved =
+            localStorage.getItem("orro-settings");
+
+        if (saved) {
+
+            settings = {
+                ...DEFAULT_SETTINGS,
+                ...JSON.parse(saved)
+            };
+        }
+
+    } catch (error) {
+
+        settings = {
+            ...DEFAULT_SETTINGS
+        };
     }
-
 }
 
+
+function saveSettings() {
+
+    try {
+
+        localStorage.setItem(
+            "orro-settings",
+            JSON.stringify(settings)
+        );
+
+    } catch (error) {
+        // Ignore storage errors.
+    }
+}
+
+
+/* =========================================================
+   APPLY SETTINGS
+   ========================================================= */
+
+function updateToggleUI() {
+
+    document
+        .querySelectorAll(".toggle")
+        .forEach(toggle => {
+
+            const setting =
+                toggle.dataset.setting;
+
+            toggle.classList.toggle(
+                "on",
+                !!settings[setting]
+            );
+        });
+}
+
+
+function setupSettings() {
+
+    document
+        .querySelectorAll(".toggle")
+        .forEach(toggle => {
+
+            toggle.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    const setting =
+                        toggle.dataset.setting;
+
+                    settings[setting] =
+                        !settings[setting];
+
+                    saveSettings();
+
+                    updateToggleUI();
+                }
+            );
+
+        });
+
+}
 
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
-function showView(
-    id,
-    button
-) {
+function showView(id) {
 
-    var views =
-        document.querySelectorAll(
-            ".view"
-        );
+    document
+        .querySelectorAll(".view")
+        .forEach(view => {
 
-
-    for (
-        var i = 0;
-        i < views.length;
-        i++
-    ) {
-
-        views[i].classList.remove(
-            "active"
-        );
-
-    }
+            view.classList.remove("active");
+        });
 
 
-    var selectedView =
-        document.getElementById(
-            id
-        );
+    const target =
+        document.getElementById(id);
+
+    if (!target)
+        return;
 
 
-    if (selectedView) {
-
-        selectedView.classList.add(
-            "active"
-        );
-
-    }
+    target.classList.add("active");
 
 
-    var buttons =
-        document.querySelectorAll(
-            ".nav button"
-        );
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "selected",
+                button.dataset.view === id
+            );
+
+        });
+}
 
 
-    for (
-        var j = 0;
-        j < buttons.length;
-        j++
-    ) {
+function setupNavigation() {
 
-        buttons[j].classList.remove(
-            "selected"
-        );
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(button => {
 
-    }
+            button.addEventListener(
+                "click",
+                event => {
 
+                    event.stopPropagation();
 
-    if (button) {
+                    showView(
+                        button.dataset.view
+                    );
+                }
+            );
 
-        button.classList.add(
-            "selected"
-        );
-
-    }
+        });
 
 }
 
 
-
 /* =========================================================
-   SETTINGS STORAGE
+   NATIVE WINDOW MESSAGES
    ========================================================= */
 
-var SETTINGS_KEY =
-    "orro.settings";
-
-
-var defaultSettings = {
-
-    remember: true,
-
-    updates: true,
-
-    minimise: false,
-
-    closeAfter: false
-
-};
-
-
-function getSettings() {
+function sendNativeMessage(message) {
 
     try {
 
-        var stored =
-            localStorage.getItem(
-                SETTINGS_KEY
-            );
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
 
-
-        if (!stored) {
-
-            return Object.assign(
-                {},
-                defaultSettings
+            window.chrome.webview.postMessage(
+                message
             );
 
         }
 
+    } catch (error) {
+        // Browser preview / non-WebView2 environment.
+    }
+}
 
-        var parsed =
-            JSON.parse(
-                stored
+
+/* =========================================================
+   DRAG WINDOW
+   ========================================================= */
+
+function setupDragging() {
+
+    document.addEventListener(
+        "mousedown",
+        event => {
+
+            if (event.button !== 0)
+                return;
+
+
+            const target =
+                event.target;
+
+
+            /*
+             * Don't steal clicks from controls.
+             */
+
+            if (
+                target.closest(
+                    "button, input, a, select, textarea"
+                )
+            ) {
+                return;
+            }
+
+
+            sendNativeMessage(
+                "window.drag"
             );
 
-
-        return Object.assign(
-            {},
-            defaultSettings,
-            parsed
-        );
-
-    }
-
-    catch (error) {
-
-        return Object.assign(
-            {},
-            defaultSettings
-        );
-
-    }
+        }
+    );
 
 }
 
 
+/* =========================================================
+   LAUNCH SCREEN
+   ========================================================= */
 
-function saveSettings(
-    settings
-) {
+const launchStages = [
 
-    try {
+    {
+        time: 0,
+        title: "Preparing",
+        status: "Starting launch sequence",
+        step: "Initialising"
+    },
 
-        localStorage.setItem(
-            SETTINGS_KEY,
-            JSON.stringify(
-                settings
+    {
+        time: 3500,
+        title: "Checking",
+        status: "Checking required components",
+        step: "Checking"
+    },
+
+    {
+        time: 8000,
+        title: "Loading",
+        status: "Loading launch components",
+        step: "Loading"
+    },
+
+    {
+        time: 13500,
+        title: "Preparing session",
+        status: "Preparing the session",
+        step: "Preparing"
+    },
+
+    {
+        time: 19500,
+        title: "Starting",
+        status: "Starting required components",
+        step: "Starting"
+    },
+
+    {
+        time: 26000,
+        title: "Finalising",
+        status: "Finalising launch",
+        step: "Finalising"
+    },
+
+    {
+        time: 32000,
+        title: "Almost ready",
+        status: "Completing launch sequence",
+        step: "Completing"
+    },
+
+    {
+        time: 35000,
+        title: "Ready",
+        status: "Launch complete",
+        step: "Complete"
+    }
+
+];
+
+
+let launchRunning = false;
+let launchStart = 0;
+let launchAnimation = null;
+
+
+function getLaunchElements() {
+
+    return {
+
+        screen:
+            document.getElementById(
+                "launchScreen"
+            ),
+
+        title:
+            document.getElementById(
+                "launchTitle"
+            ),
+
+        status:
+            document.getElementById(
+                "launchStatus"
+            ),
+
+        bar:
+            document.getElementById(
+                "launchProgressBar"
+            ),
+
+        step:
+            document.getElementById(
+                "launchStep"
+            ),
+
+        percent:
+            document.getElementById(
+                "launchPercent"
             )
-        );
 
-    }
-
-    catch (error) {
-
-        // LocalStorage may be unavailable.
-    }
+    };
 
 }
 
 
+function updateLaunchStage(
+    elapsed,
+    elements
+) {
 
-/* =========================================================
-   LOAD SETTINGS
-   ========================================================= */
-
-function loadSettings() {
-
-    var settings =
-        getSettings();
-
-
-    var toggles =
-        document.querySelectorAll(
-            ".toggle[data-setting]"
-        );
+    let current =
+        launchStages[0];
 
 
     for (
-        var i = 0;
-        i < toggles.length;
+        let i = 0;
+        i < launchStages.length;
         i++
     ) {
 
-        var toggle =
-            toggles[i];
+        if (
+            elapsed >=
+            launchStages[i].time
+        ) {
+
+            current =
+                launchStages[i];
+
+        }
+
+    }
 
 
-        var settingName =
-            toggle.dataset.setting;
+    elements.title.textContent =
+        current.title;
+
+    elements.status.textContent =
+        current.status;
+
+    elements.step.textContent =
+        current.step;
+
+}
 
 
-        var enabled =
-            !!settings[
-                settingName
-            ];
+function launchTick() {
+
+    if (!launchRunning)
+        return;
 
 
-        toggle.classList.toggle(
-            "on",
-            enabled
+    const elements =
+        getLaunchElements();
+
+
+    const elapsed =
+        performance.now() -
+        launchStart;
+
+
+    const duration =
+        35000;
+
+
+    const progress =
+        Math.min(
+            elapsed / duration,
+            1
         );
 
-    }
 
-}
-
-
-loadSettings();
-
-
-
-/* =========================================================
-   TOGGLE SETTING
-   ========================================================= */
-
-function toggleSetting(
-    element
-) {
-
-    if (!element) {
-        return;
-    }
-
-
-    var settingName =
-        element.dataset.setting;
-
-
-    if (!settingName) {
-        return;
-    }
-
-
-    var settings =
-        getSettings();
-
-
-    settings[
-        settingName
-    ] =
-        !settings[
-            settingName
-        ];
-
-
-    saveSettings(
-        settings
-    );
-
-
-    element.classList.toggle(
-        "on",
-        settings[
-            settingName
-        ]
-    );
-
-}
-
-
-
-/* =========================================================
-   LAUNCHING SCREEN
-   ========================================================= */
-
-var launchingScreen =
-    document.getElementById(
-        "launching-screen"
-    );
-
-
-var launchingProgress =
-    document.getElementById(
-        "launching-progress-fill"
-    );
-
-
-var launchingStatus =
-    document.getElementById(
-        "launching-status-text"
-    );
-
-
-var launchingTitle =
-    document.getElementById(
-        "launching-title"
-    );
-
-
-var launchingSubtitle =
-    document.getElementById(
-        "launching-subtitle"
-    );
-
-
-var launchTimers = [];
-
-
-var launchRunning =
-    false;
-
-
-
-/* =========================================================
-   CLEAR LAUNCH
-   ========================================================= */
-
-function clearLaunchTimers() {
-
-    for (
-        var i = 0;
-        i < launchTimers.length;
-        i++
-    ) {
-
-        clearTimeout(
-            launchTimers[i]
+    const percentage =
+        Math.round(
+            progress * 100
         );
 
-    }
 
-
-    launchTimers = [];
-
-}
-
-
-
-/* =========================================================
-   UPDATE LAUNCH SCREEN
-   ========================================================= */
-
-function updateLaunch(
-    percentage,
-    status
-) {
-
-    launchingProgress.style.width =
+    elements.bar.style.width =
         percentage + "%";
 
 
-    launchingStatus.textContent =
-        status;
+    elements.percent.textContent =
+        percentage + "%";
+
+
+    updateLaunchStage(
+        elapsed,
+        elements
+    );
+
+
+    if (progress >= 1) {
+
+        finishLaunch();
+
+        return;
+    }
+
+
+    launchAnimation =
+        requestAnimationFrame(
+            launchTick
+        );
 
 }
 
 
+function startLaunch() {
 
-/* =========================================================
-   START LAUNCH
-   ========================================================= */
-
-function launch(
-    button
-) {
-
-    if (launchRunning) {
+    if (launchRunning)
         return;
-    }
 
 
     launchRunning = true;
 
 
-    clearLaunchTimers();
+    const elements =
+        getLaunchElements();
 
 
-    var settings =
-        getSettings();
-
-
-    /* -----------------------------------------------------
-       Original launch button feedback
-       ----------------------------------------------------- */
-
-    if (button) {
-
-        button.dataset.originalText =
-            button.textContent;
-
-        button.textContent =
-            "Launching...";
-
-        button.style.opacity =
-            ".55";
-
-    }
-
-
-    /* -----------------------------------------------------
-       Show launching screen
-       ----------------------------------------------------- */
-
-    launchingScreen.classList.add(
+    elements.screen.classList.add(
         "active"
     );
 
 
-    launchingTitle.textContent =
-        "Launching";
-
-
-    launchingSubtitle.textContent =
-        "Preparing your session.";
-
-
-    updateLaunch(
-        0,
-        "Initialising"
-    );
-
-
-    /* -----------------------------------------------------
-       Minimise on launch
-       ----------------------------------------------------- */
-
-    if (settings.minimise) {
-
-        /*
-         * The setting is persistent.
-         *
-         * The native C++ receives this
-         * and minimises the actual window.
-         */
-
-        nativeMessage(
-            "window.minimize"
-        );
-
-    }
-
-
-    /* -----------------------------------------------------
-       37 second launch sequence
-       ----------------------------------------------------- */
-
-    var stages = [
-
-        {
-            time: 1500,
-            progress: 4,
-            text: "Initialising"
-        },
-
-        {
-            time: 4300,
-            progress: 9,
-            text: "Loading configuration"
-        },
-
-        {
-            time: 7200,
-            progress: 15,
-            text: "Checking installation"
-        },
-
-        {
-            time: 10400,
-            progress: 23,
-            text: "Checking environment"
-        },
-
-        {
-            time: 13900,
-            progress: 31,
-            text: "Preparing files"
-        },
-
-        {
-            time: 17600,
-            progress: 40,
-            text: "Loading components"
-        },
-
-        {
-            time: 21100,
-            progress: 49,
-            text: "Preparing session"
-        },
-
-        {
-            time: 24700,
-            progress: 61,
-            text: "Initialising services"
-        },
-
-        {
-            time: 27900,
-            progress: 70,
-            text: "Starting core"
-        },
-
-        {
-            time: 30700,
-            progress: 79,
-            text: "Connecting"
-        },
-
-        {
-            time: 33100,
-            progress: 90,
-            text: "Starting orro"
-        },
-
-        {
-            time: 35500,
-            progress: 100,
-            text: "Ready"
-        }
-
-    ];
-
-
-    for (
-        var i = 0;
-        i < stages.length;
-        i++
-    ) {
-
-        (function(stage) {
-
-            var timer =
-                setTimeout(
-                    function() {
-
-                        updateLaunch(
-                            stage.progress,
-                            stage.text
-                        );
-
-                    },
-                    stage.time
-                );
-
-
-            launchTimers.push(
-                timer
-            );
-
-        })(stages[i]);
-
-    }
-
-
-
-    /* -----------------------------------------------------
-       FINISH
-       ----------------------------------------------------- */
-
-    var finishTimer =
-        setTimeout(
-            function() {
-
-                launchRunning =
-                    false;
-
-
-                launchingTitle.textContent =
-                    "Ready";
-
-
-                launchingSubtitle.textContent =
-                    "Session ready.";
-
-
-                updateLaunch(
-                    100,
-                    "Ready"
-                );
-
-
-                /*
-                 * Restore launch button.
-                 */
-
-                if (button) {
-
-                    button.textContent =
-                        button.dataset.originalText ||
-                        "Launch";
-
-                    button.style.opacity =
-                        "1";
-
-                }
-
-
-                /*
-                 * Close automatically if enabled.
-                 *
-                 * This represents the completion
-                 * of the fictional launch sequence.
-                 */
-
-                var currentSettings =
-                    getSettings();
-
-
-                if (
-                    currentSettings.closeAfter
-                ) {
-
-                    nativeMessage(
-                        "window.close"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                 * Otherwise leave the launching
-                 * screen visible for a moment,
-                 * then return to the existing GUI.
-                 */
-
-                var returnTimer =
-                    setTimeout(
-                        function() {
-
-                            launchingScreen.classList.remove(
-                                "active"
-                            );
-
-                            updateLaunch(
-                                0,
-                                "Initialising"
-                            );
-
-                            launchingTitle.textContent =
-                                "Launching";
-
-                            launchingSubtitle.textContent =
-                                "Preparing your session.";
-
-                        },
-                        900
-                    );
-
-
-                launchTimers.push(
-                    returnTimer
-                );
-
-
-            },
-            37000
-        );
-
-
-    launchTimers.push(
-        finishTimer
-    );
-
-}
-
-
-
-/* =========================================================
-   CANCEL
-   ========================================================= */
-
-function cancelLaunch() {
-
-    if (!launchRunning) {
-        return;
-    }
-
-
-    launchRunning =
-        false;
-
-
-    clearLaunchTimers();
-
-
-    launchingScreen.classList.remove(
-        "active"
-    );
-
-
-    launchingProgress.style.width =
+    elements.bar.style.width =
         "0%";
 
 
-    launchingStatus.textContent =
+    elements.percent.textContent =
+        "0%";
+
+
+    elements.title.textContent =
+        "Preparing";
+
+
+    elements.status.textContent =
+        "Starting launch sequence";
+
+
+    elements.step.textContent =
         "Initialising";
 
 
-    launchingTitle.textContent =
-        "Launching";
+    launchStart =
+        performance.now();
 
 
-    launchingSubtitle.textContent =
-        "Preparing your session.";
+    launchAnimation =
+        requestAnimationFrame(
+            launchTick
+        );
+
+}
 
 
-    var buttons =
-        document.querySelectorAll(
-            ".launch-button, .launch-action"
+function finishLaunch() {
+
+    launchRunning = false;
+
+
+    if (launchAnimation) {
+
+        cancelAnimationFrame(
+            launchAnimation
+        );
+
+        launchAnimation = null;
+    }
+
+
+    const elements =
+        getLaunchElements();
+
+
+    elements.bar.style.width =
+        "100%";
+
+    elements.percent.textContent =
+        "100%";
+
+    elements.title.textContent =
+        "Ready";
+
+    elements.status.textContent =
+        "Launch complete";
+
+    elements.step.textContent =
+        "Complete";
+
+
+    /*
+     * Give the completed state a moment
+     * before closing.
+     */
+
+    setTimeout(
+        () => {
+
+            if (
+                settings.closeAfterLaunch
+            ) {
+
+                sendNativeMessage(
+                    "window.close"
+                );
+
+                return;
+            }
+
+
+            elements.screen.classList.remove(
+                "active"
+            );
+
+        },
+        650
+    );
+
+}
+
+
+/* =========================================================
+   LAUNCH BUTTONS
+   ========================================================= */
+
+function setupLaunchButtons() {
+
+    const homeLaunch =
+        document.getElementById(
+            "homeLaunch"
         );
 
 
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
+    const launchButton =
+        document.getElementById(
+            "launchButton"
+        );
 
-        buttons[i].textContent =
-            "Launch";
 
-        buttons[i].style.opacity =
-            "1";
+    if (homeLaunch) {
+
+        homeLaunch.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+                startLaunch();
+            }
+        );
+
+    }
+
+
+    if (launchButton) {
+
+        launchButton.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+                startLaunch();
+            }
+        );
 
     }
 
 }
 
 
-
 /* =========================================================
-   DRAG WINDOW FROM ANY NON-INTERACTIVE AREA
+   STARTUP
    ========================================================= */
 
-document.addEventListener(
-    "pointerdown",
-    function(event) {
+function initialise() {
 
-        if (
-            event.button !== 0
-        ) {
+    loadSettings();
 
-            return;
+    setupSettings();
 
-        }
+    updateToggleUI();
 
+    setupNavigation();
 
-        /*
-         * Buttons must remain clickable.
-         */
+    setupDragging();
 
-        if (
-            event.target.closest(
-                "button"
-            )
-        ) {
+    setupLaunchButtons();
 
-            return;
+}
 
-        }
-
-
-        /*
-         * Don't attempt to drag the launching
-         * screen itself.
-         */
-
-        if (
-            event.target.closest(
-                "#launching-screen"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        nativeMessage(
-            "window.drag"
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   DISABLE RIGHT CLICK
-   ========================================================= */
 
 document.addEventListener(
-    "contextmenu",
-    function(event) {
-
-        event.preventDefault();
-
-    }
+    "DOMContentLoaded",
+    initialise
 );
