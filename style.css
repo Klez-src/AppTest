@@ -1,8 +1,5 @@
 * {
     box-sizing: border-box;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-user-drag: none;
 }
 
 html,
@@ -10,74 +7,41 @@ body {
     width: 100%;
     height: 100%;
     margin: 0;
-    padding: 0;
 
     overflow: hidden;
 
     background: #0f100f;
-    color: #d9dad4;
+    color: #dedfd9;
 
     font-family:
         Inter,
-        "Segoe UI",
         -apple-system,
         BlinkMacSystemFont,
+        "Segoe UI",
         sans-serif;
 
-    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
-body {
-    position: fixed;
-    inset: 0;
-}
-
-
-/* =========================================================
-   APP
-   ========================================================= */
-
-#app {
-    position: fixed;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-
-    background: #0f100f;
-
-    overflow: hidden;
-
-    opacity: 0;
-
-    animation: appAppear .6s 3.9s ease forwards;
-}
-
-@keyframes appAppear {
-
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+button {
+    font: inherit;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 
 /* =========================================================
-   INTRO — LOCKED
+   INTRO
    ========================================================= */
 
 #intro {
     position: fixed;
     inset: 0;
-
-    z-index: 100;
+    z-index: 9999;
 
     display: flex;
     align-items: center;
@@ -85,7 +49,8 @@ body {
 
     background: #0f100f;
 
-    animation: introExit .65s 3.7s forwards;
+    animation:
+        introExit .65s 3.7s forwards;
 }
 
 .intro-word {
@@ -94,14 +59,13 @@ body {
 
     font-size: 76px;
     line-height: 1;
-
     font-weight: 400;
-
     letter-spacing: -6px;
 
     color: #dedfda;
 
-    animation: wordCollapse 3.7s ease forwards;
+    animation:
+        wordCollapse 3.7s ease forwards;
 }
 
 .intro-dot,
@@ -127,31 +91,33 @@ body {
 
     background: #d9dad5;
 
-    animation: dotExpand 3.7s ease forwards;
+    animation:
+        dotExpand 3.7s ease forwards;
 }
 
 .intro-ring {
     width: 13px;
     height: 13px;
 
-    border: 1px solid rgba(220, 221, 216, .34);
+    border:
+        1px solid
+        rgba(220,221,216,.34);
 
-    animation: ringOne 3.7s ease forwards;
+    animation:
+        ringOne 3.7s ease forwards;
 }
 
 .intro-ring-two {
     width: 20px;
     height: 20px;
 
-    border: 1px solid rgba(220, 221, 216, .13);
+    border:
+        1px solid
+        rgba(220,221,216,.13);
 
-    animation: ringTwo 3.7s ease forwards;
+    animation:
+        ringTwo 3.7s ease forwards;
 }
-
-
-/* =========================================================
-   INTRO ANIMATIONS — LOCKED
-   ========================================================= */
 
 @keyframes wordCollapse {
 
@@ -187,73 +153,94 @@ body {
 
 @keyframes dotExpand {
 
-    0%,
-    70% {
+    0%, 78% {
+        opacity: 0;
         transform:
             translate(-50%, -50%)
             scale(0);
     }
 
-    82% {
+    83% {
+        opacity: 1;
         transform:
             translate(-50%, -50%)
             scale(1);
     }
 
-    100% {
+    90% {
+        opacity: .14;
         transform:
             translate(-50%, -50%)
-            scale(5);
+            scale(35);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(80);
     }
 }
 
 @keyframes ringOne {
 
-    0%,
-    70% {
+    0%, 78% {
+        opacity: 0;
         transform:
             translate(-50%, -50%)
             scale(0);
-        opacity: 0;
     }
 
     82% {
+        opacity: .55;
         transform:
             translate(-50%, -50%)
-            scale(1);
-        opacity: 1;
+            scale(.8);
+    }
+
+    89% {
+        opacity: .18;
+        transform:
+            translate(-50%, -50%)
+            scale(8);
     }
 
     100% {
+        opacity: 0;
         transform:
             translate(-50%, -50%)
-            scale(16);
-        opacity: 0;
+            scale(34);
     }
 }
 
 @keyframes ringTwo {
 
-    0%,
-    70% {
+    0%, 80% {
+        opacity: 0;
         transform:
             translate(-50%, -50%)
             scale(0);
-        opacity: 0;
     }
 
-    82% {
+    85% {
+        opacity: .27;
         transform:
             translate(-50%, -50%)
-            scale(1);
-        opacity: 1;
+            scale(.7);
+    }
+
+    92% {
+        opacity: .07;
+        transform:
+            translate(-50%, -50%)
+            scale(13);
     }
 
     100% {
+        opacity: 0;
         transform:
             translate(-50%, -50%)
-            scale(22);
-        opacity: 0;
+            scale(32);
     }
 }
 
@@ -267,93 +254,121 @@ body {
 
 
 /* =========================================================
+   APP
+   ========================================================= */
+
+#app {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    opacity: 0;
+
+    animation:
+        appAppear .6s 3.9s ease forwards;
+}
+
+@keyframes appAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
    SIDEBAR
    ========================================================= */
 
 .sidebar {
     position: relative;
 
-    width: 184px;
-    min-width: 184px;
+    width: 205px;
+    min-width: 205px;
     height: 100%;
-
-    padding: 27px 15px 18px 15px;
-
-    border-right: 1px solid #252724;
-
-    background: #0f100f;
 
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 
-    overflow: hidden;
+    background: #111311;
+
+    border-right:
+        1px solid
+        #242724;
 }
 
-
-/* =========================================================
-   BRAND
-   ========================================================= */
+.sidebar-top {
+    padding: 24px 15px 0;
+}
 
 .brand {
+    padding:
+        0
+        9px
+        25px;
+
+    color: #e0e1dc;
+
+    font-size: 18px;
+    font-weight: 500;
+
+    letter-spacing: -.7px;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-label {
+    padding:
+        0
+        9px
+        8px;
+
+    color: #4e534d;
+
+    font-size: 8px;
+    font-weight: 500;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav-item {
+    position: relative;
+
+    width: 100%;
     height: 34px;
 
     display: flex;
     align-items: center;
 
-    padding-left: 5px;
-
-    margin-bottom: 26px;
-}
-
-.brand-name {
-    color: #d7d8d2;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    letter-spacing: -0.02em;
-}
-
-
-/* =========================================================
-   NAV
-   ========================================================= */
-
-.nav {
-    display: flex;
-    flex-direction: column;
-
-    gap: 3px;
-}
-
-.nav-label {
-    margin: 0 0 8px 6px;
-
-    color: #464a45;
-
-    font-size: 8px;
-    font-weight: 500;
-
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-}
-
-.nav-button {
-    width: 100%;
-    height: 36px;
-
-    padding: 0 11px;
+    padding:
+        0
+        10px;
 
     border: 0;
-    border-radius: 7px;
-
-    outline: none;
+    border-radius: 5px;
 
     background: transparent;
 
-    color: #777a75;
+    color: #777c74;
 
-    font-family: inherit;
     font-size: 11px;
 
     text-align: left;
@@ -361,187 +376,204 @@ body {
     cursor: pointer;
 
     transition:
-        background 0.15s ease,
-        color 0.15s ease;
+        color .15s ease,
+        background .15s ease;
 }
 
-.nav-button:hover {
+.nav-item:hover {
     background: #141614;
-    color: #bfc1ba;
+    color: #b5b8b1;
 }
 
-.nav-button.selected {
-    position: relative;
-
+.nav-item.active {
     background: #191b19;
     color: #dedfd9;
 }
 
-.nav-button.selected::before {
+.nav-item.active::before {
     content: "";
 
     position: absolute;
 
     left: 0;
-    top: 10px;
-    bottom: 10px;
+    top: 7px;
+    bottom: 7px;
 
     width: 2px;
 
     border-radius: 2px;
 
-    background: #9da69b;
+    background: #8a9885;
+}
+
+.sidebar-footer {
+    padding:
+        16px
+        24px;
+
+    color: #484d47;
+
+    font-size: 8px;
+
+    border-top:
+        1px solid
+        #202320;
 }
 
 
 /* =========================================================
-   PREFERENCES
+   MAIN
    ========================================================= */
 
-.preferences {
-    margin-top: 34px;
+.main {
+    position: relative;
+
+    flex: 1;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #0f100f;
 }
 
+.window-bar {
+    position: absolute;
 
-/* =========================================================
-   ACCOUNT
-   ========================================================= */
+    top: 0;
+    left: 0;
+    right: 0;
 
-.account {
-    margin-top: auto;
+    height: 36px;
 
-    min-height: 39px;
+    z-index: 50;
 
-    display: flex;
-    align-items: center;
+    pointer-events: none;
+}
 
-    gap: 9px;
+.drag-area {
+    position: absolute;
 
-    padding: 5px 6px;
+    inset: 0;
 
-    border-radius: 7px;
-
-    color: #858883;
+    pointer-events: auto;
 
     cursor: default;
 }
 
-.account-avatar {
-    width: 25px;
-    height: 25px;
+.close-button {
+    position: absolute;
 
-    flex-shrink: 0;
+    right: 7px;
+    top: 6px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 60;
 
-    border: 1px solid #30332f;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
 
-    background: #151715;
+    display: grid;
+    place-items: center;
 
-    color: #aeb1aa;
+    padding: 0;
 
-    font-size: 9px;
-    font-weight: 500;
+    border: 0;
+    border-radius: 5px;
+
+    background: transparent;
+
+    color: #686d66;
+
+    font-size: 18px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    transition:
+        color .15s ease,
+        background .15s ease;
 }
 
-.account-name {
-    color: #777a75;
-
-    font-size: 10px;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-/* =========================================================
-   CONTENT
-   ========================================================= */
-
-.content {
-    flex: 1;
-
-    min-width: 0;
-    height: 100%;
-
-    padding: 34px 38px;
-
-    overflow: hidden;
+.close-button:hover {
+    color: #dedfd9;
+    background: #201c1b;
 }
 
 
 /* =========================================================
-   VIEWS
+   PAGES
    ========================================================= */
 
-.view {
+.page {
+    position: absolute;
+
+    inset: 0;
+
+    padding:
+        52px
+        44px
+        30px;
+
     display: none;
 
-    width: 100%;
-    height: 100%;
-
     overflow: hidden;
 }
 
-.view.active {
+.page.active {
     display: block;
+
+    animation:
+        pageIn .2s ease;
 }
 
+@keyframes pageIn {
 
-/* =========================================================
-   PAGE HEADER
-   ========================================================= */
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
 
-.eyebrow {
-    margin-bottom: 9px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-    color: #555953;
+.page-top {
+    display: flex;
+    justify-content: flex-start;
 
-    font-size: 8px;
-    font-weight: 500;
+    margin-bottom: 12px;
 
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
+    color: #565b54;
+
+    font-size: 9px;
 }
 
 h1 {
     margin: 0;
 
-    color: #d8d9d3;
+    color: #e2e3dd;
 
-    font-size: 29px;
+    font-size: 30px;
+    line-height: 1.05;
+
     font-weight: 400;
 
-    line-height: 1.08;
-
-    letter-spacing: -0.045em;
+    letter-spacing: -1.5px;
 }
 
-
-/*
-    THIS is the text directly underneath every
-    main heading.
-
-    Much smaller and quieter than the title.
-*/
-
 .subtitle {
-    margin: 8px 0 0 0;
+    margin:
+        7px
+        0
+        0;
 
-    color: #686b65;
+    color: #737870;
 
-    font-size: 11px;
-    font-weight: 400;
-
-    line-height: 1.45;
-
-    letter-spacing: 0;
-
-    max-width: 430px;
+    font-size: 12px;
 }
 
 
@@ -549,201 +581,230 @@ h1 {
    HOME
    ========================================================= */
 
-.home-status {
-    margin-top: 30px;
-}
-
-.status {
+.status-row {
     display: flex;
     align-items: center;
     gap: 7px;
 
-    color: #7d827a;
+    margin-top: 23px;
+
+    color: #92998f;
+
+    font-size: 11px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #8b9986;
+
+    box-shadow:
+        0 0 7px
+        rgba(139,153,134,.25);
+}
+
+.application {
+    position: relative;
+
+    margin-top: 13px;
+
+    height: 137px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding: 19px 20px;
+
+    border:
+        1px solid
+        #292c29;
+
+    border-radius: 7px;
+
+    background: #121412;
+}
+
+.application-info h2 {
+    margin: 0;
+
+    color: #e0e1dc;
+
+    font-size: 22px;
+    font-weight: 400;
+
+    letter-spacing: -.8px;
+}
+
+.application-info p {
+    margin:
+        5px
+        0
+        0;
+
+    color: #5d625b;
 
     font-size: 9px;
 }
 
-.status-dot {
-    width: 5px;
-    height: 5px;
+.application-info span {
+    position: absolute;
 
-    border-radius: 50%;
+    left: 20px;
+    bottom: 18px;
 
-    background: #8c9a89;
+    max-width: 330px;
 
-    box-shadow:
-        0 0 0 2px rgba(140, 154, 137, 0.06);
+    color: #656a62;
+
+    font-size: 9px;
 }
 
-.product-name {
-    margin-top: 13px;
+.launch-button {
+    height: 33px;
 
-    color: #c7c9c2;
+    min-width: 82px;
 
-    font-size: 15px;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    letter-spacing: -0.02em;
-}
+    gap: 7px;
 
-.product-version {
-    margin-top: 4px;
+    padding: 0 13px;
 
-    color: #50534f;
+    border:
+        1px solid
+        #c3c5bf;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
-}
-
-.description {
-    margin: 15px 0 0 0;
-
-    max-width: 390px;
-
-    color: #686b65;
-
-    font-size: 10px;
-    line-height: 1.55;
-}
-
-
-/* =========================================================
-   BUTTON
-   ========================================================= */
-
-.primary-button {
-    height: 34px;
-
-    margin-top: 18px;
-
-    padding: 0 17px;
-
-    border: 0;
     border-radius: 5px;
 
-    outline: none;
+    background: #c7c9c3;
 
-    background: #d4d5d0;
+    color: #11130f;
 
-    color: #171817;
-
-    font-family: inherit;
     font-size: 10px;
     font-weight: 500;
 
     cursor: pointer;
 
     transition:
-        background 0.15s ease,
-        transform 0.15s ease;
+        background .15s ease,
+        transform .12s ease;
 }
 
-.primary-button:hover {
-    background: #e1e2dd;
+.launch-button:hover {
+    background: #d7d8d3;
 }
 
-.primary-button:active {
-    transform: translateY(1px);
+.launch-button:active {
+    transform: scale(.97);
 }
 
-
-/* =========================================================
-   DETAILS
-   ========================================================= */
+.launch-button span {
+    font-size: 13px;
+}
 
 .details {
-    margin-top: 28px;
-
-    padding-top: 16px;
-
-    border-top: 1px solid #252724;
-
     display: flex;
+    gap: 40px;
 
-    gap: 48px;
+    margin-top: 16px;
 }
 
 .detail {
     display: flex;
     flex-direction: column;
-
-    gap: 6px;
+    gap: 4px;
 }
 
-.detail span {
-    color: #474a45;
+.detail label {
+    color: #484d47;
 
     font-size: 7px;
-    font-weight: 500;
 
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
 }
 
 .detail strong {
-    color: #858982;
+    color: #92978f;
 
     font-size: 9px;
     font-weight: 400;
 }
 
+.detail strong.sage {
+    color: #879482;
+}
+
 
 /* =========================================================
-   LAUNCH PAGE
+   LAUNCH
    ========================================================= */
 
-.launch-area {
+.launch-panel {
     position: relative;
 
-    margin-top: 35px;
+    height: 185px;
 
-    min-height: 200px;
+    margin-top: 25px;
 
-    padding-top: 3px;
+    padding: 22px;
 
-    border-top: 1px solid #252724;
+    border:
+        1px solid
+        #292c29;
+
+    border-radius: 7px;
+
+    background: #121412;
 }
 
-.launch-name {
-    margin-top: 21px;
+.launch-panel h2 {
+    margin: 0;
 
-    color: #c9cbc5;
+    color: #e1e2dc;
 
-    font-size: 17px;
-    font-weight: 500;
+    font-size: 23px;
+    font-weight: 400;
+
+    letter-spacing: -.7px;
 }
 
-.launch-meta {
-    margin-top: 4px;
+.launch-panel p {
+    margin: 5px 0 0;
 
-    color: #555954;
+    color: #62675f;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
+    font-size: 10px;
+}
 
-    font-size: 8px;
+.launch-panel-bottom {
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .ready {
-    margin-top: 18px;
-
     display: flex;
     align-items: center;
     gap: 7px;
 
-    color: #747a72;
+    color: #858c82;
 
-    font-size: 9px;
-}
-
-.launch-area .primary-button {
-    margin-top: 28px;
+    font-size: 10px;
 }
 
 
@@ -751,63 +812,86 @@ h1 {
    CHANGELOG
    ========================================================= */
 
-.changes-list {
-    margin-top: 31px;
+.changes {
+    margin-top: 25px;
 
-    border-top: 1px solid #252724;
+    border-top:
+        1px solid
+        #292c29;
 }
 
 .change {
     display: grid;
 
-    grid-template-columns: 76px 1fr;
+    grid-template-columns: 48px 1fr;
 
-    gap: 18px;
+    gap: 14px;
 
-    padding: 18px 0;
+    padding:
+        17px
+        0;
 
-    border-bottom: 1px solid #252724;
+    border-bottom:
+        1px solid
+        #292c29;
 }
 
 .change-version {
-    color: #858982;
+    color: #60665e;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
-}
-
-.change-version span {
-    display: block;
-
-    margin-top: 5px;
-
-    color: #4d504b;
-
-    font-family: inherit;
-    font-size: 7px;
-
-    text-transform: uppercase;
-}
-
-.change-title {
-    color: #bfc1bb;
+    font-family: monospace;
 
     font-size: 10px;
 }
 
-.change-description {
-    margin-top: 6px;
+.change-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    max-width: 370px;
+.change-heading h2 {
+    margin: 0;
 
-    color: #646862;
+    color: #d0d2cc;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.change-heading span {
+    padding:
+        2px
+        5px;
+
+    border:
+        1px solid
+        #383d37;
+
+    border-radius: 3px;
+
+    color: #7c8579;
+
+    font-size: 6px;
+
+    letter-spacing: .6px;
+}
+
+.change-heading span.previous {
+    color: #5e645c;
+}
+
+.change-main p {
+    margin:
+        6px
+        0
+        0;
+
+    color: #696e67;
 
     font-size: 9px;
-    line-height: 1.55;
+
+    line-height: 1.45;
 }
 
 
@@ -815,323 +899,270 @@ h1 {
    SETTINGS
    ========================================================= */
 
-.settings-list {
-    max-width: 470px;
+.settings {
+    margin-top: 25px;
 
-    margin-top: 31px;
-
-    border-top: 1px solid #252724;
+    border-top:
+        1px solid
+        #292c29;
 }
 
 .setting {
-    min-height: 64px;
+    min-height: 63px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    gap: 25px;
-
-    border-bottom: 1px solid #252724;
+    border-bottom:
+        1px solid
+        #292c29;
 }
 
-.setting-name {
-    color: #bfc1bb;
+.setting-text h2 {
+    margin: 0;
 
-    font-size: 10px;
+    color: #d0d2cc;
+
+    font-size: 11px;
+    font-weight: 400;
 }
 
-.setting-info {
-    margin-top: 5px;
+.setting-text p {
+    margin:
+        5px
+        0
+        0;
 
-    color: #5c605a;
+    color: #676c64;
 
-    font-size: 8px;
-    line-height: 1.4;
+    font-size: 9px;
 }
-
-
-/* =========================================================
-   TOGGLE
-   ========================================================= */
 
 .toggle {
     position: relative;
 
-    width: 30px;
-    height: 17px;
-
-    flex-shrink: 0;
+    width: 32px;
+    height: 18px;
 
     padding: 0;
 
     border: 0;
     border-radius: 20px;
 
-    outline: none;
-
-    background: #292c29;
+    background: #292d29;
 
     cursor: pointer;
+
+    transition:
+        background .18s ease;
 }
 
-.toggle::after {
-    content: "";
-
+.toggle span {
     position: absolute;
 
-    top: 3px;
     left: 3px;
+    top: 3px;
 
-    width: 11px;
-    height: 11px;
+    width: 12px;
+    height: 12px;
 
     border-radius: 50%;
 
-    background: #70746f;
+    background: #666c65;
 
     transition:
-        transform 0.18s ease,
-        background 0.18s ease;
+        transform .18s ease,
+        background .18s ease;
 }
 
 .toggle.on {
-    background: #8f989e;
+    background: #899687;
 }
 
-.toggle.on::after {
-    transform: translateX(13px);
+.toggle.on span {
+    transform: translateX(14px);
 
-    background: #171917;
+    background: #11130f;
 }
 
 
 /* =========================================================
-   LAUNCH SCREEN
+   LAUNCHING PAGE
    ========================================================= */
 
-#launchScreen {
-    position: fixed;
+.launching-page {
+    position: absolute;
 
     inset: 0;
 
-    z-index: 500;
+    z-index: 100;
 
     display: none;
 
-    width: 100%;
-    height: 100%;
+    align-items: center;
+    justify-content: center;
 
-    background: #0f100f;
-
-    color: #d9dad4;
-
-    overflow: hidden;
-
-    opacity: 0;
+    background:
+        radial-gradient(
+            circle at 50% 44%,
+            rgba(126,145,121,.045),
+            transparent 42%
+        ),
+        #0f100f;
 }
 
-#launchScreen.visible {
-    display: block;
+.launching-page.active {
+    display: flex;
 
-    animation: launchFadeIn 0.28s ease forwards;
+    animation:
+        launchingIn .25s ease;
 }
 
-@keyframes launchFadeIn {
+@keyframes launchingIn {
+
     from {
         opacity: 0;
+        transform: scale(.99);
     }
 
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
 
+.launching-inner {
+    width: 310px;
 
-/* =========================================================
-   LAUNCH TOP
-   ========================================================= */
-
-.launch-screen-top {
-    position: absolute;
-
-    top: 24px;
-    left: 29px;
-    right: 29px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    color: #777b75;
-
-    font-size: 9px;
-
-    letter-spacing: 0.01em;
+    text-align: center;
 }
 
-.launch-screen-top span:last-child {
-    color: #4e524d;
+.launching-eyebrow {
+    margin-bottom: 14px;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
-}
-
-
-/* =========================================================
-   LAUNCH CENTER
-   ========================================================= */
-
-.launch-screen-center {
-    position: absolute;
-
-    left: 29px;
-    right: 29px;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    max-width: 430px;
-}
-
-.launch-eyebrow {
-    margin-bottom: 10px;
-
-    color: #555953;
+    color: #62695f;
 
     font-size: 8px;
 
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 3px;
 }
 
-.launch-title {
-    color: #d4d5d0;
+.launching-title {
+    color: #e0e2dc;
 
-    font-size: 27px;
+    font-size: 31px;
     font-weight: 400;
 
-    line-height: 1.1;
-
-    letter-spacing: -0.04em;
+    letter-spacing: -1.5px;
 }
 
-.launch-status {
-    margin-top: 8px;
+.launching-subtitle {
+    margin:
+        8px
+        0
+        28px;
 
-    color: #686b65;
+    color: #686e66;
 
-    font-size: 10px;
-
-    line-height: 1.4;
+    font-size: 11px;
 }
-
-
-/* =========================================================
-   PROGRESS
-   ========================================================= */
 
 .launch-progress {
+    position: relative;
+
     width: 100%;
     height: 2px;
 
-    margin-top: 27px;
-
     overflow: hidden;
 
-    background: #272a27;
+    border-radius: 2px;
+
+    background: #252825;
 }
 
-.launch-progress-bar {
+.launch-progress-fill {
     width: 0%;
     height: 100%;
 
-    background: #8f9890;
+    border-radius: 2px;
+
+    background: #899787;
 
     transition:
-        width 0.25s linear;
+        width .45s ease;
 }
 
-
-/* =========================================================
-   LAUNCH BOTTOM
-   ========================================================= */
-
-.launch-bottom {
-    margin-top: 9px;
+.launch-status {
+    margin-top: 12px;
 
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
 
-    color: #555953;
+    gap: 7px;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
+    color: #737a70;
 
-    font-size: 7px;
+    font-size: 9px;
 }
 
-#launchPercent {
-    color: #747971;
+.launch-status .status-dot {
+    width: 5px;
+    height: 5px;
 }
 
+.cancel-launch {
+    margin-top: 26px;
 
-/* =========================================================
-   LAUNCH FOOTER
-   ========================================================= */
+    padding: 0;
 
-.launch-screen-footer {
-    position: absolute;
+    border: 0;
 
-    left: 29px;
-    right: 29px;
-    bottom: 20px;
+    background: transparent;
 
-    display: flex;
-    justify-content: space-between;
+    color: #50564e;
 
-    color: #41443f;
+    font-size: 9px;
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
+    cursor: pointer;
 
-    font-size: 7px;
+    transition:
+        color .15s ease;
+}
+
+.cancel-launch:hover {
+    color: #999f96;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   600 × 425
    ========================================================= */
 
-@media (max-width: 650px) {
+@media (max-width: 620px) {
 
     .sidebar {
-        width: 150px;
-        min-width: 150px;
-
-        padding-left: 10px;
-        padding-right: 10px;
+        width: 175px;
+        min-width: 175px;
     }
 
-    .content {
-        padding: 30px 25px;
+    .page {
+        padding:
+            50px
+            25px
+            25px;
     }
 
     h1 {
-        font-size: 26px;
+        font-size: 27px;
+    }
+
+    .application-info span {
+        max-width: 280px;
     }
 
     .details {
         gap: 25px;
-        flex-wrap: wrap;
     }
 }
