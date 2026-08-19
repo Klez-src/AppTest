@@ -1,534 +1,454 @@
-(() => {
+function showView(id,button){
 
-    "use strict";
+    var views =
+        document.querySelectorAll(".view");
 
 
-    /* =====================================================
-       PERSISTENT SETTINGS
-       ===================================================== */
+    for(
+        var i = 0;
+        i < views.length;
+        i++
+    ){
 
-    const STORAGE_KEY = "orro_settings";
-
-
-    const defaultSettings = {
-
-        rememberSession: true,
-
-        automaticUpdates: true,
-
-        minimiseOnLaunch: false
-
-    };
-
-
-    function loadSettings() {
-
-        try {
-
-            const stored =
-                localStorage.getItem(STORAGE_KEY);
-
-
-            if (!stored)
-                return { ...defaultSettings };
-
-
-            const parsed =
-                JSON.parse(stored);
-
-
-            return {
-                ...defaultSettings,
-                ...parsed
-            };
-
-        } catch {
-
-            return {
-                ...defaultSettings
-            };
-
-        }
-
-    }
-
-
-    let settings =
-        loadSettings();
-
-
-    function saveSettings() {
-
-        try {
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(settings)
-            );
-
-        } catch {
-
-            // Storage may be unavailable.
-            // The UI still works normally.
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SETTINGS UI
-       ===================================================== */
-
-    const toggles =
-        document.querySelectorAll(
-            "[data-setting]"
-        );
-
-
-    function updateToggleUI() {
-
-        toggles.forEach(toggle => {
-
-            const setting =
-                toggle.dataset.setting;
-
-
-            toggle.classList.toggle(
-                "on",
-                Boolean(settings[setting])
-            );
-
-        });
-
-    }
-
-
-    toggles.forEach(toggle => {
-
-        toggle.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const setting =
-                    toggle.dataset.setting;
-
-
-                settings[setting] =
-                    !settings[setting];
-
-
-                saveSettings();
-
-                updateToggleUI();
-
-            }
-        );
-
-    });
-
-
-    updateToggleUI();
-
-
-    /* =====================================================
-       PAGE NAVIGATION
-       ===================================================== */
-
-    const navItems =
-        document.querySelectorAll(
-            ".nav-item"
-        );
-
-
-    const pages =
-        document.querySelectorAll(
-            ".page"
-        );
-
-
-    function showPage(name) {
-
-        navItems.forEach(item => {
-
-            item.classList.toggle(
-                "active",
-                item.dataset.page === name
-            );
-
-        });
-
-
-        pages.forEach(page => {
-
-            page.classList.toggle(
-                "active",
-                page.id === `page-${name}`
-            );
-
-        });
-
-    }
-
-
-    navItems.forEach(item => {
-
-        item.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const page =
-                    item.dataset.page;
-
-
-                if (page)
-                    showPage(page);
-
-            }
-        );
-
-    });
-
-
-    /* =====================================================
-       LAUNCHING SCREEN
-       ===================================================== */
-
-    const launchingPage =
-        document.getElementById(
-            "launching-page"
-        );
-
-
-    const launchProgress =
-        document.getElementById(
-            "launchProgress"
-        );
-
-
-    const launchStatus =
-        document.getElementById(
-            "launchStatus"
-        );
-
-
-    const cancelLaunch =
-        document.getElementById(
-            "cancelLaunch"
-        );
-
-
-    let launchTimer = null;
-
-
-    function setLaunchProgress(
-        amount,
-        status
-    ) {
-
-        launchProgress.style.width =
-            `${amount}%`;
-
-        launchStatus.textContent =
-            status;
-
-    }
-
-
-    function closeLaunchingPage() {
-
-        if (launchTimer) {
-
-            clearTimeout(launchTimer);
-
-            launchTimer = null;
-
-        }
-
-
-        launchingPage.classList.remove(
-            "active"
-        );
-
-
-        setLaunchProgress(
-            0,
-            "Initialising"
-        );
-
-    }
-
-
-    function startLaunch() {
-
-        /*
-         * Show the launching page.
-         */
-
-        launchingPage.classList.add(
-            "active"
-        );
-
-
-        setLaunchProgress(
-            8,
-            "Initialising"
-        );
-
-
-        /*
-         * Small staged sequence so it
-         * feels like an actual launcher.
-         */
-
-        launchTimer = setTimeout(
-            () => {
-
-                setLaunchProgress(
-                    28,
-                    "Checking environment"
-                );
-
-
-                launchTimer = setTimeout(
-                    () => {
-
-                        setLaunchProgress(
-                            52,
-                            "Preparing session"
-                        );
-
-
-                        launchTimer = setTimeout(
-                            () => {
-
-                                setLaunchProgress(
-                                    76,
-                                    "Starting orro"
-                                );
-
-
-                                launchTimer =
-                                    setTimeout(
-                                        () => {
-
-                                            setLaunchProgress(
-                                                100,
-                                                "Ready"
-                                            );
-
-
-                                            /*
-                                             * If your C++
-                                             * loader handles
-                                             * launching the
-                                             * actual application,
-                                             * this is where you
-                                             * can send the message.
-                                             */
-
-                                            if (
-                                                window.chrome &&
-                                                window.chrome.webview
-                                            ) {
-
-                                                window.chrome.webview.postMessage(
-                                                    "launch"
-                                                );
-
-                                            }
-
-
-                                            /*
-                                             * If "minimise on
-                                             * launch" is enabled,
-                                             * tell the C++ side.
-                                             */
-
-                                            if (
-                                                settings.minimiseOnLaunch &&
-                                                window.chrome &&
-                                                window.chrome.webview
-                                            ) {
-
-                                                window.chrome.webview.postMessage(
-                                                    "window.minimise"
-                                                );
-
-                                            }
-
-                                        },
-                                        650
-                                    );
-
-                            },
-                            550
-                        );
-
-                    },
-                    550
-                );
-
-            },
-            450
-        );
+        views[i]
+            .classList
+            .remove("active");
 
     }
 
 
     document
-        .querySelectorAll("[data-launch]")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    startLaunch();
-
-                }
-            );
-
-        });
+        .getElementById(id)
+        .classList
+        .add("active");
 
 
-    cancelLaunch.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            closeLaunchingPage();
-
-        }
-    );
-
-
-    /* =====================================================
-       CLOSE
-       ===================================================== */
-
-    const closeButton =
-        document.getElementById(
-            "closeButton"
+    var buttons =
+        document.querySelectorAll(
+            ".nav button"
         );
 
 
-    closeButton.addEventListener(
-        "click",
-        event => {
+    for(
+        var j = 0;
+        j < buttons.length;
+        j++
+    ){
 
-            event.stopPropagation();
+        buttons[j]
+            .classList
+            .remove("selected");
+
+    }
 
 
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
+    button
+        .classList
+        .add("selected");
 
-                window.chrome.webview.postMessage(
-                    "window.close"
-                );
+}
 
-            }
+
+
+/* ==================================================
+   LAUNCH
+   Added: full launching screen
+   ================================================== */
+
+var launchRunning = false;
+
+var launchDuration = 35000;
+
+
+var launchPhases = [
+
+    {
+        progress:0,
+        title:"Preparing",
+        status:"Starting launch sequence",
+        step:"Initialising"
+    },
+
+    {
+        progress:.10,
+        title:"Preparing",
+        status:"Checking local environment",
+        step:"Checking environment"
+    },
+
+    {
+        progress:.22,
+        title:"Initialising",
+        status:"Preparing orro components",
+        step:"Initialising components"
+    },
+
+    {
+        progress:.36,
+        title:"Initialising",
+        status:"Loading application data",
+        step:"Loading data"
+    },
+
+    {
+        progress:.50,
+        title:"Starting",
+        status:"Starting launcher services",
+        step:"Starting services"
+    },
+
+    {
+        progress:.64,
+        title:"Starting",
+        status:"Preparing session",
+        step:"Preparing session"
+    },
+
+    {
+        progress:.78,
+        title:"Verifying",
+        status:"Checking launch state",
+        step:"Verifying state"
+    },
+
+    {
+        progress:.90,
+        title:"Finishing",
+        status:"Finalising launch",
+        step:"Finalising"
+    },
+
+    {
+        progress:.985,
+        title:"Ready",
+        status:"Launch sequence complete",
+        step:"Complete"
+    }
+
+];
+
+
+
+function updateLaunchPhase(progress){
+
+    var phase =
+        launchPhases[0];
+
+
+    for(
+        var i = 0;
+        i < launchPhases.length;
+        i++
+    ){
+
+        if(
+            progress >=
+            launchPhases[i].progress
+        ){
+
+            phase =
+                launchPhases[i];
 
         }
+
+    }
+
+
+    document
+        .getElementById("launchTitle")
+        .textContent =
+        phase.title;
+
+
+    document
+        .getElementById("launchStatus")
+        .textContent =
+        phase.status;
+
+
+    document
+        .getElementById("launchStep")
+        .textContent =
+        phase.step;
+
+}
+
+
+
+function launch(button){
+
+    if(launchRunning){
+
+        return;
+
+    }
+
+
+    launchRunning = true;
+
+
+    var screen =
+        document.getElementById(
+            "launchScreen"
+        );
+
+
+    var progressBar =
+        document.getElementById(
+            "launchProgressBar"
+        );
+
+
+    var percent =
+        document.getElementById(
+            "launchPercent"
+        );
+
+
+    var time =
+        document.getElementById(
+            "launchTime"
+        );
+
+
+    var footer =
+        document.getElementById(
+            "launchFooterStatus"
+        );
+
+
+    progressBar.style.width =
+        "0%";
+
+
+    percent.textContent =
+        "0%";
+
+
+    time.textContent =
+        "00:35";
+
+
+    footer.textContent =
+        "Launching";
+
+
+    document
+        .getElementById("launchTitle")
+        .textContent =
+        "Preparing";
+
+
+    document
+        .getElementById("launchStatus")
+        .textContent =
+        "Starting launch sequence";
+
+
+    document
+        .getElementById("launchStep")
+        .textContent =
+        "Initialising";
+
+
+    screen.classList.add(
+        "visible"
     );
 
 
-    /* =====================================================
-       ENTIRE WINDOW DRAGGABLE
-       ===================================================== */
-
-    /*
-     * IMPORTANT:
-     *
-     * The whole loader is draggable.
-     *
-     * Buttons, toggles and navigation remain
-     * interactive and aren't treated as drag
-     * areas.
-     */
-
-    document.addEventListener(
-        "mousedown",
-        event => {
-
-            if (event.button !== 0)
-                return;
+    var start =
+        performance.now();
 
 
-            /*
-             * Anything interactive should
-             * remain clickable.
-             */
 
-            const interactive =
-                event.target.closest(
-                    "button, input, select, textarea, a"
-                );
+    function update(now){
+
+        var elapsed =
+            now - start;
 
 
-            if (interactive)
-                return;
+        var progress =
+            Math.min(
+                elapsed /
+                launchDuration,
+                1
+            );
 
 
-            /*
-             * Send drag request to C++.
-             */
+        var percentage =
+            Math.floor(
+                progress * 100
+            );
 
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
 
-                window.chrome.webview.postMessage(
-                    "window.drag"
-                );
+        var remaining =
+            Math.max(
+                0,
+                Math.ceil(
+                    (launchDuration - elapsed) /
+                    1000
+                )
+            );
 
-            }
+
+        progressBar.style.width =
+            percentage + "%";
+
+
+        percent.textContent =
+            percentage + "%";
+
+
+        var minutes =
+            Math.floor(
+                remaining / 60
+            );
+
+
+        var seconds =
+            remaining % 60;
+
+
+        time.textContent =
+
+            String(minutes)
+                .padStart(2,"0")
+
+            + ":"
+
+            +
+
+            String(seconds)
+                .padStart(2,"0");
+
+
+        updateLaunchPhase(
+            progress
+        );
+
+
+        if(progress < 1){
+
+            requestAnimationFrame(
+                update
+            );
+
+            return;
 
         }
+
+
+        finishLaunch();
+
+    }
+
+
+    requestAnimationFrame(
+        update
     );
 
-
-    /* =====================================================
-       NO TEXT SELECTION
-       ===================================================== */
-
-    document.addEventListener(
-        "selectstart",
-        event => {
-
-            event.preventDefault();
-
-        }
-    );
+}
 
 
-    document.addEventListener(
-        "dragstart",
-        event => {
 
-            event.preventDefault();
+function finishLaunch(){
 
-        }
-    );
-
-
-    /* =====================================================
-       DEFAULT PAGE
-       ===================================================== */
-
-    showPage("home");
+    document
+        .getElementById(
+            "launchProgressBar"
+        )
+        .style.width =
+        "100%";
 
 
-})();
+    document
+        .getElementById(
+            "launchPercent"
+        )
+        .textContent =
+        "100%";
+
+
+    document
+        .getElementById(
+            "launchTime"
+        )
+        .textContent =
+        "00:00";
+
+
+    document
+        .getElementById(
+            "launchTitle"
+        )
+        .textContent =
+        "Ready";
+
+
+    document
+        .getElementById(
+            "launchStatus"
+        )
+        .textContent =
+        "Launch sequence complete";
+
+
+    document
+        .getElementById(
+            "launchStep"
+        )
+        .textContent =
+        "Complete";
+
+
+    document
+        .getElementById(
+            "launchFooterStatus"
+        )
+        .textContent =
+        "Ready";
+
+
+    setTimeout(function(){
+
+        var screen =
+            document.getElementById(
+                "launchScreen"
+            );
+
+
+        screen.classList.remove(
+            "visible"
+        );
+
+
+        setTimeout(function(){
+
+            screen.style.display =
+                "none";
+
+
+            launchRunning =
+                false;
+
+        },300);
+
+
+    },700);
+
+}
+
+
+
+/* ==================================================
+   TOGGLES
+   Existing behaviour preserved
+   ================================================== */
+
+function toggle(element){
+
+    element
+        .classList
+        .toggle("on");
+
+}
