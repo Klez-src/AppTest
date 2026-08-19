@@ -6,9 +6,15 @@
    ========================================================= */
 
 const DEFAULT_SETTINGS = {
+
     rememberSession: true,
+
     automaticUpdates: true,
+
+    minimiseOnLaunch: false,
+
     closeAfterLaunch: false
+
 };
 
 
@@ -17,50 +23,78 @@ let settings = {
 };
 
 
+/* =========================================================
+   LOAD SETTINGS
+   ========================================================= */
+
 function loadSettings() {
 
     try {
 
-        const saved =
-            localStorage.getItem("orro-settings");
+        const stored =
+            localStorage.getItem(
+                "orro.settings"
+            );
 
-        if (saved) {
+
+        if (stored) {
+
+            const parsed =
+                JSON.parse(stored);
+
 
             settings = {
+
                 ...DEFAULT_SETTINGS,
-                ...JSON.parse(saved)
+
+                ...parsed
+
             };
+
         }
 
-    } catch (error) {
+    } catch {
 
         settings = {
             ...DEFAULT_SETTINGS
         };
+
     }
+
 }
 
+
+/* =========================================================
+   SAVE SETTINGS
+   ========================================================= */
 
 function saveSettings() {
 
     try {
 
         localStorage.setItem(
-            "orro-settings",
-            JSON.stringify(settings)
+
+            "orro.settings",
+
+            JSON.stringify(
+                settings
+            )
+
         );
 
-    } catch (error) {
-        // Ignore storage errors.
+    } catch {
+
+        // Storage unavailable.
     }
+
 }
 
 
 /* =========================================================
-   APPLY SETTINGS
+   UPDATE TOGGLES
    ========================================================= */
 
-function updateToggleUI() {
+function updateToggles() {
 
     document
         .querySelectorAll(".toggle")
@@ -69,13 +103,25 @@ function updateToggleUI() {
             const setting =
                 toggle.dataset.setting;
 
+
             toggle.classList.toggle(
+
                 "on",
-                !!settings[setting]
+
+                Boolean(
+                    settings[setting]
+                )
+
             );
+
         });
+
 }
 
+
+/* =========================================================
+   SETTINGS EVENTS
+   ========================================================= */
 
 function setupSettings() {
 
@@ -89,15 +135,19 @@ function setupSettings() {
 
                     event.stopPropagation();
 
+
                     const setting =
                         toggle.dataset.setting;
+
 
                     settings[setting] =
                         !settings[setting];
 
+
                     saveSettings();
 
-                    updateToggleUI();
+                    updateToggles();
+
                 }
             );
 
@@ -110,24 +160,32 @@ function setupSettings() {
    NAVIGATION
    ========================================================= */
 
-function showView(id) {
+function showView(viewName) {
 
     document
         .querySelectorAll(".view")
         .forEach(view => {
 
-            view.classList.remove("active");
+            view.classList.remove(
+                "active"
+            );
+
         });
 
 
     const target =
-        document.getElementById(id);
+        document.getElementById(
+            viewName
+        );
+
 
     if (!target)
         return;
 
 
-    target.classList.add("active");
+    target.classList.add(
+        "active"
+    );
 
 
     document
@@ -135,13 +193,22 @@ function showView(id) {
         .forEach(button => {
 
             button.classList.toggle(
+
                 "selected",
-                button.dataset.view === id
+
+                button.dataset.view ===
+                viewName
+
             );
 
         });
+
 }
 
+
+/* =========================================================
+   NAVIGATION EVENTS
+   ========================================================= */
 
 function setupNavigation() {
 
@@ -155,9 +222,11 @@ function setupNavigation() {
 
                     event.stopPropagation();
 
+
                     showView(
                         button.dataset.view
                     );
+
                 }
             );
 
@@ -167,16 +236,19 @@ function setupNavigation() {
 
 
 /* =========================================================
-   NATIVE WINDOW MESSAGES
+   NATIVE WEBVIEW2
    ========================================================= */
 
-function sendNativeMessage(message) {
+function nativeMessage(message) {
 
     try {
 
         if (
+
             window.chrome &&
+
             window.chrome.webview
+
         ) {
 
             window.chrome.webview.postMessage(
@@ -185,110 +257,127 @@ function sendNativeMessage(message) {
 
         }
 
-    } catch (error) {
-        // Browser preview / non-WebView2 environment.
+    } catch {
+
+        // Browser preview.
     }
+
 }
 
 
 /* =========================================================
-   DRAG WINDOW
+   WINDOW DRAG
    ========================================================= */
 
 function setupDragging() {
 
     document.addEventListener(
+
         "mousedown",
+
         event => {
 
-            if (event.button !== 0)
-                return;
-
-
-            const target =
-                event.target;
-
-
-            /*
-             * Don't steal clicks from controls.
-             */
-
             if (
-                target.closest(
-                    "button, input, a, select, textarea"
-                )
+                event.button !== 0
             ) {
                 return;
             }
 
 
-            sendNativeMessage(
+            const element =
+                event.target;
+
+
+            /*
+             * Buttons and controls need
+             * their normal click behavior.
+             */
+
+            if (
+
+                element.closest(
+                    "button, input, select, textarea, a"
+                )
+
+            ) {
+
+                return;
+
+            }
+
+
+            nativeMessage(
                 "window.drag"
             );
 
         }
+
     );
 
 }
 
 
 /* =========================================================
-   LAUNCH SCREEN
+   LAUNCH STAGES
    ========================================================= */
+
+const LAUNCH_DURATION =
+    35000;
+
 
 const launchStages = [
 
     {
-        time: 0,
+        at: 0,
         title: "Preparing",
         status: "Starting launch sequence",
         step: "Initialising"
     },
 
     {
-        time: 3500,
+        at: 3500,
         title: "Checking",
         status: "Checking required components",
         step: "Checking"
     },
 
     {
-        time: 8000,
+        at: 8000,
         title: "Loading",
         status: "Loading launch components",
         step: "Loading"
     },
 
     {
-        time: 13500,
+        at: 13500,
         title: "Preparing session",
         status: "Preparing the session",
         step: "Preparing"
     },
 
     {
-        time: 19500,
+        at: 19500,
         title: "Starting",
         status: "Starting required components",
         step: "Starting"
     },
 
     {
-        time: 26000,
+        at: 26000,
         title: "Finalising",
         status: "Finalising launch",
         step: "Finalising"
     },
 
     {
-        time: 32000,
+        at: 32000,
         title: "Almost ready",
         status: "Completing launch sequence",
         step: "Completing"
     },
 
     {
-        time: 35000,
+        at: 35000,
         title: "Ready",
         status: "Launch complete",
         step: "Complete"
@@ -298,11 +387,17 @@ const launchStages = [
 
 
 let launchRunning = false;
-let launchStart = 0;
-let launchAnimation = null;
+
+let launchStartTime = 0;
+
+let launchFrame = null;
 
 
-function getLaunchElements() {
+/* =========================================================
+   LAUNCH ELEMENTS
+   ========================================================= */
+
+function launchElements() {
 
     return {
 
@@ -341,12 +436,16 @@ function getLaunchElements() {
 }
 
 
+/* =========================================================
+   UPDATE STAGE
+   ========================================================= */
+
 function updateLaunchStage(
     elapsed,
     elements
 ) {
 
-    let current =
+    let stage =
         launchStages[0];
 
 
@@ -358,10 +457,10 @@ function updateLaunchStage(
 
         if (
             elapsed >=
-            launchStages[i].time
+            launchStages[i].at
         ) {
 
-            current =
+            stage =
                 launchStages[i];
 
         }
@@ -370,45 +469,51 @@ function updateLaunchStage(
 
 
     elements.title.textContent =
-        current.title;
+        stage.title;
+
 
     elements.status.textContent =
-        current.status;
+        stage.status;
+
 
     elements.step.textContent =
-        current.step;
+        stage.step;
 
 }
 
 
-function launchTick() {
+/* =========================================================
+   LAUNCH LOOP
+   ========================================================= */
+
+function launchLoop() {
 
     if (!launchRunning)
         return;
 
 
     const elements =
-        getLaunchElements();
+        launchElements();
 
 
     const elapsed =
         performance.now() -
-        launchStart;
-
-
-    const duration =
-        35000;
+        launchStartTime;
 
 
     const progress =
         Math.min(
-            elapsed / duration,
+
+            elapsed /
+            LAUNCH_DURATION,
+
             1
+
         );
 
 
     const percentage =
-        Math.round(
+        Math.floor(
             progress * 100
         );
 
@@ -427,21 +532,28 @@ function launchTick() {
     );
 
 
-    if (progress >= 1) {
+    if (
+        progress >= 1
+    ) {
 
         finishLaunch();
 
         return;
+
     }
 
 
-    launchAnimation =
+    launchFrame =
         requestAnimationFrame(
-            launchTick
+            launchLoop
         );
 
 }
 
+
+/* =========================================================
+   START LAUNCH
+   ========================================================= */
 
 function startLaunch() {
 
@@ -453,7 +565,7 @@ function startLaunch() {
 
 
     const elements =
-        getLaunchElements();
+        launchElements();
 
 
     elements.screen.classList.add(
@@ -481,70 +593,89 @@ function startLaunch() {
         "Initialising";
 
 
-    launchStart =
+    launchStartTime =
         performance.now();
 
 
-    launchAnimation =
+    /*
+     * Do not minimise here.
+     *
+     * The launching screen is supposed
+     * to take over the entire app menu.
+     */
+
+
+    launchFrame =
         requestAnimationFrame(
-            launchTick
+            launchLoop
         );
 
 }
 
+
+/* =========================================================
+   FINISH LAUNCH
+   ========================================================= */
 
 function finishLaunch() {
 
     launchRunning = false;
 
 
-    if (launchAnimation) {
+    if (launchFrame !== null) {
 
         cancelAnimationFrame(
-            launchAnimation
+            launchFrame
         );
 
-        launchAnimation = null;
+        launchFrame = null;
+
     }
 
 
     const elements =
-        getLaunchElements();
+        launchElements();
 
 
     elements.bar.style.width =
         "100%";
 
+
     elements.percent.textContent =
         "100%";
+
 
     elements.title.textContent =
         "Ready";
 
+
     elements.status.textContent =
         "Launch complete";
+
 
     elements.step.textContent =
         "Complete";
 
 
     /*
-     * Give the completed state a moment
-     * before closing.
+     * Let the completed state remain
+     * visible very briefly.
      */
 
     setTimeout(
+
         () => {
 
             if (
                 settings.closeAfterLaunch
             ) {
 
-                sendNativeMessage(
+                nativeMessage(
                     "window.close"
                 );
 
                 return;
+
             }
 
 
@@ -553,7 +684,9 @@ function finishLaunch() {
             );
 
         },
+
         650
+
     );
 
 }
@@ -565,7 +698,7 @@ function finishLaunch() {
 
 function setupLaunchButtons() {
 
-    const homeLaunch =
+    const homeButton =
         document.getElementById(
             "homeLaunch"
         );
@@ -577,16 +710,20 @@ function setupLaunchButtons() {
         );
 
 
-    if (homeLaunch) {
+    if (homeButton) {
 
-        homeLaunch.addEventListener(
+        homeButton.addEventListener(
+
             "click",
+
             event => {
 
                 event.stopPropagation();
 
                 startLaunch();
+
             }
+
         );
 
     }
@@ -595,13 +732,17 @@ function setupLaunchButtons() {
     if (launchButton) {
 
         launchButton.addEventListener(
+
             "click",
+
             event => {
 
                 event.stopPropagation();
 
                 startLaunch();
+
             }
+
         );
 
     }
@@ -619,7 +760,7 @@ function initialise() {
 
     setupSettings();
 
-    updateToggleUI();
+    updateToggles();
 
     setupNavigation();
 
@@ -631,6 +772,9 @@ function initialise() {
 
 
 document.addEventListener(
+
     "DOMContentLoaded",
+
     initialise
+
 );
