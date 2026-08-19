@@ -1,8 +1,629 @@
+*{
+    box-sizing:border-box;
+}
+
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    margin:0;
+
+}
+
+
+body{
+
+    overflow:hidden;
+
+    background:#0f100f;
+
+    color:#e5e6e1;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing:antialiased;
+
+}
+
+
 /* ==================================================
-   ADDED — ACCOUNT
+   INTRO — LOCKED
    ================================================== */
 
-.sidebar-account {
+#intro{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:100;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#0f100f;
+
+    animation:
+        introExit
+        .65s
+        3.7s
+        forwards;
+
+}
+
+
+.intro-word{
+
+    position:relative;
+
+    z-index:4;
+
+    font-size:76px;
+
+    line-height:1;
+
+    font-weight:400;
+
+    letter-spacing:-6px;
+
+    color:#dedfda;
+
+    animation:
+        wordCollapse
+        3.7s
+        ease
+        forwards;
+
+}
+
+
+.intro-dot,
+.intro-ring,
+.intro-ring-two{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%)
+        scale(0);
+
+    border-radius:50%;
+
+    pointer-events:none;
+
+}
+
+
+.intro-dot{
+
+    width:4px;
+    height:4px;
+
+    background:#d9dad5;
+
+    animation:
+        dotExpand
+        3.7s
+        ease
+        forwards;
+
+}
+
+
+.intro-ring{
+
+    width:13px;
+    height:13px;
+
+    border:
+        1px solid
+        rgba(220,221,216,.34);
+
+    animation:
+        ringOne
+        3.7s
+        ease
+        forwards;
+
+}
+
+
+.intro-ring-two{
+
+    width:20px;
+    height:20px;
+
+    border:
+        1px solid
+        rgba(220,221,216,.13);
+
+    animation:
+        ringTwo
+        3.7s
+        ease
+        forwards;
+
+}
+
+
+@keyframes wordCollapse{
+
+    0%{
+        opacity:0;
+        transform:scale(.95);
+    }
+
+    25%{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    72%{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    82%{
+        opacity:1;
+        transform:scale(.08);
+    }
+
+    88%{
+        opacity:0;
+        transform:scale(.01);
+    }
+
+    100%{
+        opacity:0;
+    }
+
+}
+
+
+@keyframes dotExpand{
+
+    0%,78%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+
+    }
+
+    83%{
+
+        opacity:1;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+
+    }
+
+    90%{
+
+        opacity:.14;
+
+        transform:
+            translate(-50%,-50%)
+            scale(35);
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(80);
+
+    }
+
+}
+
+
+@keyframes ringOne{
+
+    0%,78%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+
+    }
+
+    82%{
+
+        opacity:.55;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.8);
+
+    }
+
+    89%{
+
+        opacity:.18;
+
+        transform:
+            translate(-50%,-50%)
+            scale(8);
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(34);
+
+    }
+
+}
+
+
+@keyframes ringTwo{
+
+    0%,80%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+
+    }
+
+    85%{
+
+        opacity:.27;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.7);
+
+    }
+
+    92%{
+
+        opacity:.07;
+
+        transform:
+            translate(-50%,-50%)
+            scale(13);
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(32);
+
+    }
+
+}
+
+
+@keyframes introExit{
+
+    to{
+
+        opacity:0;
+
+        visibility:hidden;
+
+    }
+
+}
+
+
+
+/* ==================================================
+   APP
+   ================================================== */
+
+#app{
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    opacity:0;
+
+    animation:
+        appAppear
+        .6s
+        3.9s
+        ease
+        forwards;
+
+}
+
+
+@keyframes appAppear{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(5px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+
+/* ==================================================
+   SIDEBAR
+   ================================================== */
+
+.sidebar{
+
+    position:relative;
+
+    width:205px;
+    height:100%;
+
+    flex-shrink:0;
+
+    padding:
+        26px
+        17px
+        24px;
+
+    border-right:
+        1px solid
+        #222421;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+/* BRAND */
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    padding:
+        4px
+        9px;
+
+    cursor:default;
+
+}
+
+
+.brand-mark{
+
+    position:relative;
+
+    width:27px;
+    height:27px;
+
+    margin-right:11px;
+
+    border:
+        1px solid
+        #30332f;
+
+    border-radius:8px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    color:#dedfd9;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    letter-spacing:-1px;
+
+    background:#141514;
+
+}
+
+
+.brand-mark::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:4px;
+    height:4px;
+
+    right:-2px;
+    bottom:-2px;
+
+    border:
+        1px solid
+        #0f100f;
+
+    border-radius:50%;
+
+    background:#899288;
+
+}
+
+
+.brand-name{
+
+    color:#e0e1db;
+
+    font-size:15px;
+
+    font-weight:500;
+
+    letter-spacing:-.4px;
+
+}
+
+
+
+/* NAV */
+
+.nav{
+
+    margin-top:48px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:3px;
+
+}
+
+
+.nav.secondary{
+
+    margin-top:auto;
+
+}
+
+
+.nav-label{
+
+    margin:
+        0
+        10px
+        9px;
+
+    color:#454844;
+
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.6px;
+
+}
+
+
+.nav button{
+
+    position:relative;
+
+    width:100%;
+    height:34px;
+
+    padding:
+        0
+        11px;
+
+    border:0;
+
+    border-radius:7px;
+
+    background:transparent;
+
+    color:#666964;
+
+    font:inherit;
+
+    font-size:11px;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:
+        background .15s ease,
+        color .15s ease;
+
+}
+
+
+.nav button:hover{
+
+    color:#b3b5af;
+
+    background:#141614;
+
+}
+
+
+.nav button.selected{
+
+    color:#dedfd9;
+
+    background:#191b19;
+
+}
+
+
+.nav button.selected::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:10px;
+    bottom:10px;
+
+    width:2px;
+
+    border-radius:4px;
+
+    background:#8b968b;
+
+}
+
+
+
+/* ==================================================
+   ACCOUNT — ADDED
+   ================================================== */
+
+.sidebar-account{
 
     display:flex;
 
@@ -14,12 +635,12 @@
         0
         10px;
 
-    margin-bottom:2px;
+    margin-top:15px;
 
 }
 
 
-.account-circle {
+.account-circle{
 
     width:27px;
     height:27px;
@@ -37,7 +658,7 @@
 
     border-radius:50%;
 
-    background:#151714;
+    background:#151715;
 
     color:#858983;
 
@@ -48,7 +669,7 @@
 }
 
 
-.account-username {
+.account-username{
 
     color:#70736e;
 
@@ -59,11 +680,625 @@
 }
 
 
+
 /* ==================================================
-   ADDED — LAUNCHING SCREEN
+   CONTENT
    ================================================== */
 
-#launchScreen {
+.content{
+
+    flex:1;
+
+    min-width:0;
+
+    height:100%;
+
+    padding:
+        44px
+        58px;
+
+    overflow:auto;
+
+    scrollbar-width:none;
+
+}
+
+
+.content::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+
+.view{
+
+    display:none;
+
+    width:100%;
+
+    max-width:760px;
+
+}
+
+
+.view.active{
+
+    display:block;
+
+    animation:
+        viewIn
+        .25s
+        ease;
+
+}
+
+
+@keyframes viewIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(4px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+
+/* ==================================================
+   SHARED
+   ================================================== */
+
+.topline{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#50534f;
+
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.6px;
+
+}
+
+
+.topline .version{
+
+    color:#3f423e;
+
+}
+
+
+h1{
+
+    margin:
+        18px
+        0
+        0;
+
+    color:#e1e2dd;
+
+    font-size:30px;
+
+    line-height:1.1;
+
+    font-weight:400;
+
+    letter-spacing:-1.4px;
+
+}
+
+
+.lead{
+
+    margin-top:7px;
+
+    color:#646762;
+
+    font-size:11px;
+
+}
+
+
+
+/* ==================================================
+   HOME
+   ================================================== */
+
+.status-area{
+
+    position:relative;
+
+    margin-top:59px;
+
+    padding:
+        0
+        0
+        31px;
+
+    border-bottom:
+        1px solid
+        #242724;
+
+}
+
+
+.status-line{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    color:#9b9e99;
+
+    font-size:10px;
+
+}
+
+
+.status-light{
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#7d897d;
+
+    box-shadow:
+        0 0 9px
+        rgba(125,137,125,.17);
+
+}
+
+
+.app-name{
+
+    margin-top:20px;
+
+    color:#e1e2dc;
+
+    font-size:25px;
+
+    font-weight:400;
+
+    letter-spacing:-1px;
+
+}
+
+
+.app-meta{
+
+    margin-top:5px;
+
+    color:#4f524e;
+
+    font-size:9px;
+
+}
+
+
+.app-description{
+
+    max-width:470px;
+
+    margin-top:17px;
+
+    color:#70736e;
+
+    font-size:11px;
+
+    line-height:1.7;
+
+}
+
+
+.launch-button{
+
+    margin-top:25px;
+
+    padding:
+        9px
+        18px;
+
+    border:
+        1px solid
+        #bfc1bb;
+
+    border-radius:5px;
+
+    background:#c8c9c4;
+
+    color:#11120f;
+
+    font:inherit;
+
+    font-size:10px;
+
+    cursor:pointer;
+
+}
+
+
+.launch-button:hover{
+
+    background:#d5d6d1;
+
+}
+
+
+.details{
+
+    display:flex;
+
+    gap:58px;
+
+    margin-top:27px;
+
+}
+
+
+.detail-label{
+
+    color:#494c48;
+
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.2px;
+
+}
+
+
+.detail-value{
+
+    margin-top:7px;
+
+    color:#92958f;
+
+    font-size:10px;
+
+}
+
+
+
+/* ==================================================
+   LAUNCH
+   ================================================== */
+
+.launch-view{
+
+    padding-top:1px;
+
+}
+
+
+.launch-panel{
+
+    position:relative;
+
+    min-height:330px;
+
+    margin-top:52px;
+
+    border-top:
+        1px solid
+        #242724;
+
+}
+
+
+.launch-brand{
+
+    position:absolute;
+
+    top:28px;
+    left:0;
+
+    color:#dfe0da;
+
+    font-size:29px;
+
+    letter-spacing:-1.3px;
+
+}
+
+
+.launch-version{
+
+    position:absolute;
+
+    top:69px;
+    left:1px;
+
+    color:#50534f;
+
+    font-family:monospace;
+
+    font-size:9px;
+
+}
+
+
+.launch-state{
+
+    position:absolute;
+
+    left:0;
+    bottom:32px;
+
+    color:#737670;
+
+    font-size:10px;
+
+}
+
+
+.launch-state::before{
+
+    content:"";
+
+    display:inline-block;
+
+    width:5px;
+    height:5px;
+
+    margin-right:8px;
+
+    border-radius:50%;
+
+    background:#7d897d;
+
+    vertical-align:1px;
+
+}
+
+
+.launch-action{
+
+    position:absolute;
+
+    right:0;
+    bottom:25px;
+
+    padding:
+        10px
+        18px;
+
+    border:
+        1px solid
+        #bfc1bb;
+
+    border-radius:5px;
+
+    background:#c8c9c4;
+
+    color:#11120f;
+
+    font:inherit;
+
+    font-size:10px;
+
+    cursor:pointer;
+
+}
+
+
+
+/* ==================================================
+   CHANGELOG
+   ================================================== */
+
+.changelog{
+
+    margin-top:45px;
+
+    border-top:
+        1px solid
+        #242724;
+
+}
+
+
+.release{
+
+    display:flex;
+
+    padding:
+        23px
+        2px;
+
+    border-bottom:
+        1px solid
+        #242724;
+
+}
+
+
+.release-version{
+
+    width:95px;
+
+    flex-shrink:0;
+
+    color:#aeb0aa;
+
+    font-family:monospace;
+
+    font-size:10px;
+
+}
+
+
+.release-date{
+
+    margin-top:5px;
+
+    color:#444743;
+
+    font-family:inherit;
+
+    font-size:8px;
+
+}
+
+
+.release-title{
+
+    color:#c9cac4;
+
+    font-size:11px;
+
+}
+
+
+.release-text{
+
+    max-width:490px;
+
+    margin-top:6px;
+
+    color:#656863;
+
+    font-size:10px;
+
+    line-height:1.65;
+
+}
+
+
+
+/* ==================================================
+   SETTINGS
+   ================================================== */
+
+.settings{
+
+    max-width:620px;
+
+    margin-top:45px;
+
+    border-top:
+        1px solid
+        #242724;
+
+}
+
+
+.setting{
+
+    min-height:68px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    border-bottom:
+        1px solid
+        #242724;
+
+}
+
+
+.setting-name{
+
+    color:#bfc1bb;
+
+    font-size:11px;
+
+}
+
+
+.setting-info{
+
+    margin-top:5px;
+
+    color:#5d605b;
+
+    font-size:9px;
+
+}
+
+
+.toggle{
+
+    width:29px;
+    height:16px;
+
+    border-radius:20px;
+
+    background:#292c29;
+
+    cursor:pointer;
+
+}
+
+
+.toggle::after{
+
+    content:"";
+
+    display:block;
+
+    width:10px;
+    height:10px;
+
+    margin:3px;
+
+    border-radius:50%;
+
+    background:#70746f;
+
+    transition:.18s;
+
+}
+
+
+.toggle.on{
+
+    background:#9da39c;
+
+}
+
+
+.toggle.on::after{
+
+    transform:
+        translateX(13px);
+
+    background:#151714;
+
+}
+
+
+
+/* ==================================================
+   LAUNCHING SCREEN — ADDED
+   ================================================== */
+
+#launchScreen{
 
     position:fixed;
 
@@ -82,7 +1317,7 @@
 }
 
 
-#launchScreen.visible {
+#launchScreen.visible{
 
     display:block;
 
@@ -95,24 +1330,20 @@
 }
 
 
-@keyframes launchScreenIn {
+@keyframes launchScreenIn{
 
-    from {
+    from{
         opacity:0;
     }
 
-    to {
+    to{
         opacity:1;
     }
 
 }
 
 
-/* ==================================================
-   TOP
-   ================================================== */
-
-.launch-screen-top {
+.launch-screen-top{
 
     position:absolute;
 
@@ -130,7 +1361,7 @@
 }
 
 
-.launch-screen-brand {
+.launch-screen-brand{
 
     color:#bfc1bb;
 
@@ -143,7 +1374,7 @@
 }
 
 
-.launch-screen-time {
+.launch-screen-time{
 
     color:#4f524e;
 
@@ -154,11 +1385,7 @@
 }
 
 
-/* ==================================================
-   CENTER CONTENT
-   ================================================== */
-
-.launch-screen-content {
+.launch-screen-content{
 
     position:absolute;
 
@@ -175,7 +1402,7 @@
 }
 
 
-.launch-screen-eyebrow {
+.launch-screen-eyebrow{
 
     margin-bottom:10px;
 
@@ -190,7 +1417,7 @@
 }
 
 
-.launch-screen-title {
+.launch-screen-title{
 
     color:#dedfda;
 
@@ -205,7 +1432,7 @@
 }
 
 
-.launch-screen-status {
+.launch-screen-status{
 
     margin-top:8px;
 
@@ -218,11 +1445,7 @@
 }
 
 
-/* ==================================================
-   PROGRESS
-   ================================================== */
-
-.launch-progress {
+.launch-progress{
 
     width:100%;
 
@@ -237,7 +1460,7 @@
 }
 
 
-.launch-progress-bar {
+.launch-progress-bar{
 
     width:0%;
 
@@ -253,11 +1476,7 @@
 }
 
 
-/* ==================================================
-   PROGRESS INFO
-   ================================================== */
-
-.launch-progress-info {
+.launch-progress-info{
 
     display:flex;
 
@@ -274,18 +1493,14 @@
 }
 
 
-#launchPercent {
+#launchPercent{
 
     color:#70736e;
 
 }
 
 
-/* ==================================================
-   BOTTOM
-   ================================================== */
-
-.launch-screen-bottom {
+.launch-screen-bottom{
 
     position:absolute;
 
@@ -305,5 +1520,66 @@
     font-family:monospace;
 
     font-size:7px;
+
+}
+
+
+
+/* ==================================================
+   MOBILE
+   ================================================== */
+
+@media(max-width:650px){
+
+    .sidebar{
+
+        width:145px;
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+    }
+
+
+    .brand-name{
+
+        font-size:14px;
+
+    }
+
+
+    .content{
+
+        padding:
+            30px
+            24px;
+
+    }
+
+
+    .details{
+
+        gap:25px;
+
+        flex-wrap:wrap;
+
+    }
+
+
+    .launch-action{
+
+        position:static;
+
+        margin-top:260px;
+
+    }
+
+
+    .launch-state{
+
+        bottom:75px;
+
+    }
 
 }
