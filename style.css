@@ -1,30 +1,20 @@
 * {
     box-sizing: border-box;
-
     user-select: none;
     -webkit-user-select: none;
-    -webkit-user-drag: none;
 }
-
 
 html,
 body {
-
     width: 100%;
     height: 100%;
-
     margin: 0;
-
+    overflow: hidden;
 }
 
-
 body {
-
-    overflow: hidden;
-
     background: #0f100f;
-
-    color: #e5e6e1;
+    color: #e3e4df;
 
     font-family:
         -apple-system,
@@ -34,83 +24,58 @@ body {
         sans-serif;
 
     -webkit-font-smoothing: antialiased;
-
 }
 
 
-button {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-
-/* ==================================================
+/* =========================================================
    INTRO — LOCKED
-   ================================================== */
+   ========================================================= */
 
 #intro {
-
     position: fixed;
-
     inset: 0;
-
     z-index: 100;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     background: #0f100f;
 
-    animation:
-        introExit .65s 3.7s forwards;
+    animation: introExit .65s 3.7s forwards;
 }
 
-
 .intro-word {
-
     position: relative;
-
     z-index: 4;
 
     font-size: 76px;
-
     line-height: 1;
-
     font-weight: 400;
-
     letter-spacing: -6px;
 
     color: #dedfda;
 
-    animation:
-        wordCollapse 3.7s ease forwards;
+    animation: wordCollapse 3.7s ease forwards;
 }
-
 
 .intro-dot,
 .intro-ring,
 .intro-ring-two {
-
     position: absolute;
 
     left: 50%;
     top: 50%;
 
     transform:
-        translate(-50%,-50%)
+        translate(-50%, -50%)
         scale(0);
 
     border-radius: 50%;
-
     pointer-events: none;
 }
 
-
 .intro-dot {
-
     width: 4px;
     height: 4px;
 
@@ -120,9 +85,7 @@ button {
         dotExpand 3.7s ease forwards;
 }
 
-
 .intro-ring {
-
     width: 13px;
     height: 13px;
 
@@ -134,9 +97,7 @@ button {
         ringOne 3.7s ease forwards;
 }
 
-
 .intro-ring-two {
-
     width: 20px;
     height: 20px;
 
@@ -179,151 +140,132 @@ button {
     100% {
         opacity: 0;
     }
-
 }
 
 
 @keyframes dotExpand {
 
     0%, 78% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     83% {
-
         opacity: 1;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(1);
     }
 
     90% {
-
         opacity: .14;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(35);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(80);
     }
-
 }
 
 
 @keyframes ringOne {
 
     0%, 78% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     82% {
-
         opacity: .55;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(.8);
     }
 
     89% {
-
         opacity: .18;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(8);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(34);
     }
-
 }
 
 
 @keyframes ringTwo {
 
     0%, 80% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     85% {
-
         opacity: .27;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(.7);
     }
 
     92% {
-
         opacity: .07;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(13);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(32);
     }
-
 }
 
 
 @keyframes introExit {
 
     to {
-
         opacity: 0;
-
         visibility: hidden;
-
     }
-
 }
 
 
-/* ==================================================
+/* =========================================================
    APP
-   ================================================== */
+   ========================================================= */
 
 #app {
+    position: relative;
 
     width: 100%;
     height: 100%;
@@ -332,211 +274,121 @@ button {
 
     opacity: 0;
 
+    overflow: hidden;
+
     animation:
         appAppear .6s 3.9s ease forwards;
-
 }
 
 
 @keyframes appAppear {
 
     from {
-
         opacity: 0;
-
-        transform:
-            translateY(5px);
-
+        transform: translateY(5px);
     }
 
     to {
-
         opacity: 1;
-
-        transform:
-            translateY(0);
-
+        transform: translateY(0);
     }
-
 }
 
 
-/* ==================================================
+/* =========================================================
    SIDEBAR
-   ================================================== */
+   ========================================================= */
 
 .sidebar {
-
-    position: relative;
-
-    width: 205px;
+    width: 158px;
     height: 100%;
 
     flex-shrink: 0;
 
     padding:
-        26px
-        17px
-        24px;
+        34px
+        15px
+        22px;
 
     border-right:
         1px solid
-        #222421;
+        #242724;
 
     display: flex;
-
     flex-direction: column;
 
+    cursor: default;
 }
 
+
+/* BRAND */
 
 .brand {
-
-    display: flex;
-
-    align-items: center;
-
     padding:
-        4px
+        0
         9px;
-
 }
-
-
-.brand-mark {
-
-    position: relative;
-
-    width: 27px;
-    height: 27px;
-
-    margin-right: 11px;
-
-    border:
-        1px solid
-        #30332f;
-
-    border-radius: 8px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    color: #dedfd9;
-
-    font-size: 13px;
-
-    font-weight: 500;
-
-    letter-spacing: -1px;
-
-    background: #141514;
-
-}
-
-
-.brand-mark::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 4px;
-    height: 4px;
-
-    right: -2px;
-    bottom: -2px;
-
-    border:
-        1px solid
-        #0f100f;
-
-    border-radius: 50%;
-
-    background: #899288;
-
-}
-
 
 .brand-name {
+    color: #e2e3de;
 
-    color: #e0e1db;
-
-    font-size: 15px;
-
+    font-size: 18px;
     font-weight: 500;
 
-    letter-spacing: -.4px;
-
+    letter-spacing: -.7px;
 }
 
 
-/* ==================================================
-   NAVIGATION
-   ================================================== */
+/* NAV */
 
 .nav {
-
-    margin-top: 48px;
+    margin-top: 42px;
 
     display: flex;
-
     flex-direction: column;
 
-    gap: 3px;
-
+    gap: 4px;
 }
 
-
-.nav.secondary {
-
+.nav.preferences {
     margin-top: auto;
-
 }
 
 
 .nav-label {
-
     margin:
         0
-        10px
-        9px;
+        9px
+        10px;
 
-    color: #454844;
+    color: #4d504b;
 
     font-size: 8px;
 
     text-transform: uppercase;
-
-    letter-spacing: 1.6px;
-
+    letter-spacing: 1.5px;
 }
 
 
-.nav button {
-
+.nav-button {
     position: relative;
 
     width: 100%;
-    height: 34px;
+    height: 38px;
 
     padding:
         0
-        11px;
+        12px;
 
     border: 0;
-
     border-radius: 7px;
 
     background: transparent;
 
-    color: #666964;
+    color: #777a74;
 
     font: inherit;
-
-    font-size: 11px;
+    font-size: 12px;
 
     text-align: left;
 
@@ -545,36 +397,24 @@ button {
     transition:
         background .15s ease,
         color .15s ease;
-
 }
 
-
-.nav button:hover {
-
-    color: #b3b5af;
-
-    background: #141614;
-
+.nav-button:hover {
+    color: #c0c2bc;
+    background: #151715;
 }
 
-
-.nav button.selected {
-
-    color: #dedfd9;
-
+.nav-button.selected {
+    color: #e2e3de;
     background: #191b19;
-
 }
 
-
-.nav button.selected::before {
-
+.nav-button.selected::before {
     content: "";
 
     position: absolute;
 
     left: 0;
-
     top: 10px;
     bottom: 10px;
 
@@ -582,248 +422,189 @@ button {
 
     border-radius: 4px;
 
-    background: #8b968b;
-
+    background: #899288;
 }
 
 
-/* ==================================================
-   SIDEBAR FOOTER
-   ================================================== */
-
-.sidebar-footer {
-
-    padding:
-        0
-        10px;
-
-    color: #41443f;
-
-    font-size: 8px;
-
-    letter-spacing: .7px;
-
-}
-
-
-/* ==================================================
+/* =========================================================
    CONTENT
-   ================================================== */
+   ========================================================= */
 
 .content {
-
     flex: 1;
 
     min-width: 0;
-
     height: 100%;
 
     padding:
-        44px
-        58px;
+        38px
+        38px;
 
-    overflow: auto;
-
+    overflow: hidden;
 }
 
 
 .view {
-
     display: none;
 
     width: 100%;
+    height: 100%;
 
-    max-width: 760px;
-
+    overflow: hidden;
 }
 
 
 .view.active {
-
     display: block;
 
     animation:
-        viewIn .25s ease;
-
+        viewIn .22s ease;
 }
 
 
 @keyframes viewIn {
 
     from {
-
         opacity: 0;
-
-        transform:
-            translateY(4px);
-
+        transform: translateY(4px);
     }
 
     to {
-
         opacity: 1;
-
-        transform:
-            translateY(0);
-
+        transform: translateY(0);
     }
-
 }
 
 
-/* ==================================================
-   SHARED
-   ================================================== */
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
 
-.topline {
+.eyebrow {
+    color: #555852;
 
-    display: flex;
-
-    justify-content: space-between;
-
-    color: #50534f;
-
-    font-size: 8px;
+    font-size: 9px;
 
     text-transform: uppercase;
-
     letter-spacing: 1.6px;
-
 }
 
 
 h1 {
-
     margin:
-        18px
+        14px
         0
         0;
 
-    color: #e1e2dd;
+    color: #e4e5df;
 
-    font-size: 30px;
-
+    font-size: 31px;
     line-height: 1.1;
 
     font-weight: 400;
 
-    letter-spacing: -1.4px;
-
+    letter-spacing: -1.5px;
 }
 
 
-.lead {
+.subtitle {
+    margin:
+        8px
+        0
+        0;
 
-    margin-top: 7px;
+    color: #70736e;
 
-    color: #646762;
-
-    font-size: 11px;
-
+    font-size: 12px;
 }
 
 
-/* ==================================================
+/* =========================================================
    HOME
-   ================================================== */
+   ========================================================= */
 
-.status-area {
+.home-status {
+    margin-top: 45px;
 
-    position: relative;
-
-    margin-top: 59px;
-
-    padding:
-        0
-        0
-        31px;
+    padding-bottom: 23px;
 
     border-bottom:
         1px solid
         #242724;
-
 }
 
 
-.status-line {
-
+.status {
     display: flex;
-
     align-items: center;
 
     gap: 9px;
 
-    color: #9b9e99;
+    color: #a2a49f;
 
-    font-size: 10px;
-
+    font-size: 12px;
 }
 
 
-.status-light {
-
+.status-dot {
     width: 6px;
     height: 6px;
+
+    flex-shrink: 0;
 
     border-radius: 50%;
 
     background: #7d897d;
 
     box-shadow:
-        0 0 9px
-        rgba(125,137,125,.17);
-
+        0 0 8px
+        rgba(125,137,125,.16);
 }
 
 
-.app-name {
+.product-name {
+    margin-top: 18px;
 
-    margin-top: 20px;
-
-    color: #e1e2dc;
+    color: #e2e3de;
 
     font-size: 25px;
 
-    font-weight: 400;
-
     letter-spacing: -1px;
-
 }
 
 
-.app-meta {
-
+.product-version {
     margin-top: 5px;
 
-    color: #4f524e;
+    color: #555852;
 
-    font-size: 9px;
-
+    font-size: 10px;
 }
 
 
-.app-description {
+.description {
+    max-width: 410px;
 
-    max-width: 470px;
+    margin:
+        17px
+        0
+        0;
 
-    margin-top: 17px;
+    color: #7b7e78;
 
-    color: #70736e;
-
-    font-size: 11px;
-
-    line-height: 1.7;
-
+    font-size: 12px;
+    line-height: 1.55;
 }
 
 
-.launch-button {
+.primary-button {
+    margin-top: 22px;
 
-    margin-top: 25px;
+    height: 36px;
 
     padding:
-        9px
-        18px;
+        0
+        19px;
 
     border:
         1px solid
@@ -836,218 +617,158 @@ h1 {
     color: #11120f;
 
     font: inherit;
-
-    font-size: 10px;
+    font-size: 11px;
 
     cursor: pointer;
 
+    transition:
+        background .15s ease,
+        transform .1s ease;
 }
 
+.primary-button:hover {
+    background: #dedfd9;
+}
 
-.launch-button:hover {
-
-    background: #d5d6d1;
-
+.primary-button:active {
+    transform: translateY(1px);
 }
 
 
 .details {
-
     display: flex;
 
-    gap: 58px;
+    gap: 48px;
 
-    margin-top: 27px;
-
+    margin-top: 21px;
 }
 
 
-.detail-label {
+.detail {
+    display: flex;
+    flex-direction: column;
+}
 
-    color: #494c48;
+
+.detail span {
+    color: #50534f;
 
     font-size: 8px;
 
     text-transform: uppercase;
-
-    letter-spacing: 1.2px;
-
+    letter-spacing: 1.1px;
 }
 
 
-.detail-value {
+.detail strong {
+    margin-top: 6px;
 
-    margin-top: 7px;
+    color: #969992;
 
-    color: #92958f;
+    font-size: 11px;
 
-    font-size: 10px;
-
+    font-weight: 400;
 }
 
 
-/* ==================================================
-   LAUNCH
-   ================================================== */
+/* =========================================================
+   LAUNCH PAGE
+   ========================================================= */
 
-.launch-view {
-
-    padding-top: 1px;
-
-}
-
-
-.launch-panel {
-
+.launch-area {
     position: relative;
 
-    min-height: 330px;
+    height: 260px;
 
-    margin-top: 52px;
-
-    border-top:
-        1px solid
-        #242724;
-
-}
-
-
-.launch-brand {
-
-    position: absolute;
-
-    top: 28px;
-    left: 0;
-
-    color: #dfe0da;
-
-    font-size: 29px;
-
-    letter-spacing: -1.3px;
-
-}
-
-
-.launch-version {
-
-    position: absolute;
-
-    top: 69px;
-    left: 1px;
-
-    color: #50534f;
-
-    font-family: monospace;
-
-    font-size: 9px;
-
-}
-
-
-.launch-state {
-
-    position: absolute;
-
-    left: 0;
-    bottom: 32px;
-
-    color: #737670;
-
-    font-size: 10px;
-
-}
-
-
-.launch-state::before {
-
-    content: "";
-
-    display: inline-block;
-
-    width: 5px;
-    height: 5px;
-
-    margin-right: 8px;
-
-    border-radius: 50%;
-
-    background: #7d897d;
-
-    vertical-align: 1px;
-
-}
-
-
-.launch-action {
-
-    position: absolute;
-
-    right: 0;
-    bottom: 25px;
-
-    padding:
-        10px
-        18px;
-
-    border:
-        1px solid
-        #bfc1bb;
-
-    border-radius: 5px;
-
-    background: #c8c9c4;
-
-    color: #11120f;
-
-    font: inherit;
-
-    font-size: 10px;
-
-    cursor: pointer;
-
-}
-
-
-.launch-action:hover {
-
-    background: #d5d6d1;
-
-}
-
-
-/* ==================================================
-   CHANGELOG
-   ================================================== */
-
-.changelog {
-
-    margin-top: 45px;
+    margin-top: 43px;
 
     border-top:
         1px solid
         #242724;
-
-}
-
-
-.release {
-
-    display: flex;
-
-    padding:
-        23px
-        2px;
 
     border-bottom:
         1px solid
         #242724;
 
+    padding:
+        30px
+        0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 
-.release-version {
+.launch-name {
+    color: #e1e2dd;
 
-    width: 95px;
+    font-size: 28px;
+
+    letter-spacing: -1.2px;
+}
+
+
+.launch-meta {
+    margin-top: 5px;
+
+    color: #555852;
+
+    font-family: monospace;
+
+    font-size: 10px;
+}
+
+
+.ready {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 24px;
+
+    color: #858982;
+
+    font-size: 11px;
+}
+
+
+.launch-area .primary-button {
+    align-self: flex-end;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   CHANGELOG
+   ========================================================= */
+
+.changes-list {
+    margin-top: 40px;
+
+    border-top:
+        1px solid
+        #242724;
+}
+
+
+.change {
+    display: flex;
+
+    padding:
+        22px
+        0;
+
+    border-bottom:
+        1px solid
+        #242724;
+}
+
+
+.change-version {
+    width: 88px;
 
     flex-shrink: 0;
 
@@ -1055,410 +776,302 @@ h1 {
 
     font-family: monospace;
 
-    font-size: 10px;
-
-}
-
-
-.release-date {
-
-    margin-top: 5px;
-
-    color: #444743;
-
-    font-size: 8px;
-
-}
-
-
-.release-title {
-
-    color: #c9cac4;
-
     font-size: 11px;
-
 }
 
 
-.release-text {
-
-    max-width: 490px;
+.change-version span {
+    display: block;
 
     margin-top: 6px;
 
-    color: #656863;
+    color: #4b4e49;
 
-    font-size: 10px;
+    font-family: inherit;
 
-    line-height: 1.65;
+    font-size: 8px;
 
+    text-transform: uppercase;
 }
 
 
-/* ==================================================
+.change-title {
+    color: #d0d1cb;
+
+    font-size: 12px;
+}
+
+
+.change-description {
+    max-width: 390px;
+
+    margin-top: 7px;
+
+    color: #6b6e68;
+
+    font-size: 10px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
    SETTINGS
-   ================================================== */
+   ========================================================= */
 
-.settings {
-
-    max-width: 620px;
-
-    margin-top: 45px;
+.settings-list {
+    margin-top: 40px;
 
     border-top:
         1px solid
         #242724;
-
 }
 
 
 .setting {
-
-    min-height: 68px;
+    min-height: 66px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     border-bottom:
         1px solid
         #242724;
-
 }
 
 
 .setting-name {
+    color: #c4c5bf;
 
-    color: #bfc1bb;
-
-    font-size: 11px;
-
+    font-size: 12px;
 }
 
 
 .setting-info {
-
     margin-top: 5px;
 
-    color: #5d605b;
+    color: #686b65;
 
     font-size: 9px;
-
 }
 
 
-.toggle {
+/* TOGGLE */
 
-    width: 29px;
-    height: 16px;
+.toggle {
+    position: relative;
+
+    width: 31px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    margin-left: 20px;
 
     padding: 0;
 
     border: 0;
-
     border-radius: 20px;
 
     background: #292c29;
 
     cursor: pointer;
 
+    transition:
+        background .18s ease;
 }
 
 
 .toggle::after {
-
     content: "";
 
-    display: block;
+    position: absolute;
 
-    width: 10px;
-    height: 10px;
+    left: 3px;
+    top: 3px;
 
-    margin: 3px;
+    width: 11px;
+    height: 11px;
 
     border-radius: 50%;
 
     background: #70746f;
 
-    transition: .18s;
-
+    transition:
+        transform .18s ease,
+        background .18s ease;
 }
 
 
 .toggle.on {
-
     background: #9da39c;
-
 }
 
 
 .toggle.on::after {
-
-    transform:
-        translateX(13px);
+    transform: translateX(14px);
 
     background: #151714;
-
 }
 
 
-/* ==================================================
-   FULL-SCREEN LAUNCHING PAGE
-   ================================================== */
+/* =========================================================
+   LAUNCHING SCREEN
+   ========================================================= */
 
-.launching-screen {
-
-    position: fixed;
+#launchScreen {
+    position: absolute;
 
     inset: 0;
 
-    z-index: 200;
+    z-index: 50;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
+    display: none;
 
     background: #0f100f;
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition:
-        opacity .18s ease,
-        visibility .18s ease;
-
 }
 
 
-.launching-screen.active {
+#launchScreen.active {
+    display: flex;
 
-    opacity: 1;
-
-    visibility: visible;
-
-    pointer-events: auto;
-
+    animation:
+        launchScreenIn .3s ease;
 }
 
 
-.launching-content {
+@keyframes launchScreenIn {
 
-    width: 330px;
+    from {
+        opacity: 0;
+    }
 
-    text-align: left;
-
+    to {
+        opacity: 1;
+    }
 }
 
 
-.launching-brand {
+.launch-screen-inner {
+    width: 100%;
+    height: 100%;
 
-    margin-bottom: 38px;
+    padding:
+        48px
+        52px;
 
-    color: #dfe0da;
-
-    font-size: 17px;
-
-    font-weight: 500;
-
-    letter-spacing: -.6px;
-
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 
-.launching-title {
+.launch-eyebrow {
+    color: #555852;
 
-    color: #e0e1dc;
+    font-size: 9px;
 
-    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+}
+
+
+.launch-title {
+    margin-top: 18px;
+
+    color: #e2e3de;
+
+    font-size: 30px;
 
     font-weight: 400;
 
-    letter-spacing: -1.2px;
-
+    letter-spacing: -1.3px;
 }
 
 
-.launching-subtitle {
+.launch-status {
+    margin-top: 7px;
 
-    margin-top: 8px;
+    color: #6d706a;
 
-    margin-bottom: 30px;
-
-    color: #686d66;
-
-    font-size: 10px;
-
+    font-size: 12px;
 }
 
 
-.launching-progress {
-
+.launch-progress {
     width: 100%;
-
     height: 2px;
+
+    margin-top: 45px;
 
     overflow: hidden;
 
-    background: #242724;
-
+    background: #252825;
 }
 
 
-.launching-progress-fill {
-
+.launch-progress-bar {
     width: 0%;
-
     height: 100%;
 
-    background: #858f81;
+    background: #899288;
 
     transition:
-        width 1s linear;
-
+        width .25s linear;
 }
 
 
-.launching-status {
-
-    margin-top: 11px;
-
+.launch-bottom {
     display: flex;
+    justify-content: space-between;
 
-    align-items: center;
+    margin-top: 12px;
 
-    gap: 7px;
+    color: #4f524d;
 
-    color: #6d736b;
-
-    font-size: 9px;
-
-}
-
-
-.launching-dot {
-
-    width: 5px;
-    height: 5px;
-
-    flex-shrink: 0;
-
-    border-radius: 50%;
-
-    background: #858f81;
-
-}
-
-
-.launching-cancel {
-
-    margin-top: 24px;
-
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-
-    color: #4c514a;
+    font-family: monospace;
 
     font-size: 9px;
-
-    cursor: pointer;
-
 }
 
 
-.launching-cancel:hover {
+/* =========================================================
+   EVERYTHING STAYS INSIDE 600x425
+   ========================================================= */
 
-    color: #8d9489;
-
-}
-
-
-/* ==================================================
-   WINDOW DRAGGING
-   ================================================== */
-
-body {
-
-    cursor: default;
-
-}
-
-
-/* ==================================================
-   NO SELECTION
-   ================================================== */
-
-::selection {
-
-    background: transparent;
-
-}
-
-
-/* ==================================================
-   MOBILE
-   ================================================== */
-
-@media(max-width:650px) {
+@media (max-height: 450px) {
 
     .sidebar {
-
-        width: 145px;
-
-        padding-left: 10px;
-
-        padding-right: 10px;
-
+        padding-top: 27px;
     }
 
-
-    .brand-name {
-
-        font-size: 14px;
-
+    .nav {
+        margin-top: 30px;
     }
-
 
     .content {
-
         padding:
-            30px
-            24px;
-
+            29px
+            32px;
     }
 
-
-    .details {
-
-        gap: 25px;
-
-        flex-wrap: wrap;
-
+    h1 {
+        font-size: 28px;
     }
 
-
-    .launch-action {
-
-        position: static;
-
-        margin-top: 260px;
-
+    .home-status {
+        margin-top: 34px;
     }
 
+    .launch-area {
+        margin-top: 32px;
+        height: 235px;
+    }
 
-    .launch-state {
-
-        bottom: 75px;
-
+    .changes-list,
+    .settings-list {
+        margin-top: 30px;
     }
 
 }
