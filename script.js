@@ -1,4 +1,8 @@
-function showView(id,button){
+/* ==================================================
+   NAVIGATION
+   ================================================== */
+
+function showView(id, button){
 
     var views =
         document.querySelectorAll(".view");
@@ -51,8 +55,21 @@ function showView(id,button){
 
 
 /* ==================================================
-   LAUNCH
-   Added: full launching screen
+   SETTINGS
+   ================================================== */
+
+function toggle(element){
+
+    element
+        .classList
+        .toggle("on");
+
+}
+
+
+
+/* ==================================================
+   LAUNCH SCREEN
    ================================================== */
 
 var launchRunning = false;
@@ -155,25 +172,35 @@ function updateLaunchPhase(progress){
 
 
     document
-        .getElementById("launchTitle")
+        .getElementById(
+            "launchTitle"
+        )
         .textContent =
         phase.title;
 
 
     document
-        .getElementById("launchStatus")
+        .getElementById(
+            "launchStatus"
+        )
         .textContent =
         phase.status;
 
 
     document
-        .getElementById("launchStep")
+        .getElementById(
+            "launchStep"
+        )
         .textContent =
         phase.step;
 
 }
 
 
+
+/* ==================================================
+   LAUNCH
+   ================================================== */
 
 function launch(button){
 
@@ -234,19 +261,25 @@ function launch(button){
 
 
     document
-        .getElementById("launchTitle")
+        .getElementById(
+            "launchTitle"
+        )
         .textContent =
         "Preparing";
 
 
     document
-        .getElementById("launchStatus")
+        .getElementById(
+            "launchStatus"
+        )
         .textContent =
         "Starting launch sequence";
 
 
     document
-        .getElementById("launchStep")
+        .getElementById(
+            "launchStep"
+        )
         .textContent =
         "Initialising";
 
@@ -327,7 +360,9 @@ function launch(button){
         );
 
 
-        if(progress < 1){
+        if(
+            progress < 1
+        ){
 
             requestAnimationFrame(
                 update
@@ -350,6 +385,10 @@ function launch(button){
 }
 
 
+
+/* ==================================================
+   FINISH
+   ================================================== */
 
 function finishLaunch(){
 
@@ -435,20 +474,5 @@ function finishLaunch(){
 
 
     },700);
-
-}
-
-
-
-/* ==================================================
-   TOGGLES
-   Existing behaviour preserved
-   ================================================== */
-
-function toggle(element){
-
-    element
-        .classList
-        .toggle("on");
 
 }
