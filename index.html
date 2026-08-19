@@ -1,830 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>orro</title>
-
-
-<style>
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
-* {
-    box-sizing: border-box;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    -webkit-user-drag: none;
-}
-
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-
-    margin: 0;
-
-    overflow: hidden;
-
-    background: #101110;
-
-    color: #dedfd9;
-
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    -webkit-font-smoothing: antialiased;
-}
-
-
-button {
-    font: inherit;
-
-    user-select: none;
-}
-
-
-/* =========================================================
-   APP
-   ========================================================= */
-
-#app {
-    position: relative;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    background: #101110;
-}
-
-
-/* =========================================================
-   TOP BAR
-   ========================================================= */
-
-.topbar {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 54px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 18px;
-
-    z-index: 20;
-
-    -webkit-app-region: drag;
-}
-
-
-.brand {
-
-    color: #e1e2dd;
-
-    font-size: 17px;
-
-    font-weight: 500;
-
-    letter-spacing: -0.7px;
-}
-
-
-.window-actions {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    -webkit-app-region: no-drag;
-}
-
-
-.close-button {
-
-    width: 27px;
-    height: 27px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border: 0;
-
-    border-radius: 7px;
-
-    background: transparent;
-
-    color: #747a72;
-
-    cursor: pointer;
-
-    font-size: 15px;
-
-    transition:
-        background .15s ease,
-        color .15s ease;
-}
-
-
-.close-button:hover {
-
-    background: #262925;
-
-    color: #d9dad4;
-}
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-.sidebar {
-
-    position: absolute;
-
-    left: 14px;
-    top: 72px;
-    bottom: 16px;
-
-    width: 124px;
-
-    padding: 5px;
-
-    border: 1px solid #20231f;
-
-    border-radius: 11px;
-
-    background: #131512;
-
-    z-index: 10;
-}
-
-
-.nav {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 3px;
-}
-
-
-.nav-button {
-
-    width: 100%;
-
-    height: 38px;
-
-    padding: 0 11px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-    border: 0;
-
-    border-radius: 7px;
-
-    background: transparent;
-
-    color: #686e66;
-
-    font-size: 10px;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    transition:
-        background .15s ease,
-        color .15s ease;
-}
-
-
-.nav-button:hover {
-
-    background: #1b1e1b;
-
-    color: #a4a8a0;
-}
-
-
-.nav-button.active {
-
-    background: #222620;
-
-    color: #d6d8d2;
-}
-
-
-.nav-symbol {
-
-    width: 15px;
-
-    text-align: center;
-
-    font-size: 11px;
-
-    opacity: .8;
-}
-
-
-/* =========================================================
-   MAIN CONTENT
-   ========================================================= */
-
-.main {
-
-    position: absolute;
-
-    left: 153px;
-
-    top: 54px;
-
-    right: 0;
-
-    bottom: 0;
-
-    padding: 28px 24px;
-
-    overflow: hidden;
-}
-
-
-.page {
-
-    display: none;
-
-    width: 100%;
-    height: 100%;
-}
-
-
-.page.active {
-
-    display: block;
-}
-
-
-/* =========================================================
-   HEADINGS
-   ========================================================= */
-
-.page-header {
-
-    margin-bottom: 22px;
-}
-
-
-.page-title {
-
-    margin: 0;
-
-    color: #e0e1dc;
-
-    font-size: 24px;
-
-    font-weight: 400;
-
-    letter-spacing: -1.2px;
-}
-
-
-.page-description {
-
-    margin: 6px 0 0;
-
-    color: #666c64;
-
-    font-size: 10px;
-}
-
-
-/* =========================================================
-   HOME
-   ========================================================= */
-
-.home-card {
-
-    position: relative;
-
-    min-height: 245px;
-
-    padding: 25px;
-
-    border: 1px solid #242723;
-
-    border-radius: 12px;
-
-    background: #141613;
-}
-
-
-.home-card-title {
-
-    color: #dcddd8;
-
-    font-size: 16px;
-
-    font-weight: 400;
-
-    letter-spacing: -.5px;
-}
-
-
-.home-card-description {
-
-    max-width: 340px;
-
-    margin-top: 8px;
-
-    color: #676d65;
-
-    font-size: 10px;
-
-    line-height: 1.6;
-}
-
-
-.home-card-meta {
-
-    position: absolute;
-
-    left: 25px;
-    bottom: 25px;
-
-    color: #4e544d;
-
-    font-size: 9px;
-}
-
-
-.launch-button {
-
-    position: absolute;
-
-    right: 24px;
-    bottom: 23px;
-
-    height: 35px;
-
-    padding: 0 15px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 13px;
-
-    border: 1px solid #343a33;
-
-    border-radius: 7px;
-
-    background: #20241f;
-
-    color: #d7d9d3;
-
-    font-size: 10px;
-
-    cursor: pointer;
-
-    transition:
-        background .15s ease,
-        border-color .15s ease;
-}
-
-
-.launch-button:hover {
-
-    background: #282d27;
-
-    border-color: #4a5248;
-}
-
-
-.launch-arrow {
-
-    color: #899487;
-
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   LAUNCH PAGE
-   ========================================================= */
-
-.launch-panel {
-
-    width: 100%;
-
-    height: 245px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border: 1px solid #242723;
-
-    border-radius: 12px;
-
-    background: #141613;
-}
-
-
-.launch-panel-inner {
-
-    text-align: center;
-}
-
-
-.launch-panel-title {
-
-    color: #dedfd9;
-
-    font-size: 17px;
-
-    font-weight: 400;
-}
-
-
-.launch-panel-text {
-
-    margin-top: 7px;
-
-    color: #666c64;
-
-    font-size: 10px;
-}
-
-
-.launch-panel .launch-button {
-
-    position: static;
-
-    margin: 23px auto 0;
-}
-
-
-/* =========================================================
-   SETTINGS
-   ========================================================= */
-
-.settings-list {
-
-    border: 1px solid #242723;
-
-    border-radius: 12px;
-
-    overflow: hidden;
-
-    background: #141613;
-}
-
-
-.setting {
-
-    min-height: 57px;
-
-    padding: 0 17px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    border-bottom: 1px solid #20231f;
-}
-
-
-.setting:last-child {
-
-    border-bottom: 0;
-}
-
-
-.setting-name {
-
-    color: #cfd1cb;
-
-    font-size: 10px;
-}
-
-
-.setting-description {
-
-    margin-top: 3px;
-
-    color: #5e645d;
-
-    font-size: 8px;
-}
-
-
-.toggle {
-
-    position: relative;
-
-    width: 31px;
-    height: 17px;
-
-    border: 0;
-
-    border-radius: 20px;
-
-    background: #292c28;
-
-    cursor: pointer;
-
-    transition:
-        background .15s ease;
-}
-
-
-.toggle::after {
-
-    content: "";
-
-    position: absolute;
-
-    top: 3px;
-    left: 3px;
-
-    width: 11px;
-    height: 11px;
-
-    border-radius: 50%;
-
-    background: #777d75;
-
-    transition:
-        transform .15s ease,
-        background .15s ease;
-}
-
-
-.toggle.on {
-
-    background: #3e493d;
-}
-
-
-.toggle.on::after {
-
-    transform: translateX(14px);
-
-    background: #a0ad9b;
-}
-
-
-/* =========================================================
-   CHANGELOG
-   ========================================================= */
-
-.change-list {
-
-    border: 1px solid #242723;
-
-    border-radius: 12px;
-
-    overflow: hidden;
-
-    background: #141613;
-}
-
-
-.change {
-
-    padding: 17px;
-
-    border-bottom: 1px solid #20231f;
-}
-
-
-.change:last-child {
-
-    border-bottom: 0;
-}
-
-
-.change-title {
-
-    color: #d1d3cd;
-
-    font-size: 10px;
-}
-
-
-.change-text {
-
-    margin-top: 5px;
-
-    color: #626861;
-
-    font-size: 9px;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   FULL SCREEN LAUNCHING PAGE
-   ========================================================= */
-
-.launching-page {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 100;
-
-    display: none;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #0f100f;
-}
-
-
-.launching-page.active {
-
-    display: flex;
-}
-
-
-.launching-content {
-
-    width: 330px;
-
-    text-align: left;
-}
-
-
-.launching-logo {
-
-    margin-bottom: 38px;
-
-    color: #dfe0da;
-
-    font-size: 17px;
-
-    font-weight: 500;
-
-    letter-spacing: -.6px;
-}
-
-
-.launching-title {
-
-    color: #e0e1dc;
-
-    font-size: 28px;
-
-    font-weight: 400;
-
-    letter-spacing: -1.2px;
-}
-
-
-.launching-subtitle {
-
-    margin-top: 8px;
-
-    margin-bottom: 30px;
-
-    color: #686d66;
-
-    font-size: 10px;
-}
-
-
-.launching-progress {
-
-    width: 100%;
-
-    height: 2px;
-
-    overflow: hidden;
-
-    background: #242724;
-}
-
-
-.launching-progress-fill {
-
-    width: 0%;
-
-    height: 100%;
-
-    background: #858f81;
-
-    transition:
-        width 1s linear;
-}
-
-
-.launching-status {
-
-    margin-top: 11px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-    color: #6d736b;
-
-    font-size: 9px;
-}
-
-
-.launching-status-dot {
-
-    width: 5px;
-    height: 5px;
-
-    flex-shrink: 0;
-
-    border-radius: 50%;
-
-    background: #858f81;
-}
-
-
-.launch-cancel {
-
-    margin-top: 24px;
-
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-
-    color: #4c514a;
-
-    font-size: 9px;
-
-    cursor: pointer;
-}
-
-
-.launch-cancel:hover {
-
-    color: #8d9489;
-}
-
-
-/* =========================================================
-   DISABLE SELECTION / CONTEXT MENU
-   ========================================================= */
-
-::selection {
-
-    background: transparent;
-}
-
-</style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    >
+
+    <title>orro</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
@@ -832,90 +23,116 @@ button {
 <body>
 
 
+<!-- ==================================================
+     INTRO — LOCKED
+     ================================================== -->
+
+<div id="intro">
+
+    <div class="intro-word">
+        orro
+    </div>
+
+    <div class="intro-dot"></div>
+
+    <div class="intro-ring"></div>
+
+    <div class="intro-ring-two"></div>
+
+</div>
+
+
+
+<!-- ==================================================
+     APPLICATION
+     ================================================== -->
+
 <div id="app">
 
 
-    <!-- =====================================================
-         TOP BAR
-         ===================================================== -->
-
-    <header class="topbar">
-
-        <div class="brand">
-            orro
-        </div>
-
-
-        <div class="window-actions">
-
-            <button
-                id="closeButton"
-                class="close-button"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
-        </div>
-
-    </header>
-
-
-
-    <!-- =====================================================
+    <!-- ==================================================
          SIDEBAR
-         ===================================================== -->
+         ================================================== -->
 
     <aside class="sidebar">
 
-        <nav class="nav">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                o
+            </div>
+
+            <div class="brand-name">
+                orro
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-label">
+                Workspace
+            </div>
+
 
             <button
-                class="nav-button active"
-                data-page="home"
+                class="selected"
+                onclick="showView('home',this)"
             >
-                <span class="nav-symbol">⌂</span>
-                <span>Home</span>
+                Home
             </button>
 
 
             <button
-                class="nav-button"
-                data-page="launch"
+                onclick="showView('launch',this)"
             >
-                <span class="nav-symbol">›</span>
-                <span>Launch</span>
+                Launch
             </button>
 
 
             <button
-                class="nav-button"
-                data-page="settings"
+                onclick="showView('changes',this)"
             >
-                <span class="nav-symbol">◌</span>
-                <span>Settings</span>
+                Changelog
             </button>
+
+        </div>
+
+
+
+        <div class="nav secondary">
+
+            <div class="nav-label">
+                Preferences
+            </div>
 
 
             <button
-                class="nav-button"
-                data-page="changelog"
+                onclick="showView('settings',this)"
             >
-                <span class="nav-symbol">≡</span>
-                <span>Changelog</span>
+                Settings
             </button>
 
-        </nav>
+        </div>
+
+
+
+        <div class="sidebar-footer">
+            orro
+        </div>
+
 
     </aside>
 
 
 
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
+    <!-- ==================================================
+         CONTENT
+         ================================================== -->
 
-    <main class="main">
+    <main class="content">
 
 
         <!-- =================================================
@@ -923,55 +140,113 @@ button {
              ================================================= -->
 
         <section
-            class="page active"
-            id="page-home"
+            id="home"
+            class="view active"
         >
 
-            <div class="page-header">
 
-                <h1 class="page-title">
-                    Home
-                </h1>
+            <div class="topline">
 
-                <p class="page-description">
-                    Start your orro session.
-                </p>
+                <span>
+                    Overview
+                </span>
 
             </div>
 
 
-            <div class="home-card">
+            <h1>
+                Welcome back.
+            </h1>
 
-                <div class="home-card-title">
-                    Ready to launch
+
+            <div class="lead">
+                Everything is ready.
+            </div>
+
+
+            <div class="status-area">
+
+
+                <div class="status-line">
+
+                    <span class="status-light"></span>
+
+                    Partially detected
+
                 </div>
 
-                <div class="home-card-description">
-                    Start a new orro session from here.
-                    Your launcher preferences are saved
-                    automatically.
+
+                <div class="app-name">
+                    orro
                 </div>
 
 
-                <div class="home-card-meta">
-                    orro desktop
+                <div class="app-meta">
+                    version 1.0.0 · latest
+                </div>
+
+
+                <div class="app-description">
+                    The latest version of orro is installed
+                    and ready to launch.
                 </div>
 
 
                 <button
                     class="launch-button"
-                    data-launch
+                    onclick="launch(this)"
                 >
-
                     Launch
-
-                    <span class="launch-arrow">
-                        →
-                    </span>
-
                 </button>
 
+
             </div>
+
+
+            <div class="details">
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Version
+                    </div>
+
+                    <div class="detail-value">
+                        1.0.0
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Release
+                    </div>
+
+                    <div class="detail-value">
+                        Latest
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Status
+                    </div>
+
+                    <div class="detail-value">
+                        Partially detected
+                    </div>
+
+                </div>
+
+
+            </div>
+
 
         </section>
 
@@ -982,132 +257,59 @@ button {
              ================================================= -->
 
         <section
-            class="page"
-            id="page-launch"
+            id="launch"
+            class="view launch-view"
         >
 
-            <div class="page-header">
 
-                <h1 class="page-title">
-                    Launch
-                </h1>
+            <div class="topline">
 
-                <p class="page-description">
-                    Start a new session.
-                </p>
+                <span>
+                    Application
+                </span>
 
             </div>
+
+
+            <h1>
+                Launch
+            </h1>
+
+
+            <div class="lead">
+                Start a new session.
+            </div>
+
 
 
             <div class="launch-panel">
 
-                <div class="launch-panel-inner">
 
-                    <div class="launch-panel-title">
-                        orro is ready
-                    </div>
-
-                    <div class="launch-panel-text">
-                        Start when you're ready.
-                    </div>
-
-
-                    <button
-                        class="launch-button"
-                        data-launch
-                    >
-
-                        Launch
-
-                        <span class="launch-arrow">
-                            →
-                        </span>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             SETTINGS
-             ================================================= -->
-
-        <section
-            class="page"
-            id="page-settings"
-        >
-
-            <div class="page-header">
-
-                <h1 class="page-title">
-                    Settings
-                </h1>
-
-                <p class="page-description">
-                    Preferences are saved automatically.
-                </p>
-
-            </div>
-
-
-            <div class="settings-list">
-
-
-                <div class="setting">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Minimise on launch
-                        </div>
-
-                        <div class="setting-description">
-                            Minimise the desktop window when launch begins.
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="toggle"
-                        id="minimiseToggle"
-                        data-setting="minimise"
-                    ></button>
-
+                <div class="launch-brand">
+                    orro
                 </div>
 
 
-
-                <div class="setting">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Close after launch
-                        </div>
-
-                        <div class="setting-description">
-                            Close orro after the launch sequence finishes.
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="toggle"
-                        id="closeAfterToggle"
-                        data-setting="closeAfter"
-                    ></button>
-
+                <div class="launch-version">
+                    1.0.0
                 </div>
 
 
+                <div class="launch-state">
+                    Ready
+                </div>
+
+
+                <button
+                    class="launch-action"
+                    onclick="launch(this)"
+                >
+                    Launch
+                </button>
+
+
             </div>
+
 
         </section>
 
@@ -1118,67 +320,245 @@ button {
              ================================================= -->
 
         <section
-            class="page"
-            id="page-changelog"
+            id="changes"
+            class="view"
         >
 
-            <div class="page-header">
 
-                <h1 class="page-title">
-                    Changelog
-                </h1>
+            <div class="topline">
 
-                <p class="page-description">
-                    Recent changes.
-                </p>
+                <span>
+                    Updates
+                </span>
 
             </div>
 
 
-            <div class="change-list">
+            <h1>
+                Changelog
+            </h1>
 
 
-                <div class="change">
+            <div class="lead">
+                What's changed in orro.
+            </div>
 
-                    <div class="change-title">
-                        Launcher
+
+            <div class="changelog">
+
+
+                <div class="release">
+
+
+                    <div class="release-version">
+
+                        1.0.0
+
+                        <div class="release-date">
+                            CURRENT
+                        </div>
+
                     </div>
 
-                    <div class="change-text">
-                        Added the full launch sequence and launch screen.
+
+                    <div>
+
+                        <div class="release-title">
+                            Initial release
+                        </div>
+
+
+                        <div class="release-text">
+                            New interface, startup sequence,
+                            launcher shell and first public build.
+                        </div>
+
                     </div>
+
 
                 </div>
 
 
-                <div class="change">
 
-                    <div class="change-title">
-                        Settings
+                <div class="release">
+
+
+                    <div class="release-version">
+
+                        0.9.2
+
+                        <div class="release-date">
+                            PREVIOUS
+                        </div>
+
                     </div>
 
-                    <div class="change-text">
-                        Launcher preferences now persist between sessions.
+
+                    <div>
+
+                        <div class="release-title">
+                            Interface refinement
+                        </div>
+
+
+                        <div class="release-text">
+                            Improved navigation and launch flow.
+                        </div>
+
                     </div>
 
-                </div>
-
-
-                <div class="change">
-
-                    <div class="change-title">
-                        Interface
-                    </div>
-
-                    <div class="change-text">
-                        Simplified the desktop interface and removed unnecessary
-                        version and branding elements.
-                    </div>
 
                 </div>
 
 
             </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SETTINGS
+             ================================================= -->
+
+        <section
+            id="settings"
+            class="view"
+        >
+
+
+            <div class="topline">
+
+                <span>
+                    Preferences
+                </span>
+
+            </div>
+
+
+            <h1>
+                Settings
+            </h1>
+
+
+            <div class="lead">
+                A few things you can change.
+            </div>
+
+
+            <div class="settings">
+
+
+                <div class="setting">
+
+
+                    <div>
+
+                        <div class="setting-name">
+                            Remember session
+                        </div>
+
+                        <div class="setting-info">
+                            Keep your session between launches.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle on"
+                        data-setting="remember"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+
+                </div>
+
+
+
+                <div class="setting">
+
+
+                    <div>
+
+                        <div class="setting-name">
+                            Automatic updates
+                        </div>
+
+                        <div class="setting-info">
+                            Check for new versions at startup.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle on"
+                        data-setting="updates"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+
+                </div>
+
+
+
+                <div class="setting">
+
+
+                    <div>
+
+                        <div class="setting-name">
+                            Minimise on launch
+                        </div>
+
+                        <div class="setting-info">
+                            Hide the interface after launching.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle"
+                        data-setting="minimise"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+
+                </div>
+
+
+
+                <div class="setting">
+
+
+                    <div>
+
+                        <div class="setting-name">
+                            Close after launch
+                        </div>
+
+                        <div class="setting-info">
+                            Close orro when the launch finishes.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle"
+                        data-setting="closeAfter"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+
+                </div>
+
+
+            </div>
+
 
         </section>
 
@@ -1187,33 +567,35 @@ button {
 
 
 
-    <!-- =====================================================
-         FULL SCREEN LAUNCHING PAGE
-         ===================================================== -->
+    <!-- ==================================================
+         LAUNCHING SCREEN
+         ================================================== -->
 
-    <section
-        id="launchingPage"
-        class="launching-page"
+    <div
+        id="launching-screen"
+        class="launching-screen"
     >
+
 
         <div class="launching-content">
 
-            <div class="launching-logo">
+
+            <div class="launching-brand">
                 orro
             </div>
 
 
             <div
+                id="launching-title"
                 class="launching-title"
-                id="launchingTitle"
             >
                 Launching
             </div>
 
 
             <div
+                id="launching-subtitle"
                 class="launching-subtitle"
-                id="launchingSubtitle"
             >
                 Preparing your session.
             </div>
@@ -1222,8 +604,8 @@ button {
             <div class="launching-progress">
 
                 <div
+                    id="launching-progress-fill"
                     class="launching-progress-fill"
-                    id="launchProgress"
                 ></div>
 
             </div>
@@ -1231,9 +613,9 @@ button {
 
             <div class="launching-status">
 
-                <span class="launching-status-dot"></span>
+                <span class="launching-dot"></span>
 
-                <span id="launchStatus">
+                <span id="launching-status-text">
                     Initialising
                 </span>
 
@@ -1241,710 +623,26 @@ button {
 
 
             <button
-                id="cancelLaunch"
-                class="launch-cancel"
+                id="launching-cancel"
+                class="launching-cancel"
+                onclick="cancelLaunch()"
             >
                 Cancel
             </button>
 
+
         </div>
 
-    </section>
+
+    </div>
 
 
 </div>
 
 
 
-<script>
-
-/* =========================================================
-   STORAGE
-   ========================================================= */
-
-const STORAGE_KEYS = {
-
-    minimise:
-        "orro.minimiseOnLaunch",
-
-    closeAfter:
-        "orro.closeAfterLaunch"
-
-};
-
-
-
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
-
-const app =
-    document.getElementById("app");
-
-
-const closeButton =
-    document.getElementById("closeButton");
-
-
-const launchingPage =
-    document.getElementById("launchingPage");
-
-
-const launchProgress =
-    document.getElementById("launchProgress");
-
-
-const launchStatus =
-    document.getElementById("launchStatus");
-
-
-const launchingTitle =
-    document.getElementById("launchingTitle");
-
-
-const launchingSubtitle =
-    document.getElementById("launchingSubtitle");
-
-
-const cancelLaunch =
-    document.getElementById("cancelLaunch");
-
-
-const minimiseToggle =
-    document.getElementById("minimiseToggle");
-
-
-const closeAfterToggle =
-    document.getElementById("closeAfterToggle");
-
-
-let launchTimers = [];
-
-let launchRunning = false;
-
-
-
-/* =========================================================
-   NATIVE MESSAGE
-   ========================================================= */
-
-function nativeMessage(message) {
-
-    try {
-
-        if (
-            window.chrome &&
-            window.chrome.webview
-        ) {
-
-            window.chrome.webview.postMessage(
-                message
-            );
-
-        }
-
-    } catch (error) {
-
-        console.log(
-            "Native bridge unavailable."
-        );
-
-    }
-
-}
-
-
-
-/* =========================================================
-   SETTINGS
-   ========================================================= */
-
-function getSetting(
-    key,
-    fallback = false
-) {
-
-    return (
-        localStorage.getItem(key) === "true"
-    )
-        ? true
-        : fallback;
-}
-
-
-function setSetting(
-    key,
-    value
-) {
-
-    localStorage.setItem(
-        key,
-        value ? "true" : "false"
-    );
-
-}
-
-
-function updateToggle(
-    element,
-    value
-) {
-
-    element.classList.toggle(
-        "on",
-        value
-    );
-
-}
-
-
-
-/* =========================================================
-   LOAD SETTINGS
-   ========================================================= */
-
-function loadSettings() {
-
-    updateToggle(
-        minimiseToggle,
-        getSetting(
-            STORAGE_KEYS.minimise
-        )
-    );
-
-
-    updateToggle(
-        closeAfterToggle,
-        getSetting(
-            STORAGE_KEYS.closeAfter
-        )
-    );
-
-}
-
-
-loadSettings();
-
-
-
-/* =========================================================
-   SETTINGS BUTTONS
-   ========================================================= */
-
-minimiseToggle.addEventListener(
-    "click",
-    () => {
-
-        const value =
-            !getSetting(
-                STORAGE_KEYS.minimise
-            );
-
-
-        setSetting(
-            STORAGE_KEYS.minimise,
-            value
-        );
-
-
-        updateToggle(
-            minimiseToggle,
-            value
-        );
-
-    }
-);
-
-
-closeAfterToggle.addEventListener(
-    "click",
-    () => {
-
-        const value =
-            !getSetting(
-                STORAGE_KEYS.closeAfter
-            );
-
-
-        setSetting(
-            STORAGE_KEYS.closeAfter,
-            value
-        );
-
-
-        updateToggle(
-            closeAfterToggle,
-            value
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-const navButtons =
-    document.querySelectorAll(
-        ".nav-button"
-    );
-
-
-const pages =
-    document.querySelectorAll(
-        ".page"
-    );
-
-
-function showPage(
-    pageName
-) {
-
-    navButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.page === pageName
-            );
-
-        }
-    );
-
-
-    pages.forEach(
-        page => {
-
-            page.classList.toggle(
-                "active",
-                page.id ===
-                "page-" + pageName
-            );
-
-        }
-    );
-
-}
-
-
-navButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                showPage(
-                    button.dataset.page
-                );
-
-            }
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   CLOSE BUTTON
-   ========================================================= */
-
-closeButton.addEventListener(
-    "click",
-    () => {
-
-        nativeMessage(
-            "window.close"
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   DRAG WINDOW
-   =========================================================
-   Drag from non-interactive empty areas.
-   ========================================================= */
-
-document.addEventListener(
-    "pointerdown",
-    event => {
-
-        if (
-            event.button !== 0
-        ) {
-            return;
-        }
-
-
-        const target =
-            event.target;
-
-
-        if (
-            target.closest(
-                "button, input, a"
-            )
-        ) {
-            return;
-        }
-
-
-        nativeMessage(
-            "window.drag"
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   LAUNCH
-   ========================================================= */
-
-function clearLaunchTimers() {
-
-    launchTimers.forEach(
-        timer => clearTimeout(timer)
-    );
-
-    launchTimers = [];
-
-}
-
-
-function updateLaunch(
-    percentage,
-    status
-) {
-
-    launchProgress.style.width =
-        percentage + "%";
-
-    launchStatus.textContent =
-        status;
-
-}
-
-
-
-/* =========================================================
-   START LAUNCH
-   ========================================================= */
-
-function startLaunch() {
-
-    clearLaunchTimers();
-
-    launchRunning = true;
-
-
-    launchingPage.classList.add(
-        "active"
-    );
-
-
-    updateLaunch(
-        0,
-        "Initialising"
-    );
-
-
-    launchingTitle.textContent =
-        "Launching";
-
-
-    launchingSubtitle.textContent =
-        "Preparing your session.";
-
-
-    /*
-     * Minimise immediately when the
-     * launch sequence starts.
-     *
-     * The preference remains persistent.
-     */
-
-    if (
-        getSetting(
-            STORAGE_KEYS.minimise
-        )
-    ) {
-
-        nativeMessage(
-            "window.minimize"
-        );
-
-    }
-
-
-    /*
-     * Deliberately slow,
-     * irregular ~37 second sequence.
-     */
-
-    const stages = [
-
-        [
-            1500,
-            4,
-            "Initialising"
-        ],
-
-        [
-            4300,
-            9,
-            "Loading configuration"
-        ],
-
-        [
-            7200,
-            15,
-            "Checking installation"
-        ],
-
-        [
-            10400,
-            23,
-            "Checking environment"
-        ],
-
-        [
-            13900,
-            31,
-            "Preparing files"
-        ],
-
-        [
-            17600,
-            40,
-            "Loading components"
-        ],
-
-        [
-            21100,
-            49,
-            "Preparing session"
-        ],
-
-        [
-            24700,
-            61,
-            "Initialising services"
-        ],
-
-        [
-            27900,
-            70,
-            "Starting core"
-        ],
-
-        [
-            30700,
-            79,
-            "Connecting"
-        ],
-
-        [
-            33100,
-            90,
-            "Starting orro"
-        ],
-
-        [
-            35500,
-            100,
-            "Ready"
-        ]
-
-    ];
-
-
-    stages.forEach(
-        stage => {
-
-            const timer =
-                setTimeout(
-                    () => {
-
-                        updateLaunch(
-                            stage[1],
-                            stage[2]
-                        );
-
-                    },
-                    stage[0]
-                );
-
-
-            launchTimers.push(
-                timer
-            );
-
-        }
-    );
-
-
-    /*
-     * Finish.
-     */
-
-    const finishTimer =
-        setTimeout(
-            () => {
-
-                launchRunning =
-                    false;
-
-
-                launchingTitle.textContent =
-                    "Ready";
-
-
-                launchingSubtitle.textContent =
-                    "Session ready.";
-
-
-                updateLaunch(
-                    100,
-                    "Ready"
-                );
-
-
-                /*
-                 * IMPORTANT:
-                 *
-                 * This is the point at which
-                 * the simulated launch finishes.
-                 *
-                 * If you later connect a real
-                 * native operation, this is the
-                 * point that should be replaced
-                 * by the native completion event.
-                 */
-
-                if (
-                    getSetting(
-                        STORAGE_KEYS.closeAfter
-                    )
-                ) {
-
-                    nativeMessage(
-                        "window.close"
-                    );
-
-                }
-
-            },
-            37000
-        );
-
-
-    launchTimers.push(
-        finishTimer
-    );
-
-}
-
-
-
-/* =========================================================
-   CANCEL LAUNCH
-   ========================================================= */
-
-function cancelLaunchSequence() {
-
-    if (!launchRunning) {
-        return;
-    }
-
-
-    launchRunning =
-        false;
-
-
-    clearLaunchTimers();
-
-
-    launchProgress.style.width =
-        "0%";
-
-
-    launchStatus.textContent =
-        "Initialising";
-
-
-    launchingTitle.textContent =
-        "Launching";
-
-
-    launchingSubtitle.textContent =
-        "Preparing your session.";
-
-
-    launchingPage.classList.remove(
-        "active"
-    );
-
-}
-
-
-cancelLaunch.addEventListener(
-    "click",
-    cancelLaunchSequence
-);
-
-
-
-/* =========================================================
-   ALL LAUNCH BUTTONS
-   ========================================================= */
-
-document
-    .querySelectorAll(
-        "[data-launch]"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    startLaunch();
-
-                }
-            );
-
-        }
-    );
-
-
-
-/* =========================================================
-   RIGHT CLICK
-   ========================================================= */
-
-document.addEventListener(
-    "contextmenu",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-</script>
+<script src="script.js"></script>
 
 </body>
+
 </html>
