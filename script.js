@@ -1,534 +1,822 @@
-(() => {
+/* =========================================================
+   ORRO LOADER
+   ========================================================= */
 
-    "use strict";
 
+/* =========================================================
+   NATIVE WEBVIEW BRIDGE
+   ========================================================= */
 
-    /* =====================================================
-       PERSISTENT SETTINGS
-       ===================================================== */
+function nativeMessage(message) {
 
-    const STORAGE_KEY = "orro_settings";
-
-
-    const defaultSettings = {
-
-        rememberSession: true,
-
-        automaticUpdates: true,
-
-        minimiseOnLaunch: false
-
-    };
-
-
-    function loadSettings() {
-
-        try {
-
-            const stored =
-                localStorage.getItem(STORAGE_KEY);
-
-
-            if (!stored)
-                return { ...defaultSettings };
-
-
-            const parsed =
-                JSON.parse(stored);
-
-
-            return {
-                ...defaultSettings,
-                ...parsed
-            };
-
-        } catch {
-
-            return {
-                ...defaultSettings
-            };
-
-        }
-
-    }
-
-
-    let settings =
-        loadSettings();
-
-
-    function saveSettings() {
-
-        try {
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(settings)
-            );
-
-        } catch {
-
-            // Storage may be unavailable.
-            // The UI still works normally.
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SETTINGS UI
-       ===================================================== */
-
-    const toggles =
-        document.querySelectorAll(
-            "[data-setting]"
-        );
-
-
-    function updateToggleUI() {
-
-        toggles.forEach(toggle => {
-
-            const setting =
-                toggle.dataset.setting;
-
-
-            toggle.classList.toggle(
-                "on",
-                Boolean(settings[setting])
-            );
-
-        });
-
-    }
-
-
-    toggles.forEach(toggle => {
-
-        toggle.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const setting =
-                    toggle.dataset.setting;
-
-
-                settings[setting] =
-                    !settings[setting];
-
-
-                saveSettings();
-
-                updateToggleUI();
-
-            }
-        );
-
-    });
-
-
-    updateToggleUI();
-
-
-    /* =====================================================
-       PAGE NAVIGATION
-       ===================================================== */
-
-    const navItems =
-        document.querySelectorAll(
-            ".nav-item"
-        );
-
-
-    const pages =
-        document.querySelectorAll(
-            ".page"
-        );
-
-
-    function showPage(name) {
-
-        navItems.forEach(item => {
-
-            item.classList.toggle(
-                "active",
-                item.dataset.page === name
-            );
-
-        });
-
-
-        pages.forEach(page => {
-
-            page.classList.toggle(
-                "active",
-                page.id === `page-${name}`
-            );
-
-        });
-
-    }
-
-
-    navItems.forEach(item => {
-
-        item.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const page =
-                    item.dataset.page;
-
-
-                if (page)
-                    showPage(page);
-
-            }
-        );
-
-    });
-
-
-    /* =====================================================
-       LAUNCHING SCREEN
-       ===================================================== */
-
-    const launchingPage =
-        document.getElementById(
-            "launching-page"
-        );
-
-
-    const launchProgress =
-        document.getElementById(
-            "launchProgress"
-        );
-
-
-    const launchStatus =
-        document.getElementById(
-            "launchStatus"
-        );
-
-
-    const cancelLaunch =
-        document.getElementById(
-            "cancelLaunch"
-        );
-
-
-    let launchTimer = null;
-
-
-    function setLaunchProgress(
-        amount,
-        status
+    if (
+        window.chrome &&
+        window.chrome.webview
     ) {
 
-        launchProgress.style.width =
-            `${amount}%`;
+        window.chrome.webview.postMessage(
+            message
+        );
 
-        launchStatus.textContent =
-            status;
+    }
+
+}
+
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function showView(
+    id,
+    button
+) {
+
+    var views =
+        document.querySelectorAll(
+            ".view"
+        );
+
+
+    for (
+        var i = 0;
+        i < views.length;
+        i++
+    ) {
+
+        views[i].classList.remove(
+            "active"
+        );
 
     }
 
 
-    function closeLaunchingPage() {
+    var selectedView =
+        document.getElementById(
+            id
+        );
 
-        if (launchTimer) {
 
-            clearTimeout(launchTimer);
+    if (selectedView) {
 
-            launchTimer = null;
+        selectedView.classList.add(
+            "active"
+        );
+
+    }
+
+
+    var buttons =
+        document.querySelectorAll(
+            ".nav button"
+        );
+
+
+    for (
+        var j = 0;
+        j < buttons.length;
+        j++
+    ) {
+
+        buttons[j].classList.remove(
+            "selected"
+        );
+
+    }
+
+
+    if (button) {
+
+        button.classList.add(
+            "selected"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SETTINGS STORAGE
+   ========================================================= */
+
+var SETTINGS_KEY =
+    "orro.settings";
+
+
+var defaultSettings = {
+
+    remember: true,
+
+    updates: true,
+
+    minimise: false,
+
+    closeAfter: false
+
+};
+
+
+function getSettings() {
+
+    try {
+
+        var stored =
+            localStorage.getItem(
+                SETTINGS_KEY
+            );
+
+
+        if (!stored) {
+
+            return Object.assign(
+                {},
+                defaultSettings
+            );
 
         }
 
 
-        launchingPage.classList.remove(
-            "active"
+        var parsed =
+            JSON.parse(
+                stored
+            );
+
+
+        return Object.assign(
+            {},
+            defaultSettings,
+            parsed
+        );
+
+    }
+
+    catch (error) {
+
+        return Object.assign(
+            {},
+            defaultSettings
+        );
+
+    }
+
+}
+
+
+
+function saveSettings(
+    settings
+) {
+
+    try {
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(
+                settings
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        // LocalStorage may be unavailable.
+    }
+
+}
+
+
+
+/* =========================================================
+   LOAD SETTINGS
+   ========================================================= */
+
+function loadSettings() {
+
+    var settings =
+        getSettings();
+
+
+    var toggles =
+        document.querySelectorAll(
+            ".toggle[data-setting]"
         );
 
 
-        setLaunchProgress(
-            0,
-            "Initialising"
+    for (
+        var i = 0;
+        i < toggles.length;
+        i++
+    ) {
+
+        var toggle =
+            toggles[i];
+
+
+        var settingName =
+            toggle.dataset.setting;
+
+
+        var enabled =
+            !!settings[
+                settingName
+            ];
+
+
+        toggle.classList.toggle(
+            "on",
+            enabled
+        );
+
+    }
+
+}
+
+
+loadSettings();
+
+
+
+/* =========================================================
+   TOGGLE SETTING
+   ========================================================= */
+
+function toggleSetting(
+    element
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    var settingName =
+        element.dataset.setting;
+
+
+    if (!settingName) {
+        return;
+    }
+
+
+    var settings =
+        getSettings();
+
+
+    settings[
+        settingName
+    ] =
+        !settings[
+            settingName
+        ];
+
+
+    saveSettings(
+        settings
+    );
+
+
+    element.classList.toggle(
+        "on",
+        settings[
+            settingName
+        ]
+    );
+
+}
+
+
+
+/* =========================================================
+   LAUNCHING SCREEN
+   ========================================================= */
+
+var launchingScreen =
+    document.getElementById(
+        "launching-screen"
+    );
+
+
+var launchingProgress =
+    document.getElementById(
+        "launching-progress-fill"
+    );
+
+
+var launchingStatus =
+    document.getElementById(
+        "launching-status-text"
+    );
+
+
+var launchingTitle =
+    document.getElementById(
+        "launching-title"
+    );
+
+
+var launchingSubtitle =
+    document.getElementById(
+        "launching-subtitle"
+    );
+
+
+var launchTimers = [];
+
+
+var launchRunning =
+    false;
+
+
+
+/* =========================================================
+   CLEAR LAUNCH
+   ========================================================= */
+
+function clearLaunchTimers() {
+
+    for (
+        var i = 0;
+        i < launchTimers.length;
+        i++
+    ) {
+
+        clearTimeout(
+            launchTimers[i]
         );
 
     }
 
 
-    function startLaunch() {
+    launchTimers = [];
+
+}
+
+
+
+/* =========================================================
+   UPDATE LAUNCH SCREEN
+   ========================================================= */
+
+function updateLaunch(
+    percentage,
+    status
+) {
+
+    launchingProgress.style.width =
+        percentage + "%";
+
+
+    launchingStatus.textContent =
+        status;
+
+}
+
+
+
+/* =========================================================
+   START LAUNCH
+   ========================================================= */
+
+function launch(
+    button
+) {
+
+    if (launchRunning) {
+        return;
+    }
+
+
+    launchRunning = true;
+
+
+    clearLaunchTimers();
+
+
+    var settings =
+        getSettings();
+
+
+    /* -----------------------------------------------------
+       Original launch button feedback
+       ----------------------------------------------------- */
+
+    if (button) {
+
+        button.dataset.originalText =
+            button.textContent;
+
+        button.textContent =
+            "Launching...";
+
+        button.style.opacity =
+            ".55";
+
+    }
+
+
+    /* -----------------------------------------------------
+       Show launching screen
+       ----------------------------------------------------- */
+
+    launchingScreen.classList.add(
+        "active"
+    );
+
+
+    launchingTitle.textContent =
+        "Launching";
+
+
+    launchingSubtitle.textContent =
+        "Preparing your session.";
+
+
+    updateLaunch(
+        0,
+        "Initialising"
+    );
+
+
+    /* -----------------------------------------------------
+       Minimise on launch
+       ----------------------------------------------------- */
+
+    if (settings.minimise) {
 
         /*
-         * Show the launching page.
+         * The setting is persistent.
+         *
+         * The native C++ receives this
+         * and minimises the actual window.
          */
 
-        launchingPage.classList.add(
-            "active"
+        nativeMessage(
+            "window.minimize"
         );
 
-
-        setLaunchProgress(
-            8,
-            "Initialising"
-        );
+    }
 
 
-        /*
-         * Small staged sequence so it
-         * feels like an actual launcher.
-         */
+    /* -----------------------------------------------------
+       37 second launch sequence
+       ----------------------------------------------------- */
 
-        launchTimer = setTimeout(
-            () => {
+    var stages = [
 
-                setLaunchProgress(
-                    28,
-                    "Checking environment"
-                );
+        {
+            time: 1500,
+            progress: 4,
+            text: "Initialising"
+        },
+
+        {
+            time: 4300,
+            progress: 9,
+            text: "Loading configuration"
+        },
+
+        {
+            time: 7200,
+            progress: 15,
+            text: "Checking installation"
+        },
+
+        {
+            time: 10400,
+            progress: 23,
+            text: "Checking environment"
+        },
+
+        {
+            time: 13900,
+            progress: 31,
+            text: "Preparing files"
+        },
+
+        {
+            time: 17600,
+            progress: 40,
+            text: "Loading components"
+        },
+
+        {
+            time: 21100,
+            progress: 49,
+            text: "Preparing session"
+        },
+
+        {
+            time: 24700,
+            progress: 61,
+            text: "Initialising services"
+        },
+
+        {
+            time: 27900,
+            progress: 70,
+            text: "Starting core"
+        },
+
+        {
+            time: 30700,
+            progress: 79,
+            text: "Connecting"
+        },
+
+        {
+            time: 33100,
+            progress: 90,
+            text: "Starting orro"
+        },
+
+        {
+            time: 35500,
+            progress: 100,
+            text: "Ready"
+        }
+
+    ];
 
 
-                launchTimer = setTimeout(
-                    () => {
+    for (
+        var i = 0;
+        i < stages.length;
+        i++
+    ) {
 
-                        setLaunchProgress(
-                            52,
-                            "Preparing session"
-                        );
+        (function(stage) {
 
+            var timer =
+                setTimeout(
+                    function() {
 
-                        launchTimer = setTimeout(
-                            () => {
-
-                                setLaunchProgress(
-                                    76,
-                                    "Starting orro"
-                                );
-
-
-                                launchTimer =
-                                    setTimeout(
-                                        () => {
-
-                                            setLaunchProgress(
-                                                100,
-                                                "Ready"
-                                            );
-
-
-                                            /*
-                                             * If your C++
-                                             * loader handles
-                                             * launching the
-                                             * actual application,
-                                             * this is where you
-                                             * can send the message.
-                                             */
-
-                                            if (
-                                                window.chrome &&
-                                                window.chrome.webview
-                                            ) {
-
-                                                window.chrome.webview.postMessage(
-                                                    "launch"
-                                                );
-
-                                            }
-
-
-                                            /*
-                                             * If "minimise on
-                                             * launch" is enabled,
-                                             * tell the C++ side.
-                                             */
-
-                                            if (
-                                                settings.minimiseOnLaunch &&
-                                                window.chrome &&
-                                                window.chrome.webview
-                                            ) {
-
-                                                window.chrome.webview.postMessage(
-                                                    "window.minimise"
-                                                );
-
-                                            }
-
-                                        },
-                                        650
-                                    );
-
-                            },
-                            550
+                        updateLaunch(
+                            stage.progress,
+                            stage.text
                         );
 
                     },
-                    550
+                    stage.time
                 );
 
-            },
-            450
-        );
+
+            launchTimers.push(
+                timer
+            );
+
+        })(stages[i]);
 
     }
 
 
-    document
-        .querySelectorAll("[data-launch]")
-        .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                event => {
+    /* -----------------------------------------------------
+       FINISH
+       ----------------------------------------------------- */
 
-                    event.stopPropagation();
+    var finishTimer =
+        setTimeout(
+            function() {
 
-                    startLaunch();
+                launchRunning =
+                    false;
+
+
+                launchingTitle.textContent =
+                    "Ready";
+
+
+                launchingSubtitle.textContent =
+                    "Session ready.";
+
+
+                updateLaunch(
+                    100,
+                    "Ready"
+                );
+
+
+                /*
+                 * Restore launch button.
+                 */
+
+                if (button) {
+
+                    button.textContent =
+                        button.dataset.originalText ||
+                        "Launch";
+
+                    button.style.opacity =
+                        "1";
 
                 }
-            );
-
-        });
 
 
-    cancelLaunch.addEventListener(
-        "click",
-        event => {
+                /*
+                 * Close automatically if enabled.
+                 *
+                 * This represents the completion
+                 * of the fictional launch sequence.
+                 */
 
-            event.stopPropagation();
-
-            closeLaunchingPage();
-
-        }
-    );
+                var currentSettings =
+                    getSettings();
 
 
-    /* =====================================================
-       CLOSE
-       ===================================================== */
+                if (
+                    currentSettings.closeAfter
+                ) {
 
-    const closeButton =
-        document.getElementById(
-            "closeButton"
+                    nativeMessage(
+                        "window.close"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Otherwise leave the launching
+                 * screen visible for a moment,
+                 * then return to the existing GUI.
+                 */
+
+                var returnTimer =
+                    setTimeout(
+                        function() {
+
+                            launchingScreen.classList.remove(
+                                "active"
+                            );
+
+                            updateLaunch(
+                                0,
+                                "Initialising"
+                            );
+
+                            launchingTitle.textContent =
+                                "Launching";
+
+                            launchingSubtitle.textContent =
+                                "Preparing your session.";
+
+                        },
+                        900
+                    );
+
+
+                launchTimers.push(
+                    returnTimer
+                );
+
+
+            },
+            37000
         );
 
 
-    closeButton.addEventListener(
-        "click",
-        event => {
+    launchTimers.push(
+        finishTimer
+    );
 
-            event.stopPropagation();
+}
 
 
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
 
-                window.chrome.webview.postMessage(
-                    "window.close"
-                );
+/* =========================================================
+   CANCEL
+   ========================================================= */
 
-            }
+function cancelLaunch() {
 
-        }
+    if (!launchRunning) {
+        return;
+    }
+
+
+    launchRunning =
+        false;
+
+
+    clearLaunchTimers();
+
+
+    launchingScreen.classList.remove(
+        "active"
     );
 
 
-    /* =====================================================
-       ENTIRE WINDOW DRAGGABLE
-       ===================================================== */
-
-    /*
-     * IMPORTANT:
-     *
-     * The whole loader is draggable.
-     *
-     * Buttons, toggles and navigation remain
-     * interactive and aren't treated as drag
-     * areas.
-     */
-
-    document.addEventListener(
-        "mousedown",
-        event => {
-
-            if (event.button !== 0)
-                return;
+    launchingProgress.style.width =
+        "0%";
 
 
-            /*
-             * Anything interactive should
-             * remain clickable.
-             */
-
-            const interactive =
-                event.target.closest(
-                    "button, input, select, textarea, a"
-                );
+    launchingStatus.textContent =
+        "Initialising";
 
 
-            if (interactive)
-                return;
+    launchingTitle.textContent =
+        "Launching";
 
 
-            /*
-             * Send drag request to C++.
-             */
-
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
-
-                window.chrome.webview.postMessage(
-                    "window.drag"
-                );
-
-            }
-
-        }
-    );
+    launchingSubtitle.textContent =
+        "Preparing your session.";
 
 
-    /* =====================================================
-       NO TEXT SELECTION
-       ===================================================== */
+    var buttons =
+        document.querySelectorAll(
+            ".launch-button, .launch-action"
+        );
 
-    document.addEventListener(
-        "selectstart",
-        event => {
 
-            event.preventDefault();
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
+    ) {
+
+        buttons[i].textContent =
+            "Launch";
+
+        buttons[i].style.opacity =
+            "1";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   DRAG WINDOW FROM ANY NON-INTERACTIVE AREA
+   ========================================================= */
+
+document.addEventListener(
+    "pointerdown",
+    function(event) {
+
+        if (
+            event.button !== 0
+        ) {
+
+            return;
 
         }
-    );
 
 
-    document.addEventListener(
-        "dragstart",
-        event => {
+        /*
+         * Buttons must remain clickable.
+         */
 
-            event.preventDefault();
+        if (
+            event.target.closest(
+                "button"
+            )
+        ) {
+
+            return;
 
         }
-    );
 
 
-    /* =====================================================
-       DEFAULT PAGE
-       ===================================================== */
+        /*
+         * Don't attempt to drag the launching
+         * screen itself.
+         */
 
-    showPage("home");
+        if (
+            event.target.closest(
+                "#launching-screen"
+            )
+        ) {
+
+            return;
+
+        }
 
 
-})();
+        nativeMessage(
+            "window.drag"
+        );
+
+    }
+);
+
+
+
+/* =========================================================
+   DISABLE RIGHT CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "contextmenu",
+    function(event) {
+
+        event.preventDefault();
+
+    }
+);
