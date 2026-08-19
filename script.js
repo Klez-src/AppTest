@@ -1,119 +1,148 @@
-(function () {
-
-  const nav = document.querySelectorAll(".nav-button");
-  const views = document.querySelectorAll(".view");
-
+(() => {
 
   /* ==================================================
      NAVIGATION
      ================================================== */
 
+  const navButtons =
+    document.querySelectorAll(".nav-button");
+
+  const views =
+    document.querySelectorAll(".view");
+
+
   function showView(id, button) {
 
     views.forEach(view => {
+
       view.classList.remove("active");
+
     });
 
-    const target = document.getElementById(id);
+
+    const target =
+      document.getElementById(id);
+
 
     if (target) {
+
       target.classList.add("active");
+
     }
 
-    nav.forEach(item => {
-      item.classList.remove("selected");
+
+    navButtons.forEach(nav => {
+
+      nav.classList.remove("selected");
+
     });
 
+
     if (button) {
+
       button.classList.add("selected");
+
     }
+
   }
 
 
-  nav.forEach(button => {
+  navButtons.forEach(button => {
 
-    button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-      showView(
-        button.dataset.view,
-        button
-      );
+        showView(
+          button.dataset.view,
+          button
+        );
 
-    });
+      }
+    );
 
   });
 
 
   /* ==================================================
-     SETTINGS TOGGLES
+     SETTINGS
      ================================================== */
 
   document
     .querySelectorAll("[data-toggle]")
     .forEach(toggle => {
 
-      toggle.addEventListener("click", () => {
+      toggle.addEventListener(
+        "click",
+        () => {
 
-        toggle.classList.toggle("on");
+          toggle.classList.toggle("on");
 
-      });
+        }
+      );
 
     });
 
 
   /* ==================================================
-     LAUNCH BUTTON
+     LAUNCH
      ================================================== */
 
   document
     .querySelectorAll("[data-launch]")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const original =
-          button.textContent;
-
-        button.textContent =
-          "Launching...";
-
-        button.style.opacity =
-          ".55";
-
-        button.disabled =
-          true;
-
-
-        setTimeout(() => {
+          const original =
+            button.textContent;
 
           button.textContent =
-            original;
-
-          button.style.opacity =
-            "1";
+            "Launching...";
 
           button.disabled =
-            false;
+            true;
 
-        }, 1400);
+          button.style.opacity =
+            ".55";
 
-      });
+
+          setTimeout(() => {
+
+            button.textContent =
+              original;
+
+            button.disabled =
+              false;
+
+            button.style.opacity =
+              "1";
+
+          }, 1400);
+
+        }
+      );
 
     });
 
 
   /* ==================================================
-     NATIVE WINDOW CONTROLS
+     CLOSE WINDOW
      ================================================== */
 
-  document
-    .querySelectorAll("[data-window]")
-    .forEach(button => {
+  const closeButton =
+    document.querySelector(
+      '[data-window="close"]'
+    );
 
-      button.addEventListener("click", () => {
 
-        const action =
-          button.dataset.window;
+  if (closeButton) {
+
+    closeButton.addEventListener(
+      "click",
+      () => {
 
         if (
           window.chrome &&
@@ -121,18 +150,19 @@
         ) {
 
           window.chrome.webview.postMessage(
-            "window." + action
+            "window.close"
           );
 
         }
 
-      });
+      }
+    );
 
-    });
+  }
 
 
   /* ==================================================
-     WINDOW DRAGGING
+     DRAG WINDOW
      ================================================== */
 
   document
@@ -143,15 +173,15 @@
         "mousedown",
         event => {
 
-          if (event.button !== 0) {
+          if (event.button !== 0)
             return;
-          }
+
 
           if (
             event.target.closest("button")
-          ) {
+          )
             return;
-          }
+
 
           if (
             window.chrome &&
@@ -168,5 +198,30 @@
       );
 
     });
+
+
+  /* ==================================================
+     PREVENT ACCIDENTAL TEXT SELECTION
+     ================================================== */
+
+  document.addEventListener(
+    "selectstart",
+    event => {
+
+      event.preventDefault();
+
+    }
+  );
+
+
+  document.addEventListener(
+    "dragstart",
+    event => {
+
+      event.preventDefault();
+
+    }
+  );
+
 
 })();
