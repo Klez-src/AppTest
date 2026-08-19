@@ -1,17 +1,25 @@
 (() => {
 
-  /* ==================================================
-     NAVIGATION
-     ================================================== */
+  /*
+   * ========================================================
+   * TAB NAVIGATION
+   * ========================================================
+   */
 
-  const navButtons =
-    document.querySelectorAll(".nav-button");
+  const tabs = Array.from(
+    document.querySelectorAll(".nav-item")
+  );
 
-  const views =
-    document.querySelectorAll(".view");
+  const views = Array.from(
+    document.querySelectorAll(".view")
+  );
 
 
-  function showView(id, button) {
+  function switchTab(viewName) {
+
+    /*
+     * Hide every page.
+     */
 
     views.forEach(view => {
 
@@ -20,9 +28,39 @@
     });
 
 
-    const target =
-      document.getElementById(id);
+    /*
+     * Remove active state from every tab.
+     */
 
+    tabs.forEach(tab => {
+
+      tab.classList.remove("active");
+
+    });
+
+
+    /*
+     * Find requested page.
+     */
+
+    const target =
+      document.getElementById(viewName);
+
+
+    /*
+     * Find requested tab.
+     */
+
+    const selectedTab =
+      tabs.find(
+        tab =>
+          tab.dataset.view === viewName
+      );
+
+
+    /*
+     * Activate them.
+     */
 
     if (target) {
 
@@ -31,32 +69,37 @@
     }
 
 
-    navButtons.forEach(nav => {
+    if (selectedTab) {
 
-      nav.classList.remove("selected");
-
-    });
-
-
-    if (button) {
-
-      button.classList.add("selected");
+      selectedTab.classList.add("active");
 
     }
 
   }
 
 
-  navButtons.forEach(button => {
+  /*
+   * Attach navigation events.
+   */
 
-    button.addEventListener(
+  tabs.forEach(tab => {
+
+    tab.addEventListener(
       "click",
-      () => {
+      event => {
 
-        showView(
-          button.dataset.view,
-          button
-        );
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        const view =
+          tab.dataset.view;
+
+        if (view) {
+
+          switchTab(view);
+
+        }
 
       }
     );
@@ -64,9 +107,11 @@
   });
 
 
-  /* ==================================================
-     SETTINGS
-     ================================================== */
+  /*
+   * ========================================================
+   * TOGGLES
+   * ========================================================
+   */
 
   document
     .querySelectorAll("[data-toggle]")
@@ -74,7 +119,9 @@
 
       toggle.addEventListener(
         "click",
-        () => {
+        event => {
+
+          event.preventDefault();
 
           toggle.classList.toggle("on");
 
@@ -84,9 +131,11 @@
     });
 
 
-  /* ==================================================
-     LAUNCH
-     ================================================== */
+  /*
+   * ========================================================
+   * LAUNCH BUTTONS
+   * ========================================================
+   */
 
   document
     .querySelectorAll("[data-launch]")
@@ -94,16 +143,25 @@
 
       button.addEventListener(
         "click",
-        () => {
+        event => {
 
-          const original =
-            button.textContent;
+          event.preventDefault();
 
-          button.textContent =
+          if (button.disabled)
+            return;
+
+
+          const originalText =
+            button.innerHTML;
+
+
+          button.innerHTML =
             "Launching...";
+
 
           button.disabled =
             true;
+
 
           button.style.opacity =
             ".55";
@@ -111,8 +169,8 @@
 
           setTimeout(() => {
 
-            button.textContent =
-              original;
+            button.innerHTML =
+              originalText;
 
             button.disabled =
               false;
@@ -128,9 +186,11 @@
     });
 
 
-  /* ==================================================
-     CLOSE WINDOW
-     ================================================== */
+  /*
+   * ========================================================
+   * CLOSE
+   * ========================================================
+   */
 
   const closeButton =
     document.querySelector(
@@ -142,7 +202,12 @@
 
     closeButton.addEventListener(
       "click",
-      () => {
+      event => {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
 
         if (
           window.chrome &&
@@ -161,9 +226,11 @@
   }
 
 
-  /* ==================================================
-     DRAG WINDOW
-     ================================================== */
+  /*
+   * ========================================================
+   * WINDOW DRAGGING
+   * ========================================================
+   */
 
   document
     .querySelectorAll("[data-drag]")
@@ -200,9 +267,11 @@
     });
 
 
-  /* ==================================================
-     PREVENT ACCIDENTAL TEXT SELECTION
-     ================================================== */
+  /*
+   * ========================================================
+   * PREVENT SELECTION / DRAGGING
+   * ========================================================
+   */
 
   document.addEventListener(
     "selectstart",
@@ -223,5 +292,13 @@
     }
   );
 
+
+  /*
+   * ========================================================
+   * START ON HOME
+   * ========================================================
+   */
+
+  switchTab("home");
 
 })();
