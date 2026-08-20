@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,29 +15,24 @@
         rel="stylesheet"
         href="style.css"
     >
-
 </head>
-
 
 <body>
 
-
 <div id="intro">
 
-    <div class="intro-word">orro</div>
+    <div class="intro-word">
+        orro
+    </div>
 
     <div class="intro-dot"></div>
-
     <div class="intro-ring"></div>
-
     <div class="intro-ring-two"></div>
 
 </div>
 
 
-
 <div id="app">
-
 
     <button
         type="button"
@@ -50,16 +44,14 @@
     </button>
 
 
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
-
         <div class="brand">
-
             <div class="brand-name">
                 orro
             </div>
-
         </div>
 
 
@@ -73,7 +65,7 @@
             <button
                 class="selected"
                 data-view="home"
-                onclick="showView('home',this)"
+                onclick="showView('home', this)"
             >
                 Home
             </button>
@@ -81,7 +73,7 @@
 
             <button
                 data-view="launch"
-                onclick="showView('launch',this)"
+                onclick="showView('launch', this)"
             >
                 Launch
             </button>
@@ -89,13 +81,12 @@
 
             <button
                 data-view="changes"
-                onclick="showView('changes',this)"
+                onclick="showView('changes', this)"
             >
                 Changelog
             </button>
 
         </div>
-
 
 
         <div class="nav secondary">
@@ -107,13 +98,12 @@
 
             <button
                 data-view="settings"
-                onclick="showView('settings',this)"
+                onclick="showView('settings', this)"
             >
                 Settings
             </button>
 
         </div>
-
 
 
         <div class="sidebar-profile">
@@ -126,10 +116,10 @@
 
         </div>
 
-
     </aside>
 
 
+    <!-- CONTENT -->
 
     <main class="content">
 
@@ -226,7 +216,7 @@
 
 
 
-        <!-- LAUNCH -->
+        <!-- NORMAL LAUNCH PAGE -->
 
         <section
             id="launch"
@@ -249,7 +239,6 @@
 
 
             <div class="launch-panel">
-
 
                 <div class="launch-panel-top">
 
@@ -277,9 +266,7 @@
                 </div>
 
 
-
                 <div class="launch-divider"></div>
-
 
 
                 <div class="launch-info">
@@ -293,7 +280,6 @@
                     </div>
 
                 </div>
-
 
 
                 <div class="launch-panel-bottom">
@@ -322,6 +308,114 @@
 
                 </div>
 
+            </div>
+
+        </section>
+
+
+
+        <!-- QUEUE PAGE -->
+
+        <section
+            id="queue"
+            class="view queue-view"
+        >
+
+            <div class="queue-content">
+
+                <div class="queue-brand">
+                    orro
+                </div>
+
+
+                <h1>
+                    You're in the queue.
+                </h1>
+
+
+                <div class="queue-ahead">
+
+                    <span
+                        id="queue-ahead-number"
+                    >
+                        3
+                    </span>
+
+                    <span>
+                        people ahead of you
+                    </span>
+
+                </div>
+
+
+                <div class="queue-progress-area">
+
+                    <div class="queue-progress-top">
+
+                        <span>
+                            Queue progress
+                        </span>
+
+                        <span
+                            id="queue-percent"
+                        >
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="queue-progress">
+
+                        <div
+                            id="queue-progress-fill"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="queue-details">
+
+                    <div class="queue-detail">
+
+                        <span>
+                            Estimated wait
+                        </span>
+
+                        <strong
+                            id="queue-time"
+                        >
+                            ~29 seconds
+                        </strong>
+
+                    </div>
+
+
+                    <div class="queue-detail">
+
+                        <span>
+                            Queue position
+                        </span>
+
+                        <strong
+                            id="queue-position"
+                        >
+                            4
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="queue-cancel"
+                    onclick="cancelLaunch()"
+                >
+                    Cancel
+                </button>
 
             </div>
 
@@ -352,7 +446,6 @@
 
 
             <div class="changelog">
-
 
                 <div class="release">
 
@@ -409,7 +502,6 @@
                     </div>
 
                 </div>
-
 
             </div>
 
@@ -549,252 +641,12 @@
 
         </section>
 
-
     </main>
-
-
-
-    <!-- LAUNCHING OVERLAY -->
-
-    <div
-        id="launching-screen"
-        class="launching-screen"
-    >
-
-
-        <div class="launching-content">
-
-
-            <div class="launching-header">
-
-                <div class="launching-brand">
-                    orro
-                </div>
-
-
-                <div
-                    class="launching-live"
-                    id="launching-live"
-                >
-
-                    <span></span>
-
-                    LIVE
-
-                </div>
-
-            </div>
-
-
-
-            <div class="launching-heading">
-
-                <div
-                    id="launching-title"
-                    class="launching-title"
-                >
-                    Launching
-                </div>
-
-
-                <div
-                    id="launching-subtitle"
-                    class="launching-subtitle"
-                >
-                    Preparing your session.
-                </div>
-
-            </div>
-
-
-
-            <div class="launching-progress-wrap">
-
-
-                <div class="launching-progress-top">
-
-                    <span>
-                        Progress
-                    </span>
-
-
-                    <span
-                        id="launching-percent"
-                    >
-                        0%
-                    </span>
-
-                </div>
-
-
-                <div class="launching-progress">
-
-                    <div
-                        id="launching-progress-fill"
-                        class="launching-progress-fill"
-                    ></div>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div class="launching-status-row">
-
-                <div class="launching-status">
-
-                    <span class="launching-dot"></span>
-
-                    <span id="launching-status-text">
-                        Initialising
-                    </span>
-
-                </div>
-
-
-                <div
-                    id="launching-time"
-                    class="launching-time"
-                >
-                    29s
-                </div>
-
-            </div>
-
-
-
-            <div class="launching-steps">
-
-
-                <div
-                    class="launch-step active"
-                    data-step="0"
-                >
-
-                    <span class="step-dot"></span>
-
-                    Initialising
-
-                </div>
-
-
-                <div
-                    class="launch-step"
-                    data-step="1"
-                >
-
-                    <span class="step-dot"></span>
-
-                    Preparing
-
-                </div>
-
-
-                <div
-                    class="launch-step"
-                    data-step="2"
-                >
-
-                    <span class="step-dot"></span>
-
-                    Starting
-
-                </div>
-
-
-                <div
-                    class="launch-step"
-                    data-step="3"
-                >
-
-                    <span class="step-dot"></span>
-
-                    Finalising
-
-                </div>
-
-
-            </div>
-
-
-
-            <button
-                id="launching-cancel"
-                class="launching-cancel"
-                onclick="cancelLaunch()"
-            >
-                Cancel
-            </button>
-
-
-        </div>
-
-
-    </div>
-
 
 </div>
 
 
-
 <script src="script.js"></script>
-
-
-<script>
-
-(function () {
-
-    function isInteractive(element) {
-
-        if (!element)
-            return false;
-
-        return !!element.closest(
-            "button, input, textarea, select, a, label, [role='button']"
-        );
-
-    }
-
-
-    document.addEventListener(
-        "mousedown",
-        function (event) {
-
-            if (event.button !== 0)
-                return;
-
-            if (isInteractive(event.target))
-                return;
-
-            if (
-                event.target.closest(
-                    ".launching-screen"
-                )
-            )
-                return;
-
-
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
-
-                window.chrome.webview.postMessage(
-                    "window.drag"
-                );
-
-            }
-
-        },
-        true
-    );
-
-})();
-
-</script>
-
 
 </body>
 
