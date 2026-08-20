@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+
     user-select: none;
     -webkit-user-select: none;
 }
@@ -8,12 +9,13 @@ html,
 body {
     width: 100%;
     height: 100%;
+
     margin: 0;
+
+    overflow: hidden;
 }
 
 body {
-    overflow: hidden;
-
     background: #0f100f;
 
     color: #e5e6e1;
@@ -39,6 +41,7 @@ button {
 
 #intro {
     position: fixed;
+
     inset: 0;
 
     z-index: 1000;
@@ -56,6 +59,7 @@ button {
 
 .intro-word {
     position: relative;
+
     z-index: 4;
 
     font-size: 76px;
@@ -123,27 +127,37 @@ button {
 
     0% {
         opacity: 0;
-        transform: scale(.95);
+
+        transform:
+            scale(.95);
     }
 
     25% {
         opacity: 1;
-        transform: scale(1);
+
+        transform:
+            scale(1);
     }
 
     72% {
         opacity: 1;
-        transform: scale(1);
+
+        transform:
+            scale(1);
     }
 
     82% {
         opacity: 1;
-        transform: scale(.08);
+
+        transform:
+            scale(.08);
     }
 
     88% {
         opacity: 0;
-        transform: scale(.01);
+
+        transform:
+            scale(.01);
     }
 
     100% {
@@ -153,8 +167,10 @@ button {
 
 @keyframes dotExpand {
 
-    0%,78% {
+    0%,
+    78% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(0);
@@ -162,6 +178,7 @@ button {
 
     83% {
         opacity: 1;
+
         transform:
             translate(-50%,-50%)
             scale(1);
@@ -169,6 +186,7 @@ button {
 
     90% {
         opacity: .14;
+
         transform:
             translate(-50%,-50%)
             scale(35);
@@ -176,6 +194,7 @@ button {
 
     100% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(80);
@@ -184,8 +203,10 @@ button {
 
 @keyframes ringOne {
 
-    0%,78% {
+    0%,
+    78% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(0);
@@ -193,6 +214,7 @@ button {
 
     82% {
         opacity: .55;
+
         transform:
             translate(-50%,-50%)
             scale(.8);
@@ -200,6 +222,7 @@ button {
 
     89% {
         opacity: .18;
+
         transform:
             translate(-50%,-50%)
             scale(8);
@@ -207,6 +230,7 @@ button {
 
     100% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(34);
@@ -215,8 +239,10 @@ button {
 
 @keyframes ringTwo {
 
-    0%,80% {
+    0%,
+    80% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(0);
@@ -224,6 +250,7 @@ button {
 
     85% {
         opacity: .27;
+
         transform:
             translate(-50%,-50%)
             scale(.7);
@@ -231,6 +258,7 @@ button {
 
     92% {
         opacity: .07;
+
         transform:
             translate(-50%,-50%)
             scale(13);
@@ -238,6 +266,7 @@ button {
 
     100% {
         opacity: 0;
+
         transform:
             translate(-50%,-50%)
             scale(32);
@@ -245,8 +274,10 @@ button {
 }
 
 @keyframes introExit {
+
     to {
         opacity: 0;
+
         visibility: hidden;
     }
 }
@@ -257,6 +288,8 @@ button {
    ================================================== */
 
 #app {
+    position: relative;
+
     width: 100%;
     height: 100%;
 
@@ -272,12 +305,16 @@ button {
 
     from {
         opacity: 0;
-        transform: translateY(5px);
+
+        transform:
+            translateY(5px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -340,6 +377,7 @@ button {
 
 .nav.secondary {
     margin-top: auto;
+
     margin-bottom: 8px;
 }
 
@@ -369,6 +407,7 @@ button {
         11px;
 
     border: 0;
+
     border-radius: 7px;
 
     background: transparent;
@@ -485,12 +524,16 @@ button {
 
     from {
         opacity: 0;
-        transform: translateY(3px);
+
+        transform:
+            translateY(3px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -633,7 +676,8 @@ h1 {
 .launch-action:hover {
     background: #d7d8d3;
 
-    transform: translateY(-1px);
+    transform:
+        translateY(-1px);
 }
 
 .details {
@@ -664,7 +708,7 @@ h1 {
 
 
 /* ==================================================
-   NORMAL LAUNCH
+   LAUNCH
    ================================================== */
 
 .launch-panel {
@@ -820,210 +864,6 @@ h1 {
 
 
 /* ==================================================
-   QUEUE PAGE
-   ================================================== */
-
-.queue-view {
-    max-width: 700px;
-
-    display: none;
-
-    align-items: center;
-}
-
-.queue-view.active {
-    display: flex;
-
-    animation:
-        queueIn .4s cubic-bezier(.22,.61,.36,1);
-}
-
-@keyframes queueIn {
-
-    from {
-        opacity: 0;
-        transform:
-            translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform:
-            translateY(0);
-    }
-}
-
-.queue-content {
-    width: 100%;
-
-    max-width: 600px;
-
-    margin: auto;
-
-    padding:
-        0
-        30px;
-}
-
-.queue-brand {
-    color: #777b75;
-
-    font-size: 10px;
-
-    letter-spacing: 1.8px;
-
-    text-transform: uppercase;
-}
-
-.queue-content h1 {
-    margin-top: 17px;
-
-    font-size: 32px;
-
-    letter-spacing: -1.5px;
-}
-
-.queue-ahead {
-    margin-top: 10px;
-
-    display: flex;
-
-    align-items: baseline;
-
-    gap: 6px;
-
-    color: #666a64;
-
-    font-size: 11px;
-}
-
-.queue-ahead span:first-child {
-    color: #b9bbb5;
-
-    font-size: 13px;
-
-    font-family: monospace;
-}
-
-.queue-progress-area {
-    margin-top: 42px;
-}
-
-.queue-progress-top {
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-bottom: 9px;
-
-    color: #555a53;
-
-    font-size: 8px;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1.2px;
-}
-
-#queue-percent {
-    color: #858b83;
-
-    font-family: monospace;
-}
-
-.queue-progress {
-    width: 100%;
-    height: 4px;
-
-    overflow: hidden;
-
-    border-radius: 10px;
-
-    background: #20231f;
-}
-
-#queue-progress-fill {
-    width: 0%;
-    height: 100%;
-
-    border-radius: inherit;
-
-    background: #858f81;
-
-    will-change: width;
-}
-
-.queue-details {
-    margin-top: 18px;
-
-    display: flex;
-
-    gap: 55px;
-}
-
-.queue-detail {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 6px;
-}
-
-.queue-detail span {
-    color: #4c504a;
-
-    font-size: 8px;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1px;
-}
-
-.queue-detail strong {
-    color: #858a83;
-
-    font-size: 10px;
-
-    font-weight: 400;
-}
-
-.queue-cancel {
-    margin-top: 38px;
-
-    padding:
-        9px
-        17px;
-
-    border:
-        1px solid
-        #2a2d29;
-
-    border-radius: 5px;
-
-    background: transparent;
-
-    color: #686d65;
-
-    font-size: 9px;
-
-    cursor: pointer;
-
-    transition:
-        border-color .15s ease,
-        color .15s ease,
-        background .15s ease;
-}
-
-.queue-cancel:hover {
-    border-color: #454a43;
-
-    background: #171916;
-
-    color: #a1a59e;
-}
-
-
-/* ==================================================
    CHANGELOG
    ================================================== */
 
@@ -1175,7 +1015,7 @@ h1 {
 
 
 /* ==================================================
-   CLOSE BUTTON
+   CLOSE
    ================================================== */
 
 .window-close {
@@ -1236,16 +1076,211 @@ h1 {
 }
 
 .window-close span::before {
-    transform: rotate(45deg);
+    transform:
+        rotate(45deg);
 }
 
 .window-close span::after {
-    transform: rotate(-45deg);
+    transform:
+        rotate(-45deg);
 }
 
 .window-close:hover span::before,
 .window-close:hover span::after {
     background: #dedfd9;
+}
+
+
+/* ==================================================
+   FULL-SCREEN QUEUE
+   ================================================== */
+
+.queue-screen {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(15,16,15,.97);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .25s ease;
+}
+
+.queue-screen.active {
+    display: flex;
+
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+.queue-inner {
+    width: min(
+        600px,
+        calc(100% - 90px)
+    );
+
+    margin: auto;
+}
+
+.queue-brand {
+    color: #777b75;
+
+    font-size: 10px;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+}
+
+.queue-inner h1 {
+    margin-top: 17px;
+
+    font-size: 32px;
+
+    letter-spacing: -1.5px;
+}
+
+.queue-ahead {
+    margin-top: 10px;
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 6px;
+
+    color: #666a64;
+
+    font-size: 11px;
+}
+
+.queue-ahead span:first-child {
+    color: #b9bbb5;
+
+    font-size: 13px;
+
+    font-family: monospace;
+}
+
+.queue-progress-area {
+    margin-top: 42px;
+}
+
+.queue-progress {
+    width: 100%;
+    height: 4px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #20231f;
+}
+
+.queue-progress-fill {
+    width: 0%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #858f81;
+
+    will-change: width;
+}
+
+.queue-details {
+    margin-top: 18px;
+
+    display: flex;
+
+    gap: 55px;
+}
+
+.queue-detail {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.queue-detail span {
+    color: #4c504a;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.queue-detail strong {
+    color: #858a83;
+
+    font-size: 10px;
+
+    font-weight: 400;
+}
+
+.queue-cancel {
+    margin-top: 38px;
+
+    padding:
+        9px
+        17px;
+
+    border:
+        1px solid
+        #2a2d29;
+
+    border-radius: 5px;
+
+    background: transparent;
+
+    color: #686d65;
+
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition:
+        border-color .15s ease,
+        color .15s ease,
+        background .15s ease;
+}
+
+.queue-cancel:hover {
+    border-color: #454a43;
+
+    background: #171916;
+
+    color: #a1a59e;
+}
+
+
+/* ==================================================
+   DRAGGING
+   ================================================== */
+
+#app.dragging {
+    cursor: grabbing;
+}
+
+#app.dragging * {
+    cursor: grabbing !important;
 }
 
 
