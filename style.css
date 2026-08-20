@@ -15,12 +15,11 @@ body {
 
     margin: 0;
 
+    overflow: hidden;
 }
 
 
 body {
-
-    overflow: hidden;
 
     background: #0f100f;
 
@@ -35,17 +34,21 @@ body {
 
     -webkit-font-smoothing: antialiased;
 
+    overflow: hidden;
 }
 
 
 button {
+
     user-select: none;
     -webkit-user-select: none;
+
+    font-family: inherit;
 }
 
 
 /* ==================================================
-   INTRO — LOCKED
+   INTRO
    ================================================== */
 
 #intro {
@@ -59,13 +62,14 @@ button {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     background: #0f100f;
 
     animation:
         introExit .65s 3.7s forwards;
+
+    pointer-events: none;
 }
 
 
@@ -100,7 +104,7 @@ button {
     top: 50%;
 
     transform:
-        translate(-50%,-50%)
+        translate(-50%, -50%)
         scale(0);
 
     border-radius: 50%;
@@ -179,130 +183,117 @@ button {
     100% {
         opacity: 0;
     }
-
 }
 
 
 @keyframes dotExpand {
 
-    0%, 78% {
-
+    0%,
+    78% {
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     83% {
-
         opacity: 1;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(1);
     }
 
     90% {
-
         opacity: .14;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(35);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(80);
     }
-
 }
 
 
 @keyframes ringOne {
 
-    0%, 78% {
-
+    0%,
+    78% {
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     82% {
-
         opacity: .55;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(.8);
     }
 
     89% {
-
         opacity: .18;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(8);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(34);
     }
-
 }
 
 
 @keyframes ringTwo {
 
-    0%, 80% {
-
+    0%,
+    80% {
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(0);
     }
 
     85% {
-
         opacity: .27;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(.7);
     }
 
     92% {
-
         opacity: .07;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(13);
     }
 
     100% {
-
         opacity: 0;
 
         transform:
-            translate(-50%,-50%)
+            translate(-50%, -50%)
             scale(32);
     }
-
 }
 
 
@@ -313,9 +304,7 @@ button {
         opacity: 0;
 
         visibility: hidden;
-
     }
-
 }
 
 
@@ -330,11 +319,12 @@ button {
 
     display: flex;
 
+    overflow: hidden;
+
     opacity: 0;
 
     animation:
         appAppear .6s 3.9s ease forwards;
-
 }
 
 
@@ -346,7 +336,6 @@ button {
 
         transform:
             translateY(5px);
-
     }
 
     to {
@@ -355,9 +344,7 @@ button {
 
         transform:
             translateY(0);
-
     }
-
 }
 
 
@@ -377,7 +364,7 @@ button {
     padding:
         26px
         17px
-        24px;
+        18px;
 
     border-right:
         1px solid
@@ -387,6 +374,7 @@ button {
 
     flex-direction: column;
 
+    overflow: hidden;
 }
 
 
@@ -399,10 +387,7 @@ button {
     padding:
         4px
         10px;
-
 }
-
-
 
 
 .brand-name {
@@ -414,7 +399,6 @@ button {
     font-weight: 500;
 
     letter-spacing: -.4px;
-
 }
 
 
@@ -424,21 +408,19 @@ button {
 
 .nav {
 
-    margin-top: 48px;
+    margin-top: 42px;
 
     display: flex;
 
     flex-direction: column;
 
     gap: 3px;
-
 }
 
 
 .nav.secondary {
 
     margin-top: auto;
-
 }
 
 
@@ -447,6 +429,7 @@ button {
     margin:
         0
         10px
+        8px
         9px;
 
     color: #454844;
@@ -456,7 +439,6 @@ button {
     text-transform: uppercase;
 
     letter-spacing: 1.6px;
-
 }
 
 
@@ -491,7 +473,6 @@ button {
         background .15s ease,
         color .15s ease,
         transform .12s ease;
-
 }
 
 
@@ -500,13 +481,13 @@ button {
     color: #b3b5af;
 
     background: #141614;
-
 }
+
 
 .nav button:active {
 
-    transform: translateX(1px);
-
+    transform:
+        translateX(1px);
 }
 
 
@@ -515,7 +496,6 @@ button {
     color: #dedfd9;
 
     background: #191b19;
-
 }
 
 
@@ -535,26 +515,81 @@ button {
     border-radius: 4px;
 
     background: #8b968b;
-
 }
 
 
 /* ==================================================
-   SIDEBAR FOOTER
+   PROFILE
    ================================================== */
 
-.sidebar-footer {
+.sidebar-profile {
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
 
     padding:
-        0
+        9px
         10px;
 
-    color: #41443f;
+    border-radius: 8px;
+
+    background: #121412;
+
+    border:
+        1px solid
+        #1e211e;
+}
+
+
+.profile-avatar {
+
+    width: 27px;
+    height: 27px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #62655f;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(255,255,255,.06);
+}
+
+
+.profile-details {
+
+    min-width: 0;
+}
+
+
+.profile-name {
+
+    color: #c9cbc5;
+
+    font-size: 10px;
+
+    line-height: 1.2;
+}
+
+
+.profile-status {
+
+    margin-top: 3px;
+
+    color: #4d504b;
 
     font-size: 8px;
 
-    letter-spacing: .7px;
-
+    line-height: 1.2;
 }
 
 
@@ -568,14 +603,14 @@ button {
 
     min-width: 0;
 
+    width: calc(100% - 205px);
     height: 100%;
 
     padding:
-        44px
-        58px;
+        32px
+        48px;
 
-    overflow: auto;
-
+    overflow: hidden;
 }
 
 
@@ -584,9 +619,11 @@ button {
     display: none;
 
     width: 100%;
+    height: 100%;
 
     max-width: 760px;
 
+    overflow: hidden;
 }
 
 
@@ -596,7 +633,6 @@ button {
 
     animation:
         viewIn .25s ease;
-
 }
 
 
@@ -608,7 +644,6 @@ button {
 
         transform:
             translateY(4px);
-
     }
 
     to {
@@ -617,9 +652,7 @@ button {
 
         transform:
             translateY(0);
-
     }
-
 }
 
 
@@ -640,38 +673,35 @@ button {
     text-transform: uppercase;
 
     letter-spacing: 1.6px;
-
 }
 
 
 h1 {
 
     margin:
-        18px
+        14px
         0
         0;
 
     color: #e1e2dd;
 
-    font-size: 30px;
+    font-size: 28px;
 
     line-height: 1.1;
 
     font-weight: 400;
 
     letter-spacing: -1.4px;
-
 }
 
 
 .lead {
 
-    margin-top: 7px;
+    margin-top: 6px;
 
     color: #646762;
 
     font-size: 11px;
-
 }
 
 
@@ -683,17 +713,13 @@ h1 {
 
     position: relative;
 
-    margin-top: 59px;
+    margin-top: 34px;
 
-    padding:
-        0
-        0
-        31px;
+    padding-bottom: 22px;
 
     border-bottom:
         1px solid
         #242724;
-
 }
 
 
@@ -708,7 +734,6 @@ h1 {
     color: #9b9e99;
 
     font-size: 10px;
-
 }
 
 
@@ -717,6 +742,8 @@ h1 {
     width: 6px;
     height: 6px;
 
+    flex-shrink: 0;
+
     border-radius: 50%;
 
     background: #7d897d;
@@ -724,33 +751,30 @@ h1 {
     box-shadow:
         0 0 9px
         rgba(125,137,125,.17);
-
 }
 
 
 .app-name {
 
-    margin-top: 20px;
+    margin-top: 14px;
 
     color: #e1e2dc;
 
-    font-size: 25px;
+    font-size: 23px;
 
     font-weight: 400;
 
     letter-spacing: -1px;
-
 }
 
 
 .app-meta {
 
-    margin-top: 5px;
+    margin-top: 4px;
 
     color: #4f524e;
 
     font-size: 9px;
-
 }
 
 
@@ -758,20 +782,183 @@ h1 {
 
     max-width: 470px;
 
-    margin-top: 17px;
+    margin-top: 11px;
 
     color: #70736e;
 
-    font-size: 11px;
+    font-size: 10px;
 
-    line-height: 1.7;
-
+    line-height: 1.55;
 }
 
 
 .launch-button {
 
-    margin-top: 25px;
+    margin-top: 16px;
+
+    padding:
+        8px
+        17px;
+
+    border:
+        1px solid
+        #bfc1bb;
+
+    border-radius: 5px;
+
+    background: #c8c9c4;
+
+    color: #11120f;
+
+    font: inherit;
+
+    font-size: 10px;
+
+    cursor: pointer;
+
+    transition:
+        background .15s ease,
+        transform .12s ease;
+}
+
+
+.launch-button:hover {
+
+    background: #d5d6d1;
+}
+
+
+.launch-button:active {
+
+    transform:
+        translateY(1px);
+}
+
+
+.details {
+
+    display: flex;
+
+    gap: 48px;
+
+    margin-top: 18px;
+}
+
+
+.detail-label {
+
+    color: #494c48;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.2px;
+}
+
+
+.detail-value {
+
+    margin-top: 5px;
+
+    color: #92958f;
+
+    font-size: 10px;
+}
+
+
+/* ==================================================
+   LAUNCH PAGE
+   ================================================== */
+
+.launch-view {
+
+    padding-top: 1px;
+}
+
+
+.launch-panel {
+
+    position: relative;
+
+    height: 205px;
+
+    margin-top: 28px;
+
+    border-top:
+        1px solid
+        #242724;
+}
+
+
+.launch-brand {
+
+    position: absolute;
+
+    top: 22px;
+    left: 0;
+
+    color: #dfe0da;
+
+    font-size: 27px;
+
+    letter-spacing: -1.3px;
+}
+
+
+.launch-version {
+
+    position: absolute;
+
+    top: 59px;
+    left: 1px;
+
+    color: #50534f;
+
+    font-family: monospace;
+
+    font-size: 9px;
+}
+
+
+.launch-state {
+
+    position: absolute;
+
+    left: 0;
+    bottom: 23px;
+
+    color: #737670;
+
+    font-size: 10px;
+}
+
+
+.launch-state::before {
+
+    content: "";
+
+    display: inline-block;
+
+    width: 5px;
+    height: 5px;
+
+    margin-right: 8px;
+
+    border-radius: 50%;
+
+    background: #7d897d;
+
+    vertical-align: 1px;
+}
+
+
+.launch-action {
+
+    position: absolute;
+
+    right: 0;
+    bottom: 16px;
 
     padding:
         9px
@@ -793,177 +980,22 @@ h1 {
 
     cursor: pointer;
 
-}
-
-
-.launch-button:hover {
-
-    background: #d5d6d1;
-
-}
-
-
-.details {
-
-    display: flex;
-
-    gap: 58px;
-
-    margin-top: 27px;
-
-}
-
-
-.detail-label {
-
-    color: #494c48;
-
-    font-size: 8px;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1.2px;
-
-}
-
-
-.detail-value {
-
-    margin-top: 7px;
-
-    color: #92958f;
-
-    font-size: 10px;
-
-}
-
-
-/* ==================================================
-   LAUNCH
-   ================================================== */
-
-.launch-view {
-
-    padding-top: 1px;
-
-}
-
-
-.launch-panel {
-
-    position: relative;
-
-    min-height: 330px;
-
-    margin-top: 52px;
-
-    border-top:
-        1px solid
-        #242724;
-
-}
-
-
-.launch-brand {
-
-    position: absolute;
-
-    top: 28px;
-    left: 0;
-
-    color: #dfe0da;
-
-    font-size: 29px;
-
-    letter-spacing: -1.3px;
-
-}
-
-
-.launch-version {
-
-    position: absolute;
-
-    top: 69px;
-    left: 1px;
-
-    color: #50534f;
-
-    font-family: monospace;
-
-    font-size: 9px;
-
-}
-
-
-.launch-state {
-
-    position: absolute;
-
-    left: 0;
-    bottom: 32px;
-
-    color: #737670;
-
-    font-size: 10px;
-
-}
-
-
-.launch-state::before {
-
-    content: "";
-
-    display: inline-block;
-
-    width: 5px;
-    height: 5px;
-
-    margin-right: 8px;
-
-    border-radius: 50%;
-
-    background: #7d897d;
-
-    vertical-align: 1px;
-
-}
-
-
-.launch-action {
-
-    position: absolute;
-
-    right: 0;
-    bottom: 25px;
-
-    padding:
-        10px
-        18px;
-
-    border:
-        1px solid
-        #bfc1bb;
-
-    border-radius: 5px;
-
-    background: #c8c9c4;
-
-    color: #11120f;
-
-    font: inherit;
-
-    font-size: 10px;
-
-    cursor: pointer;
-
+    transition:
+        background .15s ease,
+        transform .12s ease;
 }
 
 
 .launch-action:hover {
 
     background: #d5d6d1;
+}
 
+
+.launch-action:active {
+
+    transform:
+        translateY(1px);
 }
 
 
@@ -973,12 +1005,11 @@ h1 {
 
 .changelog {
 
-    margin-top: 45px;
+    margin-top: 27px;
 
     border-top:
         1px solid
         #242724;
-
 }
 
 
@@ -986,64 +1017,70 @@ h1 {
 
     display: flex;
 
+    gap: 35px;
+
     padding:
-        23px
+        16px
         2px;
 
     border-bottom:
         1px solid
         #242724;
-
 }
 
 
 .release-version {
 
-    width: 95px;
+    width: 65px;
 
     flex-shrink: 0;
 
-    color: #aeb0aa;
+    color: #92958f;
 
     font-family: monospace;
 
     font-size: 10px;
-
 }
 
 
 .release-date {
 
-    margin-top: 5px;
+    margin-top: 4px;
 
-    color: #444743;
+    color: #494c48;
 
-    font-size: 8px;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
 
+    font-size: 7px;
+
+    letter-spacing: 1px;
 }
 
 
 .release-title {
 
-    color: #c9cac4;
+    color: #c5c7c1;
 
-    font-size: 11px;
-
+    font-size: 10px;
 }
 
 
 .release-text {
 
-    max-width: 490px;
+    max-width: 400px;
 
-    margin-top: 6px;
+    margin-top: 5px;
 
-    color: #656863;
+    color: #646762;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    line-height: 1.65;
-
+    line-height: 1.5;
 }
 
 
@@ -1053,20 +1090,17 @@ h1 {
 
 .settings {
 
-    max-width: 620px;
-
-    margin-top: 45px;
+    margin-top: 23px;
 
     border-top:
         1px solid
         #242724;
-
 }
 
 
 .setting {
 
-    min-height: 68px;
+    min-height: 51px;
 
     display: flex;
 
@@ -1074,37 +1108,44 @@ h1 {
 
     justify-content: space-between;
 
+    gap: 20px;
+
+    padding:
+        8px
+        2px;
+
     border-bottom:
         1px solid
         #242724;
-
 }
 
 
 .setting-name {
 
-    color: #bfc1bb;
+    color: #c5c7c1;
 
-    font-size: 11px;
-
+    font-size: 10px;
 }
 
 
 .setting-info {
 
-    margin-top: 5px;
+    margin-top: 3px;
 
-    color: #5d605b;
+    color: #5c5f5a;
 
-    font-size: 9px;
-
+    font-size: 8px;
 }
 
 
 .toggle {
 
-    width: 29px;
-    height: 16px;
+    position: relative;
+
+    width: 31px;
+    height: 17px;
+
+    flex-shrink: 0;
 
     padding: 0;
 
@@ -1116,6 +1157,8 @@ h1 {
 
     cursor: pointer;
 
+    transition:
+        background .18s ease;
 }
 
 
@@ -1123,41 +1166,53 @@ h1 {
 
     content: "";
 
-    display: block;
+    position: absolute;
 
-    width: 10px;
-    height: 10px;
+    top: 3px;
+    left: 3px;
 
-    margin: 3px;
+    width: 11px;
+    height: 11px;
 
     border-radius: 50%;
 
-    background: #70746f;
+    background: #777a74;
 
-    transition: .18s;
-
+    transition:
+        transform .18s ease,
+        background .18s ease;
 }
 
 
 .toggle.on {
 
-    background: #9da39c;
-
+    background: #687368;
 }
 
 
 .toggle.on::after {
 
     transform:
-        translateX(13px);
+        translateX(14px);
 
-    background: #151714;
+    background: #e0e2dc;
+}
 
+
+.toggle:hover {
+
+    background: #353835;
+}
+
+
+.toggle.on:hover {
+
+    background: #748074;
 }
 
 
 /* ==================================================
-   FULL-SCREEN LAUNCHING PAGE
+   LAUNCHING SCREEN
    ================================================== */
 
 .launching-screen {
@@ -1166,15 +1221,15 @@ h1 {
 
     inset: 0;
 
-    z-index: 200;
+    z-index: 50;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
-    background: #0f100f;
+    background:
+        rgba(15,16,15,.98);
 
     opacity: 0;
 
@@ -1183,9 +1238,8 @@ h1 {
     pointer-events: none;
 
     transition:
-        opacity .18s ease,
-        visibility .18s ease;
-
+        opacity .2s ease,
+        visibility .2s ease;
 }
 
 
@@ -1196,101 +1250,90 @@ h1 {
     visibility: visible;
 
     pointer-events: auto;
-
 }
 
 
 .launching-content {
 
-    width: 330px;
+    width: 360px;
 
-    text-align: left;
-
+    text-align: center;
 }
 
 
 .launching-brand {
 
-    margin-bottom: 38px;
+    color: #e0e1db;
 
-    color: #dfe0da;
+    font-size: 13px;
 
-    font-size: 17px;
-
-    font-weight: 500;
-
-    letter-spacing: -.6px;
-
+    letter-spacing: -.3px;
 }
 
 
 .launching-title {
 
-    color: #e0e1dc;
+    margin-top: 17px;
 
-    font-size: 28px;
+    color: #e1e2dd;
 
-    font-weight: 400;
+    font-size: 25px;
 
-    letter-spacing: -1.2px;
-
+    letter-spacing: -1px;
 }
 
 
 .launching-subtitle {
 
-    margin-top: 8px;
+    margin-top: 5px;
 
-    margin-bottom: 30px;
+    color: #5e615c;
 
-    color: #686d66;
-
-    font-size: 10px;
-
+    font-size: 9px;
 }
 
 
 .launching-progress {
 
     width: 100%;
+    height: 3px;
 
-    height: 2px;
+    margin-top: 24px;
 
     overflow: hidden;
 
-    background: #242724;
+    border-radius: 4px;
 
+    background: #222522;
 }
 
 
 .launching-progress-fill {
 
     width: 0%;
-
     height: 100%;
 
-    background: #858f81;
+    background: #929b92;
 
     transition:
-        width 1s linear;
-
+        width .3s ease;
 }
 
 
 .launching-status {
 
-    margin-top: 11px;
-
     display: flex;
 
     align-items: center;
+    justify-content: center;
 
     gap: 7px;
 
-    color: #6d736b;
+    margin-top: 11px;
 
-    font-size: 9px;
+    color: #666963;
 
+    font-size: 8px;
 }
 
 
@@ -1299,189 +1342,105 @@ h1 {
     width: 5px;
     height: 5px;
 
-    flex-shrink: 0;
-
     border-radius: 50%;
 
-    background: #858f81;
-
+    background: #7d897d;
 }
 
 
 .launching-cancel {
 
-    margin-top: 24px;
+    margin-top: 18px;
 
-    padding: 0;
+    padding:
+        7px
+        14px;
 
-    border: 0;
+    border:
+        1px solid
+        #30332f;
+
+    border-radius: 5px;
 
     background: transparent;
 
-    color: #4c514a;
+    color: #656862;
+
+    font: inherit;
 
     font-size: 9px;
 
     cursor: pointer;
-
 }
 
 
 .launching-cancel:hover {
 
-    color: #8d9489;
+    background: #171917;
 
+    color: #a3a59f;
 }
 
 
 /* ==================================================
-   WINDOW DRAGGING
+   NEVER SHOW SCROLLBARS
    ================================================== */
 
-body {
+html,
+body,
+#app,
+.sidebar,
+.content,
+.view,
+main,
+section {
 
-    cursor: default;
+    scrollbar-width: none;
 
+    -ms-overflow-style: none;
+}
+
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#app::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.content::-webkit-scrollbar,
+.view::-webkit-scrollbar,
+main::-webkit-scrollbar,
+section::-webkit-scrollbar {
+
+    display: none;
+
+    width: 0;
+    height: 0;
 }
 
 
 /* ==================================================
-   NO SELECTION
+   SMALL WINDOW SAFETY
    ================================================== */
 
-::selection {
-
-    background: transparent;
-
-}
-
-
-/* ==================================================
-   MOBILE
-   ================================================== */
-
-@media(max-width:650px) {
-
-    .sidebar {
-
-        width: 145px;
-
-        padding-left: 10px;
-
-        padding-right: 10px;
-
-    }
-
-
-    .brand-name {
-
-        font-size: 14px;
-
-    }
-
+@media (max-height: 425px) {
 
     .content {
 
-        padding:
-            30px
-            24px;
-
+        padding-top: 24px;
+        padding-bottom: 20px;
     }
 
+    .nav {
 
-    .details {
-
-        gap: 25px;
-
-        flex-wrap: wrap;
-
+        margin-top: 30px;
     }
 
+    .status-area {
 
-    .launch-action {
-
-        position: static;
-
-        margin-top: 260px;
-
+        margin-top: 25px;
     }
 
+    .launch-panel {
 
-    .launch-state {
-
-        bottom: 75px;
-
+        margin-top: 20px;
     }
-
-}
-
-
-/* ==================================================
-   SIDEBAR PROFILE
-   ================================================== */
-
-.sidebar-profile {
-
-    margin-top: auto;
-
-    padding:
-        13px
-        10px
-        0;
-
-    border-top:
-        1px solid
-        #222421;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-}
-
-.profile-avatar {
-
-    width: 27px;
-    height: 27px;
-
-    flex-shrink: 0;
-
-    border-radius: 50%;
-
-    background: #70736f;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    color: #171816;
-
-    font-size: 9px;
-
-    font-weight: 600;
-
-}
-
-.profile-name {
-
-    color: #bfc1bb;
-
-    font-size: 10px;
-
-    line-height: 1;
-
-}
-
-.profile-status {
-
-    margin-top: 4px;
-
-    color: #4f524e;
-
-    font-size: 8px;
-
 }
