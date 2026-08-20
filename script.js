@@ -50,6 +50,10 @@ let settings = {
 };
 
 
+/* ============================================================
+   LOAD SETTINGS
+   ============================================================ */
+
 function loadSettings()
 {
     try
@@ -59,11 +63,15 @@ function loadSettings()
                 "orro-settings"
             );
 
+
         if (saved)
         {
             settings = {
+
                 ...DEFAULT_SETTINGS,
+
                 ...JSON.parse(saved)
+
             };
         }
     }
@@ -76,6 +84,10 @@ function loadSettings()
 }
 
 
+/* ============================================================
+   SAVE SETTINGS
+   ============================================================ */
+
 function saveSettings()
 {
     try
@@ -87,10 +99,16 @@ function saveSettings()
     }
     catch
     {
-        // Storage may be unavailable in some environments.
+        /*
+            Ignore storage errors.
+        */
     }
 }
 
+
+/* ============================================================
+   UPDATE TOGGLE UI
+   ============================================================ */
 
 function updateToggleUI()
 {
@@ -110,7 +128,7 @@ function updateToggleUI()
 
 
 /* ============================================================
-   NATIVE WEBVIEW MESSAGES
+   WEBVIEW NATIVE MESSAGES
    ============================================================ */
 
 function sendNativeMessage(message)
@@ -129,7 +147,9 @@ function sendNativeMessage(message)
     }
     catch
     {
-        // Normal browser mode.
+        /*
+            Running directly in a normal browser.
+        */
     }
 }
 
@@ -140,24 +160,17 @@ function sendNativeMessage(message)
 
 function startIntro()
 {
-    /*
-        Keep the original intro timing.
-
-        The intro remains the first thing shown.
-        The application fades in behind it.
-    */
-
     setTimeout(() =>
     {
+        intro.style.opacity = "0";
+
         intro.style.transition =
             "opacity .55s ease";
-
-        intro.style.opacity =
-            "0";
 
         app.classList.add(
             "ready"
         );
+
 
         setTimeout(() =>
         {
@@ -188,6 +201,15 @@ const views =
 
 function showView(viewName)
 {
+    /*
+        Never change the active page while
+        the launching screen is running.
+    */
+
+    if (launchRunning)
+        return;
+
+
     navButtons.forEach(button =>
     {
         button.classList.toggle(
@@ -215,9 +237,6 @@ navButtons.forEach(button =>
         {
             event.stopPropagation();
 
-            if (launchRunning)
-                return;
-
             showView(
                 button.dataset.view
             );
@@ -227,7 +246,7 @@ navButtons.forEach(button =>
 
 
 /* ============================================================
-   SETTINGS
+   SETTINGS BUTTONS
    ============================================================ */
 
 document
@@ -240,11 +259,14 @@ document
             {
                 event.stopPropagation();
 
+
                 const name =
                     toggle.dataset.setting;
 
+
                 settings[name] =
                     !settings[name];
+
 
                 saveSettings();
 
@@ -264,15 +286,9 @@ let launchRunning =
 let launchTimer =
     null;
 
-let launchFinishTimer =
-    null;
-
 
 /*
-    The sequence lasts 36 seconds.
-
-    It deliberately has multiple phases so the progress
-    does not feel like a simple fake counter.
+    Same launch sequence as the existing application.
 */
 
 const launchStages = [
@@ -290,7 +306,6 @@ const launchStages = [
             "Initialising"
     },
 
-
     {
         start: 8,
         end: 20,
@@ -303,7 +318,6 @@ const launchStages = [
         step:
             "Verifying"
     },
-
 
     {
         start: 20,
@@ -318,7 +332,6 @@ const launchStages = [
             "Loading"
     },
 
-
     {
         start: 34,
         end: 50,
@@ -331,7 +344,6 @@ const launchStages = [
         step:
             "Initialising runtime"
     },
-
 
     {
         start: 50,
@@ -346,7 +358,6 @@ const launchStages = [
             "Preparing session"
     },
 
-
     {
         start: 68,
         end: 84,
@@ -360,7 +371,6 @@ const launchStages = [
             "Starting"
     },
 
-
     {
         start: 84,
         end: 96,
@@ -373,7 +383,6 @@ const launchStages = [
         step:
             "Finalising"
     },
-
 
     {
         start: 96,
@@ -391,6 +400,10 @@ const launchStages = [
 ];
 
 
+/* ============================================================
+   GET CURRENT LAUNCH STAGE
+   ============================================================ */
+
 function getLaunchStage(percent)
 {
     for (
@@ -402,6 +415,7 @@ function getLaunchStage(percent)
         const stage =
             launchStages[i];
 
+
         if (
             percent >= stage.start &&
             percent <= stage.end
@@ -411,11 +425,16 @@ function getLaunchStage(percent)
         }
     }
 
+
     return launchStages[
         launchStages.length - 1
     ];
 }
 
+
+/* ============================================================
+   UPDATE LAUNCH UI
+   ============================================================ */
 
 function updateLaunchUI(percent)
 {
@@ -454,21 +473,17 @@ function updateLaunchUI(percent)
 
 
 /* ============================================================
-   FINISH
+   FINISH LAUNCH
    ============================================================ */
 
 function finishLaunch()
 {
-    if (!launchRunning)
-        return;
-
-
     clearInterval(
         launchTimer
     );
 
-    launchTimer =
-        null;
+
+    launchTimer = null;
 
 
     updateLaunchUI(
@@ -476,53 +491,58 @@ function finishLaunch()
     );
 
 
-    launchFinishTimer =
-        setTimeout(() =>
+    /*
+        Give the Complete state a short moment
+        before leaving the launch screen.
+    */
+
+    setTimeout(() =>
+    {
+
+        /*
+            If Close after launch is enabled,
+            close the actual native application.
+        */
+
+        if (
+            settings.closeAfterLaunch
+        )
         {
-
-            launchFinishTimer =
-                null;
-
-
-            /*
-                IMPORTANT:
-
-                If Close after launch is enabled,
-                tell the native C++ shell to close.
-
-                Otherwise return smoothly to Home.
-            */
-
-            if (
-                settings.closeAfterLaunch
-            )
-            {
-                sendNativeMessage(
-                    "window.close"
-                );
-
-                return;
-            }
-
-
-            launchScreen.classList.remove(
-                "visible"
+            sendNativeMessage(
+                "window.close"
             );
 
-
-            setTimeout(() =>
-            {
-                showView(
-                    "home"
-                );
-
-                launchRunning =
-                    false;
-
-            }, 450);
+            return;
+        }
 
 
-        }, 900);
+        /*
+            Otherwise smoothly return to
+            the normal application.
+        */
+
+        launchScreen.classList.remove(
+            "visible"
+        );
+
+
+        /*
+            Allow the fade-out animation to finish
+            before marking the sequence inactive.
+        */
+
+        setTimeout(() =>
+        {
+            showView(
+                "home"
+            );
+
+            launchRunning =
+                false;
+
+        }, 500);
+
+    }, 850);
 }
 
 
@@ -540,23 +560,32 @@ function startLaunch()
         true;
 
 
+    /*
+        Make sure preferences are current.
+    */
+
     loadSettings();
 
     updateToggleUI();
 
 
     /*
-        Reset the launcher completely.
+        Make the launch screen become the entire
+        application surface.
+
+        It does NOT open a new page.
+        It does NOT open another window.
+        It fades over the existing menu.
     */
 
-    clearInterval(
-        launchTimer
+    launchScreen.classList.add(
+        "visible"
     );
 
-    clearTimeout(
-        launchFinishTimer
-    );
 
+    /*
+        Reset the progress bar immediately.
+    */
 
     launchProgressBar.style.width =
         "0%";
@@ -568,22 +597,10 @@ function startLaunch()
 
 
     /*
-        Let the main application exist underneath
-        the launch screen.
+        36 SECOND LAUNCH.
 
-        The launch screen then fades naturally over it.
-    */
-
-    requestAnimationFrame(() =>
-    {
-        launchScreen.classList.add(
-            "visible"
-        );
-    });
-
-
-    /*
-        36 SECOND SEQUENCE
+        This deliberately remains around the
+        30–40 second range requested.
     */
 
     const duration =
@@ -621,7 +638,6 @@ function startLaunch()
             {
                 finishLaunch();
             }
-
 
         }, 100);
 }
@@ -670,12 +686,12 @@ launchButton.addEventListener(
    ============================================================ */
 
 /*
-    The C++ window has no title bar.
+    The native C++ window has no title bar.
 
-    Therefore normal empty areas of the UI can drag
-    the native window.
+    Empty parts of the interface can therefore
+    drag the whole native window.
 
-    Interactive controls are excluded.
+    Buttons and interactive controls are excluded.
 */
 
 document.addEventListener(
@@ -689,6 +705,11 @@ document.addEventListener(
             return;
         }
 
+
+        /*
+            Don't drag when the user is
+            interacting with a control.
+        */
 
         const target =
             event.target;
@@ -704,31 +725,24 @@ document.addEventListener(
         }
 
 
+        /*
+            Don't initiate a drag from
+            the launch progress itself.
+        */
+
+        if (
+            target.closest(
+                "#launchScreen"
+            )
+        )
+        {
+            return;
+        }
+
+
         sendNativeMessage(
             "window.drag"
         );
-    }
-);
-
-
-/* ============================================================
-   TEXT SELECTION PREVENTION
-   ============================================================ */
-
-document.addEventListener(
-    "selectstart",
-    event =>
-    {
-        event.preventDefault();
-    }
-);
-
-
-document.addEventListener(
-    "dragstart",
-    event =>
-    {
-        event.preventDefault();
     }
 );
 
@@ -741,6 +755,10 @@ document.addEventListener(
     "keydown",
     event =>
     {
+        /*
+            Prevent Ctrl+A / Cmd+A
+            from selecting the interface.
+        */
 
         if (
             (event.ctrlKey || event.metaKey) &&
@@ -749,15 +767,6 @@ document.addEventListener(
         {
             event.preventDefault();
         }
-
-
-        if (
-            event.key === "F5"
-        )
-        {
-            event.preventDefault();
-        }
-
     }
 );
 
