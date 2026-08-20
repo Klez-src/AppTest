@@ -1,26 +1,51 @@
-/* =========================================================
-   ORRO
-   Main application logic
-   ========================================================= */
+"use strict";
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+// =========================================================
+// ELEMENTS
+// =========================================================
 
-const $ = (selector) =>
-    document.querySelector(selector);
+const intro = document.getElementById("intro");
+const app = document.getElementById("app");
+
+const closeButton = document.getElementById("closeButton");
+
+const navButtons =
+    document.querySelectorAll(".nav-button");
+
+const views =
+    document.querySelectorAll(".view");
+
+const homeLaunch =
+    document.getElementById("homeLaunch");
+
+const launchButton =
+    document.getElementById("launchButton");
+
+const launchScreen =
+    document.getElementById("launchScreen");
+
+const launchTitle =
+    document.getElementById("launchTitle");
+
+const launchStatus =
+    document.getElementById("launchStatus");
+
+const launchProgressBar =
+    document.getElementById("launchProgressBar");
+
+const launchStep =
+    document.getElementById("launchStep");
+
+const launchPercent =
+    document.getElementById("launchPercent");
 
 
-const $$ = (selector) =>
-    document.querySelectorAll(selector);
+// =========================================================
+// NATIVE WINDOW COMMUNICATION
+// =========================================================
 
-
-/* =========================================================
-   NATIVE WEBVIEW BRIDGE
-   ========================================================= */
-
-function nativeMessage(message) {
+function sendNative(message) {
 
     try {
 
@@ -28,225 +53,129 @@ function nativeMessage(message) {
             window.chrome &&
             window.chrome.webview
         ) {
+
             window.chrome.webview.postMessage(
                 message
             );
+
         }
 
-    } catch (error) {
+    } catch (_) {
 
-        console.warn(
-            "Native bridge unavailable:",
-            error
-        );
+        // Running directly in browser.
+        // Nothing needs to happen.
 
     }
+
 }
 
 
-/* =========================================================
-   CLOSE
-   ========================================================= */
+function closeApplication() {
 
-function closeApp() {
-    nativeMessage("window.close");
+    sendNative("window.close");
+
 }
 
 
-$("#closeButton")?.addEventListener(
-    "click",
-    closeApp
-);
+// =========================================================
+// INTRO
+// =========================================================
+
+function startIntro() {
+
+    // Keep the intro on screen long enough
+    // for the animation to actually be visible.
+
+    setTimeout(() => {
+
+        intro.classList.add("finished");
+
+        setTimeout(() => {
+
+            app.classList.add("ready");
+
+        }, 250);
+
+    }, 2500);
+
+}
 
 
-/* =========================================================
-   DRAGGING
-   ========================================================= */
+// =========================================================
+// NAVIGATION
+// =========================================================
 
-/*
-    The whole application can be dragged.
+function showView(viewName) {
 
-    We don't make normal buttons draggable.
-    Clicking anywhere else in the UI starts the native
-    window drag operation.
-*/
+    views.forEach(view => {
 
-document.addEventListener(
-    "mousedown",
-    (event) => {
+        view.classList.remove("active");
 
-        if (
-            event.button !== 0
-        ) {
-            return;
-        }
+    });
 
 
-        const target =
-            event.target;
+    navButtons.forEach(button => {
+
+        button.classList.remove("active");
+
+    });
 
 
-        if (
-            target.closest(
-                "button"
-            )
-        ) {
-            return;
-        }
+    const target =
+        document.getElementById(viewName);
 
-
-        if (
-            target.closest(
-                "input"
-            )
-        ) {
-            return;
-        }
-
-
-        if (
-            target.closest(
-                ".launch-close"
-            )
-        ) {
-            return;
-        }
-
-
-        nativeMessage(
-            "window.drag"
+    const selectedButton =
+        document.querySelector(
+            `.nav-button[data-view="${viewName}"]`
         );
 
-    }
-);
 
+    if (target) {
 
-/* =========================================================
-   INTRO
-   ========================================================= */
+        target.classList.add("active");
 
-const intro =
-    $("#intro");
-
-const app =
-    $("#app");
-
-
-function finishIntro() {
-
-    if (!intro) {
-        app?.classList.add(
-            "ready"
-        );
-
-        return;
     }
 
 
-    setTimeout(
+    if (selectedButton) {
+
+        selectedButton.classList.add("active");
+
+    }
+
+}
+
+
+navButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
         () => {
 
-            intro.classList.add(
-                "hidden"
-            );
+            const view =
+                button.dataset.view;
 
-            app?.classList.add(
-                "ready"
-            );
+            if (view) {
 
-        },
-        2300
-    );
-}
-
-
-window.addEventListener(
-    "load",
-    finishIntro
-);
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-const navButtons =
-    $$(".nav-button");
-
-const views =
-    $$(".view");
-
-
-function showView(
-    viewName
-) {
-
-    views.forEach(
-        (view) => {
-
-            view.classList.toggle(
-                "active",
-                view.id === viewName
-            );
-
-        }
-    );
-
-
-    navButtons.forEach(
-        (button) => {
-
-            button.classList.toggle(
-                "selected",
-                button.dataset.view === viewName
-            );
-
-        }
-    );
-
-}
-
-
-navButtons.forEach(
-    (button) => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const view =
-                    button.dataset.view;
-
-                if (!view) {
-                    return;
-                }
-
-                showView(
-                    view
-                );
+                showView(view);
 
             }
-        );
 
-    }
-);
+        }
+    );
+
+});
 
 
-/* =========================================================
-   SETTINGS
-   ========================================================= */
-
-const SETTINGS_KEY =
-    "orro.settings";
-
+// =========================================================
+// SETTINGS
+// =========================================================
 
 const defaultSettings = {
 
     rememberSession: false,
 
     automaticUpdates: false,
-
-    minimiseOnLaunch: false,
 
     closeAfterLaunch: false
 
@@ -264,7 +193,7 @@ function loadSettings() {
 
         const saved =
             localStorage.getItem(
-                SETTINGS_KEY
+                "orro-settings"
             );
 
 
@@ -273,7 +202,6 @@ function loadSettings() {
             const parsed =
                 JSON.parse(saved);
 
-
             settings = {
                 ...defaultSettings,
                 ...parsed
@@ -281,18 +209,16 @@ function loadSettings() {
 
         }
 
-    } catch (error) {
-
-        console.warn(
-            "Unable to load settings.",
-            error
-        );
+    } catch (_) {
 
         settings = {
             ...defaultSettings
         };
 
     }
+
+
+    updateSettingUI();
 
 }
 
@@ -302,320 +228,224 @@ function saveSettings() {
     try {
 
         localStorage.setItem(
-            SETTINGS_KEY,
-            JSON.stringify(
-                settings
-            )
+            "orro-settings",
+            JSON.stringify(settings)
         );
 
-    } catch (error) {
+    } catch (_) {
 
-        console.warn(
-            "Unable to save settings.",
-            error
-        );
+        // Local storage may be unavailable.
+        // App still works without it.
 
     }
 
 }
 
 
-function renderSettings() {
+function updateSettingUI() {
 
-    $$(".toggle").forEach(
-        (toggle) => {
+    document
+        .querySelectorAll(".toggle")
+        .forEach(toggle => {
 
-            const name =
+            const key =
                 toggle.dataset.setting;
 
-
-            if (!name) {
-                return;
-            }
-
+            const enabled =
+                Boolean(settings[key]);
 
             toggle.classList.toggle(
-                "on",
-                Boolean(
-                    settings[name]
-                )
+                "enabled",
+                enabled
             );
 
-        }
-    );
+            toggle.setAttribute(
+                "aria-pressed",
+                enabled
+                    ? "true"
+                    : "false"
+            );
+
+        });
 
 }
 
 
-loadSettings();
-renderSettings();
-
-
-$$(".toggle").forEach(
-    (toggle) => {
+document
+    .querySelectorAll(".toggle")
+    .forEach(toggle => {
 
         toggle.addEventListener(
             "click",
             () => {
 
-                const name =
+                const key =
                     toggle.dataset.setting;
 
-
-                if (!name) {
+                if (!key)
                     return;
-                }
 
 
-                settings[name] =
-                    !Boolean(
-                        settings[name]
-                    );
+                settings[key] =
+                    !Boolean(settings[key]);
 
 
                 saveSettings();
-                renderSettings();
+
+                updateSettingUI();
 
             }
         );
 
-    }
-);
+    });
 
 
-/* =========================================================
-   LAUNCH SCREEN
-   ========================================================= */
+// =========================================================
+// LAUNCH SEQUENCE
+// =========================================================
 
-const launchScreen =
-    $("#launchScreen");
+let launchRunning = false;
 
-const launchTitle =
-    $("#launchTitle");
+let launchTimer = null;
 
-const launchStatus =
-    $("#launchStatus");
-
-const launchProgressBar =
-    $("#launchProgressBar");
-
-const launchStep =
-    $("#launchStep");
-
-const launchPercent =
-    $("#launchPercent");
-
-const launchClose =
-    $("#launchClose");
+let launchStart = 0;
 
 
-let launchTimer =
-    null;
+// Approximately 36 seconds total.
 
-let launchStart =
-    0;
+const LAUNCH_DURATION = 36000;
 
-let launchCancelled =
-    false;
-
-
-/*
-    Approximately 35 seconds.
-
-    The actual sequence is deliberately not a
-    perfectly uniform progress bar. It moves through
-    several realistic stages.
-*/
 
 const launchStages = [
 
     {
-        until: 7,
+        at: 0,
         title: "Preparing",
-        status: "Preparing launch environment",
+        status: "Starting launch sequence",
         step: "Initialising"
     },
 
     {
-        until: 14,
+        at: 4500,
         title: "Checking",
-        status: "Checking local components",
-        step: "Checking"
+        status: "Checking required components",
+        step: "Checking files"
     },
 
     {
-        until: 22,
+        at: 9000,
         title: "Loading",
-        status: "Loading required components",
+        status: "Loading launch components",
         step: "Loading"
     },
 
     {
-        until: 29,
+        at: 14500,
+        title: "Initialising",
+        status: "Initialising orro",
+        step: "Initialising"
+    },
+
+    {
+        at: 20500,
+        title: "Preparing",
+        status: "Preparing environment",
+        step: "Preparing environment"
+    },
+
+    {
+        at: 27000,
         title: "Starting",
-        status: "Starting application session",
+        status: "Starting application",
         step: "Starting"
     },
 
     {
-        until: 35,
+        at: 33000,
         title: "Finishing",
-        status: "Finalising launch",
-        step: "Finalising"
+        status: "Completing launch sequence",
+        step: "Finishing"
+    },
+
+    {
+        at: 36000,
+        title: "Ready",
+        status: "Launch complete",
+        step: "Complete"
     }
 
 ];
 
 
-function setLaunchProgress(
-    seconds
-) {
+function setLaunchStage(stage) {
 
-    const percent =
+    launchTitle.textContent =
+        stage.title;
+
+    launchStatus.textContent =
+        stage.status;
+
+    launchStep.textContent =
+        stage.step;
+
+}
+
+
+function updateLaunchProgress() {
+
+    if (!launchRunning)
+        return;
+
+
+    const elapsed =
+        performance.now() -
+        launchStart;
+
+
+    const progress =
         Math.min(
-            100,
-            Math.floor(
-                (
-                    seconds /
-                    35
-                ) * 100
-            )
+            elapsed / LAUNCH_DURATION,
+            1
         );
 
 
-    let stage =
-        launchStages[
-            launchStages.length - 1
-        ];
+    const percentage =
+        Math.floor(progress * 100);
+
+
+    launchProgressBar.style.width =
+        `${percentage}%`;
+
+    launchPercent.textContent =
+        `${percentage}%`;
+
+
+    let currentStage =
+        launchStages[0];
 
 
     for (
-        const candidate
-        of launchStages
+        const stage of launchStages
     ) {
 
         if (
-            seconds <=
-            candidate.until
+            elapsed >= stage.at
         ) {
 
-            stage =
-                candidate;
-
-            break;
+            currentStage = stage;
 
         }
 
     }
 
 
-    if (launchTitle) {
-
-        launchTitle.textContent =
-            stage.title;
-
-    }
-
-
-    if (launchStatus) {
-
-        launchStatus.textContent =
-            stage.status;
-
-    }
-
-
-    if (launchStep) {
-
-        launchStep.textContent =
-            stage.step;
-
-    }
-
-
-    if (launchPercent) {
-
-        launchPercent.textContent =
-            `${percent}%`;
-
-    }
-
-
-    if (launchProgressBar) {
-
-        launchProgressBar.style.width =
-            `${percent}%`;
-
-    }
-
-}
-
-
-function resetLaunchScreen() {
-
-    if (launchTimer) {
-
-        clearInterval(
-            launchTimer
-        );
-
-        launchTimer =
-            null;
-
-    }
-
-
-    launchStart =
-        0;
-
-    launchCancelled =
-        false;
-
-
-    setLaunchProgress(
-        0
+    setLaunchStage(
+        currentStage
     );
-
-}
-
-
-function openLaunchScreen() {
-
-    resetLaunchScreen();
-
-
-    launchScreen?.classList.add(
-        "active"
-    );
-
-
-    launchStart =
-        Date.now();
-
-
-    launchTimer =
-        setInterval(
-            updateLaunch,
-            100
-        );
-
-
-    updateLaunch();
-
-}
-
-
-function updateLaunch() {
-
-    const elapsed =
-        (
-            Date.now() -
-            launchStart
-        ) / 1000;
 
 
     if (
-        elapsed >= 35
+        progress >= 1
     ) {
 
         finishLaunch();
@@ -625,178 +455,198 @@ function updateLaunch() {
     }
 
 
-    setLaunchProgress(
-        elapsed
+    launchTimer =
+        requestAnimationFrame(
+            updateLaunchProgress
+        );
+
+}
+
+
+function startLaunch() {
+
+    if (launchRunning)
+        return;
+
+
+    launchRunning = true;
+
+
+    // Make the launch screen become
+    // the entire application.
+
+    launchScreen.classList.add(
+        "active"
     );
+
+
+    launchProgressBar.style.width =
+        "0%";
+
+    launchPercent.textContent =
+        "0%";
+
+
+    setLaunchStage(
+        launchStages[0]
+    );
+
+
+    launchStart =
+        performance.now();
+
+
+    launchTimer =
+        requestAnimationFrame(
+            updateLaunchProgress
+        );
 
 }
 
 
 function finishLaunch() {
 
+    launchRunning = false;
+
+
     if (launchTimer) {
 
-        clearInterval(
+        cancelAnimationFrame(
             launchTimer
         );
 
-        launchTimer =
-            null;
+        launchTimer = null;
 
     }
 
 
-    if (launchCancelled) {
-        return;
-    }
+    launchProgressBar.style.width =
+        "100%";
+
+    launchPercent.textContent =
+        "100%";
 
 
-    setLaunchProgress(
-        35
+    setLaunchStage(
+        launchStages[
+            launchStages.length - 1
+        ]
     );
 
 
-    if (launchTitle) {
+    // Give the completed state a moment
+    // before closing.
 
-        launchTitle.textContent =
-            "Ready";
+    if (
+        settings.closeAfterLaunch
+    ) {
 
-    }
+        setTimeout(
+            () => {
 
+                closeApplication();
 
-    if (launchStatus) {
-
-        launchStatus.textContent =
-            "Launch sequence complete";
-
-    }
-
-
-    if (launchStep) {
-
-        launchStep.textContent =
-            "Complete";
+            },
+            850
+        );
 
     }
 
+}
 
-    if (launchPercent) {
 
-        launchPercent.textContent =
-            "100%";
+// =========================================================
+// LAUNCH BUTTONS
+// =========================================================
+
+if (homeLaunch) {
+
+    homeLaunch.addEventListener(
+        "click",
+        startLaunch
+    );
+
+}
+
+
+if (launchButton) {
+
+    launchButton.addEventListener(
+        "click",
+        startLaunch
+    );
+
+}
+
+
+// =========================================================
+// CLOSE
+// =========================================================
+
+if (closeButton) {
+
+    closeButton.addEventListener(
+        "click",
+        closeApplication
+    );
+
+}
+
+
+// =========================================================
+// WINDOW DRAGGING
+// =========================================================
+//
+// Anything that isn't an interactive control can
+// be used to drag the native window.
+//
+
+document.addEventListener(
+    "pointerdown",
+    event => {
+
+        const target =
+            event.target;
+
+
+        if (
+            target.closest(
+                "button, input, a"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        sendNative(
+            "window.drag"
+        );
 
     }
+);
 
 
-    if (launchProgressBar) {
+// =========================================================
+// KEYBOARD
+// =========================================================
 
-        launchProgressBar.style.width =
-            "100%";
+document.addEventListener(
+    "keydown",
+    event => {
 
-    }
+        if (
+            event.key === "Escape"
+        ) {
 
-
-    /*
-        Give the completed state a short moment
-        so the user actually sees that it finished.
-    */
-
-    setTimeout(
-        () => {
-
-            if (
-                settings.closeAfterLaunch
-            ) {
-
-                closeApp();
+            if (launchRunning) {
 
                 return;
 
             }
 
-
-            launchScreen?.classList.remove(
-                "active"
-            );
-
-        },
-        900
-    );
-
-}
-
-
-function cancelLaunch() {
-
-    launchCancelled =
-        true;
-
-
-    if (launchTimer) {
-
-        clearInterval(
-            launchTimer
-        );
-
-        launchTimer =
-            null;
-
-    }
-
-
-    launchScreen?.classList.remove(
-        "active"
-    );
-
-}
-
-
-/* =========================================================
-   LAUNCH BUTTONS
-   ========================================================= */
-
-$("#homeLaunch")?.addEventListener(
-    "click",
-    () => {
-
-        openLaunchScreen();
-
-    }
-);
-
-
-$("#launchButton")?.addEventListener(
-    "click",
-    () => {
-
-        openLaunchScreen();
-
-    }
-);
-
-
-launchClose?.addEventListener(
-    "click",
-    cancelLaunch
-);
-
-
-/* =========================================================
-   KEYBOARD
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (
-            event.key === "Escape" &&
-            launchScreen?.classList.contains(
-                "active"
-            )
-        ) {
-
-            cancelLaunch();
+            closeApplication();
 
         }
 
@@ -804,29 +654,10 @@ document.addEventListener(
 );
 
 
-/* =========================================================
-   PREVENT CONTEXT MENU
-   ========================================================= */
+// =========================================================
+// START
+// =========================================================
 
-document.addEventListener(
-    "contextmenu",
-    (event) => {
+loadSettings();
 
-        event.preventDefault();
-
-    }
-);
-
-
-/* =========================================================
-   PREVENT IMAGE DRAGGING
-   ========================================================= */
-
-document.addEventListener(
-    "dragstart",
-    (event) => {
-
-        event.preventDefault();
-
-    }
-);
+startIntro();
