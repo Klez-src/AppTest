@@ -1,13 +1,60 @@
-/* =========================================================
-   ORRO — SCRIPT
-   ========================================================= */
+let launchRunning = false;
+
+let launchTimer = null;
+
+let launchStartedAt = 0;
+
+const LAUNCH_DURATION = 29000;
 
 
-/* =========================================================
-   NATIVE WEBVIEW MESSAGE
-   ========================================================= */
 
-function nativeMessage(message) {
+const launchStages = [
+
+    {
+        at: 0,
+        title: "Launching",
+        subtitle: "Initialising your session.",
+        status: "Initialising",
+        step: 0
+    },
+
+    {
+        at: 6500,
+        title: "Preparing",
+        subtitle: "Preparing the application environment.",
+        status: "Preparing",
+        step: 1
+    },
+
+    {
+        at: 14000,
+        title: "Starting",
+        subtitle: "Starting your orro session.",
+        status: "Starting",
+        step: 2
+    },
+
+    {
+        at: 22500,
+        title: "Finalising",
+        subtitle: "Finishing up your session.",
+        status: "Finalising",
+        step: 3
+    }
+
+];
+
+
+
+function getElement(id) {
+
+    return document.getElementById(id);
+
+}
+
+
+
+function closeWindow() {
 
     if (
         window.chrome &&
@@ -15,7 +62,7 @@ function nativeMessage(message) {
     ) {
 
         window.chrome.webview.postMessage(
-            message
+            "window.close"
         );
 
     }
@@ -23,290 +70,90 @@ function nativeMessage(message) {
 }
 
 
-/* =========================================================
-   CUSTOM WINDOW CONTROLS
-   ========================================================= */
 
-function closeWindow() {
+function showView(viewId, button) {
 
-    nativeMessage(
-        "window.close"
-    );
-
-}
-
-
-function minimiseWindow() {
-
-    nativeMessage(
-        "window.minimize"
-    );
-
-}
-
-
-function dragWindow() {
-
-    nativeMessage(
-        "window.drag"
-    );
-
-}
-
-
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
-
-const app =
-    document.getElementById("app");
-
-const intro =
-    document.getElementById("intro");
-
-const launchingScreen =
-    document.getElementById("launching-screen");
-
-const launchingTitle =
-    document.getElementById("launching-title");
-
-const launchingSubtitle =
-    document.getElementById("launching-subtitle");
-
-const launchingProgress =
-    document.getElementById("launching-progress-fill");
-
-const launchingStatus =
-    document.getElementById("launching-status-text");
-
-const launchingCancel =
-    document.getElementById("launching-cancel");
-
-
-/* =========================================================
-   INTRO
-   ========================================================= */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        setTimeout(
-            () => {
-
-                if (intro) {
-
-                    intro.classList.add(
-                        "intro-hidden"
-                    );
-
-                }
-
-                if (app) {
-
-                    app.classList.add(
-                        "app-visible"
-                    );
-
-                }
-
-            },
-            900
-        );
-
-    }
-);
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function showView(
-    viewName,
-    button
-) {
-
-    const views =
-        document.querySelectorAll(
-            ".view"
-        );
-
-    views.forEach(
-        view => {
-
-            view.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-
-    const target =
-        document.getElementById(
-            viewName
-        );
-
-
-    if (!target) {
-
+    if (launchRunning)
         return;
 
+
+    document
+        .querySelectorAll(".view")
+        .forEach(function (view) {
+
+            view.classList.remove("active");
+
+        });
+
+
+    const view =
+        getElement(viewId);
+
+
+    if (view) {
+
+        view.classList.add("active");
+
     }
 
 
-    target.classList.add(
-        "active"
-    );
+    document
+        .querySelectorAll(".nav button")
+        .forEach(function (navButton) {
 
+            navButton.classList.remove("selected");
 
-    const navButtons =
-        document.querySelectorAll(
-            ".nav button"
-        );
-
-
-    navButtons.forEach(
-        navButton => {
-
-            navButton.classList.remove(
-                "selected"
-            );
-
-        }
-    );
+        });
 
 
     if (button) {
 
-        button.classList.add(
-            "selected"
-        );
+        button.classList.add("selected");
 
     }
 
-
-    /*
-     * Make sure every page remains positioned
-     * at the top and never carries over a
-     * previous scroll position.
-     */
-
-    const content =
-        document.querySelector(
-            ".content"
-        );
+}
 
 
-    if (content) {
 
-        content.scrollTop = 0;
+function toggleSetting(button) {
 
-    }
+    if (!button)
+        return;
 
 
-    window.scrollTo(
-        0,
-        0
+    const setting =
+        button.dataset.setting;
+
+
+    const enabled =
+        !button.classList.contains("on");
+
+
+    button.classList.toggle(
+        "on",
+        enabled
     );
 
-}
 
+    button.setAttribute(
+        "aria-pressed",
+        enabled ? "true" : "false"
+    );
 
-/* =========================================================
-   PERSISTENT SETTINGS
-   ========================================================= */
-
-const SETTINGS_KEY =
-    "orro_settings";
-
-
-const defaultSettings = {
-
-    remember: true,
-
-    updates: true,
-
-    minimise: false,
-
-    closeAfter: false
-
-};
-
-
-let settings = {
-    ...defaultSettings
-};
-
-
-/* =========================================================
-   LOAD SETTINGS
-   ========================================================= */
-
-function loadSettings() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(
-                SETTINGS_KEY
-            );
-
-
-        if (saved) {
-
-            const parsed =
-                JSON.parse(
-                    saved
-                );
-
-
-            settings = {
-
-                ...defaultSettings,
-
-                ...parsed
-
-            };
-
-        }
-
-    }
-    catch (error) {
-
-        settings = {
-            ...defaultSettings
-        };
-
-    }
-
-
-    applySettings();
-
-}
-
-
-/* =========================================================
-   SAVE SETTINGS
-   ========================================================= */
-
-function saveSettings() {
 
     try {
 
         localStorage.setItem(
-            SETTINGS_KEY,
-            JSON.stringify(
-                settings
-            )
+            "orro_setting_" + setting,
+            enabled ? "true" : "false"
         );
 
     }
     catch (error) {
 
         console.warn(
-            "Unable to save orro settings.",
+            "Could not save setting.",
             error
         );
 
@@ -315,432 +162,314 @@ function saveSettings() {
 }
 
 
-/* =========================================================
-   APPLY SETTINGS
-   ========================================================= */
 
-function applySettings() {
+function loadSettings() {
 
-    const toggles =
-        document.querySelectorAll(
-            ".toggle"
-        );
+    document
+        .querySelectorAll(".toggle[data-setting]")
+        .forEach(function (button) {
 
-
-    toggles.forEach(
-        toggle => {
-
-            const settingName =
-                toggle.dataset.setting;
+            const setting =
+                button.dataset.setting;
 
 
-            if (
-                !settingName ||
-                !(settingName in settings)
-            ) {
+            try {
 
-                return;
+                const saved =
+                    localStorage.getItem(
+                        "orro_setting_" + setting
+                    );
+
+
+                if (saved === null)
+                    return;
+
+
+                const enabled =
+                    saved === "true";
+
+
+                button.classList.toggle(
+                    "on",
+                    enabled
+                );
+
+
+                button.setAttribute(
+                    "aria-pressed",
+                    enabled
+                        ? "true"
+                        : "false"
+                );
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Could not load setting.",
+                    error
+                );
 
             }
 
+        });
 
-            toggle.classList.toggle(
-                "on",
-                Boolean(
-                    settings[
-                        settingName
-                    ]
+}
+
+
+
+function setLaunchStage(stage) {
+
+    const title =
+        getElement("launching-title");
+
+    const subtitle =
+        getElement("launching-subtitle");
+
+    const status =
+        getElement("launching-status-text");
+
+
+    if (title)
+        title.textContent = stage.title;
+
+
+    if (subtitle)
+        subtitle.textContent = stage.subtitle;
+
+
+    if (status)
+        status.textContent = stage.status;
+
+
+    document
+        .querySelectorAll(".launch-step")
+        .forEach(function (element) {
+
+            const index =
+                Number(
+                    element.dataset.step
+                );
+
+
+            element.classList.toggle(
+                "active",
+                index === stage.step
+            );
+
+
+            element.classList.toggle(
+                "done",
+                index < stage.step
+            );
+
+        });
+
+}
+
+
+
+function updateLaunchProgress() {
+
+    if (!launchRunning)
+        return;
+
+
+    const elapsed =
+        performance.now() -
+        launchStartedAt;
+
+
+    const progress =
+        Math.min(
+            elapsed / LAUNCH_DURATION,
+            1
+        );
+
+
+    const percentage =
+        Math.floor(progress * 100);
+
+
+    const fill =
+        getElement(
+            "launching-progress-fill"
+        );
+
+
+    const percent =
+        getElement(
+            "launching-percent"
+        );
+
+
+    const time =
+        getElement(
+            "launching-time"
+        );
+
+
+    if (fill) {
+
+        fill.style.width =
+            (progress * 100) + "%";
+
+    }
+
+
+    if (percent) {
+
+        percent.textContent =
+            percentage + "%";
+
+    }
+
+
+    if (time) {
+
+        const remaining =
+            Math.max(
+                0,
+                Math.ceil(
+                    (LAUNCH_DURATION - elapsed) / 1000
                 )
             );
 
 
-            toggle.setAttribute(
-                "aria-pressed",
-                settings[
-                    settingName
-                ]
-                    ? "true"
-                    : "false"
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   TOGGLE SETTING
-   ========================================================= */
-
-function toggleSetting(
-    button
-) {
-
-    if (!button) {
-
-        return;
+        time.textContent =
+            remaining + "s";
 
     }
 
 
-    const settingName =
-        button.dataset.setting;
-
-
-    if (
-        !settingName ||
-        !(settingName in settings)
+    for (
+        let i = launchStages.length - 1;
+        i >= 0;
+        i--
     ) {
 
+        if (
+            elapsed >=
+            launchStages[i].at
+        ) {
+
+            setLaunchStage(
+                launchStages[i]
+            );
+
+            break;
+
+        }
+
+    }
+
+
+    if (progress >= 1) {
+
+        finishLaunch();
+
         return;
 
     }
 
 
-    settings[
-        settingName
-    ] =
-        !settings[
-            settingName
-        ];
-
-
-    saveSettings();
-
-    applySettings();
+    launchTimer =
+        requestAnimationFrame(
+            updateLaunchProgress
+        );
 
 }
 
 
-/* =========================================================
-   LAUNCH STATE
-   ========================================================= */
 
-let launchTimer = null;
+function launch(button) {
 
-let launchRunning = false;
-
-
-/* =========================================================
-   LAUNCH
-   ========================================================= */
-
-function launch(
-    sourceButton
-) {
-
-    if (launchRunning) {
-
+    if (launchRunning)
         return;
-
-    }
 
 
     launchRunning = true;
 
 
-    /*
-     * Always move to the Launch page first.
-     * This means pressing Launch from Home and
-     * pressing Launch from the Launch page both
-     * behave consistently.
-     */
-
-    const launchButton =
-        document.querySelector(
-            '.nav button[data-view="launch"]'
+    const overlay =
+        getElement(
+            "launching-screen"
         );
 
 
-    showView(
-        "launch",
-        launchButton
+    const fill =
+        getElement(
+            "launching-progress-fill"
+        );
+
+
+    const percent =
+        getElement(
+            "launching-percent"
+        );
+
+
+    const time =
+        getElement(
+            "launching-time"
+        );
+
+
+    if (fill)
+        fill.style.width = "0%";
+
+
+    if (percent)
+        percent.textContent = "0%";
+
+
+    if (time)
+        time.textContent = "29s";
+
+
+    setLaunchStage(
+        launchStages[0]
     );
 
 
-    /*
-     * Show the launching overlay after the
-     * navigation has completed.
-     */
+    if (overlay) {
 
-    requestAnimationFrame(
-        () => {
+        overlay.classList.add(
+            "visible"
+        );
 
-            startLaunchScreen();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   START LAUNCH SCREEN
-   ========================================================= */
-
-function startLaunchScreen() {
-
-    if (!launchingScreen) {
-
-        launchRunning = false;
-
-        return;
+        overlay.classList.add(
+            "active"
+        );
 
     }
 
 
-    launchingScreen.classList.add(
-        "visible"
-    );
-
-
-    launchingScreen.classList.remove(
-        "finished"
-    );
-
-
-    if (launchingProgress) {
-
-        launchingProgress.style.width =
-            "0%";
-
-    }
-
-
-    if (launchingTitle) {
-
-        launchingTitle.textContent =
-            "Launching";
-
-    }
-
-
-    if (launchingSubtitle) {
-
-        launchingSubtitle.textContent =
-            "Preparing your session.";
-
-    }
-
-
-    if (launchingStatus) {
-
-        launchingStatus.textContent =
-            "Initialising";
-
-    }
-
-
-    /*
-     * Small staged updates make the animation
-     * feel smooth rather than jumping through
-     * several states instantly.
-     */
-
-    const stages = [
-
-        {
-            progress: 18,
-            status: "Initialising",
-            delay: 120
-        },
-
-        {
-            progress: 38,
-            status: "Checking version",
-            delay: 500
-        },
-
-        {
-            progress: 61,
-            status: "Preparing session",
-            delay: 950
-        },
-
-        {
-            progress: 82,
-            status: "Starting application",
-            delay: 1450
-        },
-
-        {
-            progress: 100,
-            status: "Ready",
-            delay: 2050
-        }
-
-    ];
-
-
-    stages.forEach(
-        stage => {
-
-            setTimeout(
-                () => {
-
-                    if (
-                        !launchRunning
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    if (
-                        launchingProgress
-                    ) {
-
-                        launchingProgress.style.width =
-                            `${stage.progress}%`;
-
-                    }
-
-
-                    if (
-                        launchingStatus
-                    ) {
-
-                        launchingStatus.textContent =
-                            stage.status;
-
-                    }
-
-                },
-                stage.delay
-            );
-
-        }
-    );
+    launchStartedAt =
+        performance.now();
 
 
     launchTimer =
-        setTimeout(
-            finishLaunch,
-            2350
+        requestAnimationFrame(
+            updateLaunchProgress
         );
 
 }
 
 
-/* =========================================================
-   FINISH LAUNCH
-   ========================================================= */
-
-function finishLaunch() {
-
-    if (!launchRunning) {
-
-        return;
-
-    }
-
-
-    launchRunning = false;
-
-
-    if (launchTimer) {
-
-        clearTimeout(
-            launchTimer
-        );
-
-        launchTimer = null;
-
-    }
-
-
-    if (launchingProgress) {
-
-        launchingProgress.style.width =
-            "100%";
-
-    }
-
-
-    if (launchingStatus) {
-
-        launchingStatus.textContent =
-            "Ready";
-
-    }
-
-
-    /*
-     * Respect the user's persistent settings.
-     */
-
-    if (
-        settings.closeAfter
-    ) {
-
-        setTimeout(
-            () => {
-
-                closeWindow();
-
-            },
-            250
-        );
-
-        return;
-
-    }
-
-
-    if (
-        settings.minimise
-    ) {
-
-        setTimeout(
-            () => {
-
-                minimiseWindow();
-
-            },
-            250
-        );
-
-        return;
-
-    }
-
-
-    /*
-     * Otherwise return to the Launch page.
-     */
-
-    setTimeout(
-        () => {
-
-            if (launchingScreen) {
-
-                launchingScreen.classList.remove(
-                    "visible"
-                );
-
-            }
-
-        },
-        400
-    );
-
-}
-
-
-/* =========================================================
-   CANCEL LAUNCH
-   ========================================================= */
 
 function cancelLaunch() {
 
+    if (!launchRunning)
+        return;
+
+
     launchRunning = false;
 
 
     if (launchTimer) {
 
-        clearTimeout(
+        cancelAnimationFrame(
             launchTimer
         );
 
@@ -749,111 +478,215 @@ function cancelLaunch() {
     }
 
 
-    if (launchingProgress) {
-
-        launchingProgress.style.width =
-            "0%";
-
-    }
+    const overlay =
+        getElement(
+            "launching-screen"
+        );
 
 
-    if (launchingScreen) {
+    if (overlay) {
 
-        launchingScreen.classList.remove(
+        overlay.classList.remove(
+            "active"
+        );
+
+        overlay.classList.remove(
             "visible"
         );
 
     }
 
 
-    if (launchingStatus) {
+    setTimeout(function () {
 
-        launchingStatus.textContent =
-            "Cancelled";
+        const fill =
+            getElement(
+                "launching-progress-fill"
+            );
 
-    }
+
+        const percent =
+            getElement(
+                "launching-percent"
+            );
+
+
+        const time =
+            getElement(
+                "launching-time"
+            );
+
+
+        if (fill)
+            fill.style.width = "0%";
+
+
+        if (percent)
+            percent.textContent = "0%";
+
+
+        if (time)
+            time.textContent = "29s";
+
+
+        setLaunchStage(
+            launchStages[0]
+        );
+
+    }, 350);
 
 }
 
 
-/* =========================================================
-   KEYBOARD SHORTCUTS
-   ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    event => {
+function finishLaunch() {
 
-        /*
-         * Escape closes the launching screen
-         * if it is currently active.
-         */
+    launchRunning = false;
 
-        if (
-            event.key === "Escape" &&
-            launchRunning
-        ) {
 
-            cancelLaunch();
+    if (launchTimer) {
 
-            return;
+        cancelAnimationFrame(
+            launchTimer
+        );
+
+        launchTimer = null;
+
+    }
+
+
+    const fill =
+        getElement(
+            "launching-progress-fill"
+        );
+
+
+    const percent =
+        getElement(
+            "launching-percent"
+        );
+
+
+    const time =
+        getElement(
+            "launching-time"
+        );
+
+
+    if (fill)
+        fill.style.width = "100%";
+
+
+    if (percent)
+        percent.textContent = "100%";
+
+
+    if (time)
+        time.textContent = "0s";
+
+
+    setLaunchStage({
+
+        title: "Ready",
+
+        subtitle:
+            "Your session is ready.",
+
+        status:
+            "Complete",
+
+        step: 3
+
+    });
+
+
+    document
+        .querySelectorAll(".launch-step")
+        .forEach(function (element) {
+
+            element.classList.remove(
+                "active"
+            );
+
+            element.classList.add(
+                "done"
+            );
+
+        });
+
+
+    const overlay =
+        getElement(
+            "launching-screen"
+        );
+
+
+    setTimeout(function () {
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "active"
+            );
+
+            overlay.classList.remove(
+                "visible"
+            );
 
         }
 
-    }
-);
+
+        const minimiseButton =
+            document.querySelector(
+                '[data-setting="minimise"]'
+            );
 
 
-/* =========================================================
-   INITIALISE
-   ========================================================= */
+        const closeButton =
+            document.querySelector(
+                '[data-setting="closeAfter"]'
+            );
+
+
+        if (
+            minimiseButton &&
+            minimiseButton.classList.contains("on")
+        ) {
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+
+                window.chrome.webview.postMessage(
+                    "window.minimize"
+                );
+
+            }
+
+        }
+
+
+        if (
+            closeButton &&
+            closeButton.classList.contains("on")
+        ) {
+
+            closeWindow();
+
+        }
+
+    }, 900);
+
+}
+
+
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
+    function () {
 
         loadSettings();
-
-
-        /*
-         * Make sure Home is selected initially.
-         */
-
-        const homeButton =
-            document.querySelector(
-                '.nav button[data-view="home"]'
-            );
-
-
-        const activeView =
-            document.querySelector(
-                ".view.active"
-            );
-
-
-        if (
-            !activeView
-        ) {
-
-            showView(
-                "home",
-                homeButton
-            );
-
-        }
-
-
-        /*
-         * Prevent accidental browser scrolling.
-         * The application itself is designed to fit
-         * entirely inside the WebView.
-         */
-
-        document.documentElement.style.overflow =
-            "hidden";
-
-        document.body.style.overflow =
-            "hidden";
 
     }
 );
