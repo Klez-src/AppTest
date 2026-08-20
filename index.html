@@ -2,655 +2,543 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
->
+    <title>orro</title>
 
-<title>orro</title>
-
-<link
-    rel="stylesheet"
-    href="./style.css"
->
-
+    <!-- CACHE BUST -->
+    <link
+        rel="stylesheet"
+        href="./style.css?v=20260820"
+    >
 </head>
 
 
 <body>
 
+    <!-- =====================================================
+         INTRO
+         ===================================================== -->
 
-<!-- ==================================================
-     INTRO — LOCKED
-     ================================================== -->
+    <div id="intro">
 
-<div id="intro">
+        <div class="intro-word">
+            orro
+        </div>
 
-    <div class="intro-word">
-        orro
+        <div class="intro-dot"></div>
+
+        <div class="intro-ring"></div>
+
+        <div class="intro-ring-two"></div>
+
     </div>
 
-    <div class="intro-dot"></div>
 
-    <div class="intro-ring"></div>
+    <!-- =====================================================
+         APPLICATION
+         ===================================================== -->
 
-    <div class="intro-ring-two"></div>
+    <div id="app">
 
-</div>
 
+        <!-- =================================================
+             SIDEBAR
+             ================================================= -->
 
+        <aside class="sidebar">
 
-<!-- ==================================================
-     APPLICATION
-     ================================================== -->
-
-<div id="app">
-
-
-    <aside class="sidebar">
-
-
-        <div class="brand">
-
-            <div class="brand-mark">
-                o
-            </div>
-
-            <div class="brand-name">
-                orro
-            </div>
-
-        </div>
-
-
-
-        <div class="nav">
-
-            <div class="nav-label">
-                Workspace
-            </div>
-
-
-            <button
-                class="selected"
-                onclick="showView('home',this)"
-            >
-                Home
-            </button>
-
-
-            <button
-                onclick="showView('launch',this)"
-            >
-                Launch
-            </button>
-
-
-            <button
-                onclick="showView('changes',this)"
-            >
-                Changelog
-            </button>
-
-        </div>
-
-
-
-        <div class="nav secondary">
-
-            <div class="nav-label">
-                Preferences
-            </div>
-
-
-            <button
-                onclick="showView('settings',this)"
-            >
-                Settings
-            </button>
-
-        </div>
-
-
-
-        <!-- Added account -->
-
-        <div class="sidebar-account">
-
-            <div class="account-circle">
-                u
-            </div>
-
-            <div class="account-username">
-                username
-            </div>
-
-        </div>
-
-
-    </aside>
-
-
-
-    <main class="content">
-
-
-        <!-- ==================================================
-             HOME
-             ================================================== -->
-
-        <section
-            id="home"
-            class="view active"
-        >
-
-
-            <div class="topline">
-
-                <span>
-                    Overview
-                </span>
-
-                <span class="version">
-                    v1.0.0
-                </span>
-
-            </div>
-
-
-            <h1>
-                Welcome back.
-            </h1>
-
-
-            <div class="lead">
-                Everything is ready.
-            </div>
-
-
-
-            <div class="status-area">
-
-
-                <div class="status-line">
-
-                    <span class="status-light"></span>
-
-                    Partially detected
-
-                </div>
-
-
-                <div class="app-name">
+            <div class="brand">
+                <span class="brand-name">
                     orro
-                </div>
+                </span>
+            </div>
 
 
-                <div class="app-meta">
-                    version 1.0.0 · latest
-                </div>
+            <div class="nav">
 
-
-                <div class="app-description">
-
-                    The latest version of orro is installed
-                    and ready to launch.
-
+                <div class="nav-label">
+                    Workspace
                 </div>
 
 
                 <button
-                    class="launch-button"
-                    onclick="launch(this)"
+                    class="nav-button selected"
+                    data-view="home"
+                >
+                    Home
+                </button>
+
+
+                <button
+                    class="nav-button"
+                    data-view="launch"
                 >
                     Launch
                 </button>
 
 
+                <button
+                    class="nav-button"
+                    data-view="changes"
+                >
+                    Changelog
+                </button>
+
             </div>
 
 
+            <div class="nav preferences">
 
-            <div class="details">
-
-
-                <div>
-
-                    <div class="detail-label">
-                        Version
-                    </div>
-
-                    <div class="detail-value">
-                        1.0.0
-                    </div>
-
+                <div class="nav-label">
+                    Preferences
                 </div>
 
 
-                <div>
+                <button
+                    class="nav-button"
+                    data-view="settings"
+                >
+                    Settings
+                </button>
 
-                    <div class="detail-label">
-                        Release
-                    </div>
+            </div>
 
-                    <div class="detail-value">
-                        Latest
-                    </div>
 
+            <!-- ACCOUNT -->
+
+            <div class="account">
+
+                <div class="account-avatar">
+                    u
+                </div>
+
+                <div class="account-name">
+                    username
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+        <main class="content">
+
+
+            <!-- =================================================
+                 HOME
+                 ================================================= -->
+
+            <section
+                id="home"
+                class="view active"
+            >
+
+                <div class="eyebrow">
+                    Overview
                 </div>
 
 
-                <div>
+                <h1>
+                    Welcome back.
+                </h1>
 
-                    <div class="detail-label">
-                        Status
-                    </div>
 
-                    <div class="detail-value">
+                <p class="subtitle">
+                    Everything is ready.
+                </p>
+
+
+                <div class="home-status">
+
+                    <div class="status">
+                        <span class="status-dot"></span>
                         Partially detected
                     </div>
 
+
+                    <div class="product-name">
+                        orro
+                    </div>
+
+
+                    <div class="product-version">
+                        1.0.0 · latest
+                    </div>
+
+
+                    <p class="description">
+                        The latest version of orro is installed
+                        and ready to launch.
+                    </p>
+
+
+                    <button
+                        class="primary-button"
+                        id="homeLaunch"
+                    >
+                        Launch
+                    </button>
+
                 </div>
 
 
-            </div>
+                <div class="details">
+
+                    <div class="detail">
+
+                        <span>
+                            Version
+                        </span>
+
+                        <strong>
+                            1.0.0
+                        </strong>
+
+                    </div>
 
 
-        </section>
+                    <div class="detail">
+
+                        <span>
+                            Release
+                        </span>
+
+                        <strong>
+                            Latest
+                        </strong>
+
+                    </div>
 
 
+                    <div class="detail">
 
-        <!-- ==================================================
-             LAUNCH
-             ================================================== -->
+                        <span>
+                            Status
+                        </span>
 
-        <section
-            id="launch"
-            class="view launch-view"
-        >
+                        <strong>
+                            Partially detected
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
 
 
-            <div class="topline">
+            <!-- =================================================
+                 LAUNCH
+                 ================================================= -->
 
-                <span>
+            <section
+                id="launch"
+                class="view"
+            >
+
+                <div class="eyebrow">
                     Application
-                </span>
-
-            </div>
+                </div>
 
 
-            <h1>
-                Launch
-            </h1>
+                <h1>
+                    Launch
+                </h1>
 
 
-            <div class="lead">
-                Start a new session.
-            </div>
+                <p class="subtitle">
+                    Start a new session.
+                </p>
 
 
+                <div class="launch-area">
 
-            <div class="launch-panel">
+                    <div>
+
+                        <div class="launch-name">
+                            orro
+                        </div>
+
+                        <div class="launch-meta">
+                            1.0.0
+                        </div>
+
+                        <div class="ready">
+                            <span class="status-dot"></span>
+                            Ready
+                        </div>
+
+                    </div>
 
 
-                <div class="launch-brand">
+                    <button
+                        class="primary-button"
+                        id="launchButton"
+                    >
+                        Launch
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CHANGELOG
+                 ================================================= -->
+
+            <section
+                id="changes"
+                class="view"
+            >
+
+                <div class="eyebrow">
+                    Updates
+                </div>
+
+
+                <h1>
+                    Changelog
+                </h1>
+
+
+                <p class="subtitle">
+                    What's changed in orro.
+                </p>
+
+
+                <div class="changes-list">
+
+                    <div class="change">
+
+                        <div class="change-version">
+                            1.0.0
+                            <span>
+                                current
+                            </span>
+                        </div>
+
+
+                        <div>
+
+                            <div class="change-title">
+                                Initial release
+                            </div>
+
+                            <div class="change-description">
+                                New interface, startup sequence,
+                                launcher shell and first public build.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="change">
+
+                        <div class="change-version">
+                            0.9.2
+                            <span>
+                                previous
+                            </span>
+                        </div>
+
+
+                        <div>
+
+                            <div class="change-title">
+                                Interface refinement
+                            </div>
+
+                            <div class="change-description">
+                                Improved navigation and launch flow.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SETTINGS
+                 ================================================= -->
+
+            <section
+                id="settings"
+                class="view"
+            >
+
+                <div class="eyebrow">
+                    Preferences
+                </div>
+
+
+                <h1>
+                    Settings
+                </h1>
+
+
+                <p class="subtitle">
+                    A few things you can change.
+                </p>
+
+
+                <div class="settings-list">
+
+
+                    <div class="setting">
+
+                        <div>
+
+                            <div class="setting-name">
+                                Remember session
+                            </div>
+
+                            <div class="setting-info">
+                                Keep your preferences between launches.
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="toggle"
+                            data-setting="rememberSession"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <div>
+
+                            <div class="setting-name">
+                                Automatic updates
+                            </div>
+
+                            <div class="setting-info">
+                                Check for new versions at startup.
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="toggle"
+                            data-setting="automaticUpdates"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="setting">
+
+                        <div>
+
+                            <div class="setting-name">
+                                Close after launch
+                            </div>
+
+                            <div class="setting-info">
+                                Close orro when the launch sequence finishes.
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="toggle"
+                            data-setting="closeAfterLaunch"
+                        ></button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =====================================================
+             LAUNCHING SCREEN
+             ===================================================== -->
+
+        <div id="launchScreen">
+
+            <div class="launch-screen-inner">
+
+                <div class="launch-eyebrow">
                     orro
                 </div>
 
 
-                <div class="launch-version">
-                    1.0.0
-                </div>
-
-
-                <div class="launch-state">
-                    Ready
-                </div>
-
-
-                <button
-                    class="launch-action"
-                    onclick="launch(this)"
+                <div
+                    id="launchTitle"
+                    class="launch-title"
                 >
-                    Launch
-                </button>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ==================================================
-             CHANGELOG
-             ================================================== -->
-
-        <section
-            id="changes"
-            class="view"
-        >
-
-
-            <div class="topline">
-
-                <span>
-                    Updates
-                </span>
-
-            </div>
-
-
-            <h1>
-                Changelog
-            </h1>
-
-
-            <div class="lead">
-                What's changed in orro.
-            </div>
-
-
-
-            <div class="changelog">
-
-
-                <div class="release">
-
-
-                    <div class="release-version">
-
-                        1.0.0
-
-                        <div class="release-date">
-                            CURRENT
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="release-title">
-                            Initial release
-                        </div>
-
-                        <div class="release-text">
-
-                            New interface, startup sequence,
-                            launcher shell and first public build.
-
-                        </div>
-
-                    </div>
-
-
+                    Preparing
                 </div>
 
-
-
-                <div class="release">
-
-
-                    <div class="release-version">
-
-                        0.9.2
-
-                        <div class="release-date">
-                            PREVIOUS
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="release-title">
-                            Interface refinement
-                        </div>
-
-                        <div class="release-text">
-
-                            Improved navigation and launch flow.
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ==================================================
-             SETTINGS
-             ================================================== -->
-
-        <section
-            id="settings"
-            class="view"
-        >
-
-
-            <div class="topline">
-
-                <span>
-                    Preferences
-                </span>
-
-            </div>
-
-
-            <h1>
-                Settings
-            </h1>
-
-
-            <div class="lead">
-                A few things you can change.
-            </div>
-
-
-
-            <div class="settings">
-
-
-                <div class="setting">
-
-
-                    <div>
-
-                        <div class="setting-name">
-                            Remember session
-                        </div>
-
-                        <div class="setting-info">
-                            Keep your session between launches.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="toggle on"
-                        onclick="toggle(this)"
-                    ></div>
-
-
-                </div>
-
-
-
-                <div class="setting">
-
-
-                    <div>
-
-                        <div class="setting-name">
-                            Automatic updates
-                        </div>
-
-                        <div class="setting-info">
-                            Check for new versions at startup.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="toggle on"
-                        onclick="toggle(this)"
-                    ></div>
-
-
-                </div>
-
-
-
-                <div class="setting">
-
-
-                    <div>
-
-                        <div class="setting-name">
-                            Minimise on launch
-                        </div>
-
-                        <div class="setting-info">
-                            Hide the interface after launching.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="toggle"
-                        data-setting="minimiseOnLaunch"
-                        onclick="toggle(this)"
-                    ></div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-
-    <!-- ==================================================
-         LAUNCHING SCREEN — ADDED
-         ================================================== -->
-
-    <div id="launchScreen">
-
-
-        <div class="launch-screen-top">
-
-            <span class="launch-screen-brand">
-                orro
-            </span>
-
-            <span
-                id="launchTime"
-                class="launch-screen-time"
-            >
-                00:35
-            </span>
-
-        </div>
-
-
-
-        <div class="launch-screen-content">
-
-
-            <div class="launch-screen-eyebrow">
-                Application
-            </div>
-
-
-            <div
-                id="launchTitle"
-                class="launch-screen-title"
-            >
-                Preparing
-            </div>
-
-
-            <div
-                id="launchStatus"
-                class="launch-screen-status"
-            >
-                Starting launch sequence
-            </div>
-
-
-
-            <div class="launch-progress">
 
                 <div
-                    id="launchProgressBar"
-                    class="launch-progress-bar"
-                ></div>
+                    id="launchStatus"
+                    class="launch-status"
+                >
+                    Starting launch sequence
+                </div>
+
+
+                <div class="launch-progress">
+
+                    <div
+                        id="launchProgressBar"
+                        class="launch-progress-bar"
+                    ></div>
+
+                </div>
+
+
+                <div class="launch-bottom">
+
+                    <span id="launchStep">
+                        Initialising
+                    </span>
+
+                    <span id="launchPercent">
+                        0%
+                    </span>
+
+                </div>
 
             </div>
 
-
-
-            <div class="launch-progress-info">
-
-                <span id="launchStep">
-                    Initialising
-                </span>
-
-                <span id="launchPercent">
-                    0%
-                </span>
-
-            </div>
-
-
         </div>
-
-
-
-        <div class="launch-screen-bottom">
-
-            <span>
-                1.0.0
-            </span>
-
-            <span id="launchFooterStatus">
-                Launching
-            </span>
-
-        </div>
-
 
     </div>
 
 
-</div>
+    <!-- CACHE BUST -->
 
-
-
-<script src="./script.js"></script>
+    <script
+        src="./script.js?v=20260820"
+    ></script>
 
 </body>
 
