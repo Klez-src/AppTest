@@ -4,7 +4,7 @@ let launchAnimation = null;
 
 let launchStartedAt = 0;
 
-let launchDuration = 29000;
+let launchDuration = 0;
 
 let previousView = "home";
 
@@ -34,26 +34,94 @@ function closeWindow() {
 
 
 /* ==================================================
+   DRAGGING
+   ================================================== */
+
+/*
+    The WebView normally consumes mouse input itself.
+
+    This lets the user drag the native window from
+    essentially anywhere that isn't an interactive
+    element.
+
+    Buttons, toggles and links remain clickable.
+*/
+
+document.addEventListener(
+    "mousedown",
+    function (event) {
+
+        if (
+            event.button !== 0
+        ) {
+            return;
+        }
+
+
+        const interactive =
+            event.target.closest(
+                "button, input, select, textarea, a"
+            );
+
+
+        if (interactive) {
+            return;
+        }
+
+
+        if (launchRunning) {
+            return;
+        }
+
+
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+
+            document
+                .getElementById("app")
+                ?.classList.add(
+                    "dragging"
+                );
+
+
+            window.chrome.webview.postMessage(
+                "window.drag"
+            );
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "mouseup",
+    function () {
+
+        document
+            .getElementById("app")
+            ?.classList.remove(
+                "dragging"
+            );
+
+    }
+);
+
+
+
+/* ==================================================
    NAVIGATION
    ================================================== */
 
-function showView(viewId, button) {
+function showView(
+    viewId,
+    button
+) {
 
-    if (launchRunning)
+    if (launchRunning) {
         return;
-
-
-    const current =
-        document.querySelector(
-            ".view.active"
-        );
-
-
-    if (current) {
-
-        previousView =
-            current.id;
-
     }
 
 
@@ -74,13 +142,18 @@ function showView(viewId, button) {
         );
 
 
-    if (!target)
+    if (!target) {
         return;
+    }
 
 
     target.classList.add(
         "active"
     );
+
+
+    previousView =
+        viewId;
 
 
     document
@@ -109,13 +182,38 @@ function showView(viewId, button) {
 
 
 /* ==================================================
+   HOME LAUNCH BUTTON
+   ================================================== */
+
+/*
+    Home's Launch button ONLY opens
+    the Launch tab.
+
+    It does NOT start the queue.
+*/
+
+function goToLaunchPage() {
+
+    showView(
+        "launch",
+        document.querySelector(
+            '.nav button[data-view="launch"]'
+        )
+    );
+
+}
+
+
+
+/* ==================================================
    SETTINGS
    ================================================== */
 
 function toggleSetting(button) {
 
-    if (!button)
+    if (!button) {
         return;
+    }
 
 
     const setting =
@@ -185,8 +283,9 @@ function loadSettings() {
                     );
 
 
-                if (saved === null)
+                if (saved === null) {
                     return;
+                }
 
 
                 const enabled =
@@ -223,10 +322,14 @@ function loadSettings() {
 
 
 /* ==================================================
-   QUEUE
+   QUEUE RANDOMISATION
    ================================================== */
 
 function randomQueueAhead() {
+
+    /*
+        1–4 people ahead.
+    */
 
     return Math.floor(
         Math.random() * 4
@@ -241,8 +344,18 @@ function randomLaunchDuration() {
     /*
         Roughly 29 seconds.
 
-        Range:
-        25–34 seconds.
+        Possible values:
+
+        25
+        26
+        27
+        28
+        29
+        30
+        31
+        32
+        33
+        34
     */
 
     return (
@@ -255,17 +368,17 @@ function randomLaunchDuration() {
 
 
 
-function updateQueueDisplay(progress) {
+/* ==================================================
+   QUEUE DISPLAY
+   ================================================== */
+
+function updateQueueDisplay(
+    progress
+) {
 
     const fill =
         document.getElementById(
             "queue-progress-fill"
-        );
-
-
-    const percent =
-        document.getElementById(
-            "queue-percent"
         );
 
 
@@ -278,15 +391,7 @@ function updateQueueDisplay(progress) {
     if (fill) {
 
         fill.style.width =
-            (progress * 100) + "%";
-
-    }
-
-
-    if (percent) {
-
-        percent.textContent =
-            Math.floor(
+            (
                 progress * 100
             ) + "%";
 
@@ -319,14 +424,54 @@ function updateQueueDisplay(progress) {
 
     }
 
+
+    /*
+        Smoothly move through the queue.
+
+        This isn't tied to a visible percentage.
+    */
+
+    const aheadElement =
+        document.getElementById(
+            "queue-ahead-number"
+        );
+
+
+    if (aheadElement) {
+
+        const completed =
+            Math.floor(
+                progress *
+                queueAhead
+            );
+
+
+        const remaining =
+            Math.max(
+                0,
+                queueAhead -
+                completed
+            );
+
+
+        aheadElement.textContent =
+            remaining;
+
+    }
+
 }
 
 
 
+/* ==================================================
+   QUEUE ANIMATION
+   ================================================== */
+
 function animateQueue() {
 
-    if (!launchRunning)
+    if (!launchRunning) {
         return;
+    }
 
 
     const elapsed =
@@ -347,41 +492,9 @@ function animateQueue() {
     );
 
 
-    /*
-        Gradually reduce the displayed
-        queue position as the wait progresses.
-    */
-
-    const completedAhead =
-        Math.floor(
-            progress *
-            queueAhead
-        );
-
-
-    const remainingAhead =
-        Math.max(
-            0,
-            queueAhead -
-            completedAhead
-        );
-
-
-    const aheadElement =
-        document.getElementById(
-            "queue-ahead-number"
-        );
-
-
-    if (aheadElement) {
-
-        aheadElement.textContent =
-            remainingAhead;
-
-    }
-
-
-    if (progress >= 1) {
+    if (
+        progress >= 1
+    ) {
 
         finishLaunch();
 
@@ -405,12 +518,17 @@ function animateQueue() {
 
 function launch() {
 
-    if (launchRunning)
+    if (launchRunning) {
         return;
+    }
 
 
     launchRunning = true;
 
+
+    /*
+        New random values every launch.
+    */
 
     queueAhead =
         randomQueueAhead();
@@ -424,27 +542,15 @@ function launch() {
         performance.now();
 
 
-    const queuePosition =
-        document.getElementById(
-            "queue-position"
-        );
-
-
-    const aheadElement =
+    const ahead =
         document.getElementById(
             "queue-ahead-number"
         );
 
 
-    const fill =
+    const position =
         document.getElementById(
-            "queue-progress-fill"
-        );
-
-
-    const percent =
-        document.getElementById(
-            "queue-percent"
+            "queue-position"
         );
 
 
@@ -454,34 +560,24 @@ function launch() {
         );
 
 
-    if (aheadElement) {
+    const fill =
+        document.getElementById(
+            "queue-progress-fill"
+        );
 
-        aheadElement.textContent =
+
+    if (ahead) {
+
+        ahead.textContent =
             queueAhead;
 
     }
 
 
-    if (queuePosition) {
+    if (position) {
 
-        queuePosition.textContent =
+        position.textContent =
             queueAhead + 1;
-
-    }
-
-
-    if (fill) {
-
-        fill.style.width =
-            "0%";
-
-    }
-
-
-    if (percent) {
-
-        percent.textContent =
-            "0%";
 
     }
 
@@ -498,33 +594,19 @@ function launch() {
     }
 
 
+    if (fill) {
+
+        fill.style.width =
+            "0%";
+
+    }
+
+
     /*
-        Switch to the actual queue page.
+        Hide the entire normal interface.
+
+        The queue becomes the whole window.
     */
-
-    document
-        .querySelectorAll(".view")
-        .forEach(function (view) {
-
-            view.classList.remove(
-                "active"
-            );
-
-        });
-
-
-    document
-        .querySelectorAll(
-            ".nav button"
-        )
-        .forEach(function (button) {
-
-            button.classList.remove(
-                "selected"
-            );
-
-        });
-
 
     const queue =
         document.getElementById(
@@ -541,9 +623,66 @@ function launch() {
     }
 
 
+    document
+        .querySelectorAll(".view")
+        .forEach(function (view) {
+
+            view.classList.remove(
+                "active"
+            );
+
+        });
+
+
     /*
-        Start the smooth animation
-        on the next frame.
+        Hide the sidebar and normal
+        close button while queueing.
+    */
+
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
+        );
+
+
+    const content =
+        document.querySelector(
+            ".content"
+        );
+
+
+    const close =
+        document.querySelector(
+            ".window-close"
+        );
+
+
+    if (sidebar) {
+
+        sidebar.style.display =
+            "none";
+
+    }
+
+
+    if (content) {
+
+        content.style.display =
+            "none";
+
+    }
+
+
+    if (close) {
+
+        close.style.display =
+            "none";
+
+    }
+
+
+    /*
+        Begin the smooth animation.
     */
 
     launchAnimation =
@@ -561,8 +700,9 @@ function launch() {
 
 function cancelLaunch() {
 
-    if (!launchRunning)
+    if (!launchRunning) {
         return;
+    }
 
 
     launchRunning = false;
@@ -580,47 +720,73 @@ function cancelLaunch() {
 
 
     /*
-        Reset queue.
+        Remove queue screen.
     */
 
-    const fill =
+    const queue =
         document.getElementById(
-            "queue-progress-fill"
+            "queue"
         );
 
 
-    const percent =
-        document.getElementById(
-            "queue-percent"
+    if (queue) {
+
+        queue.classList.remove(
+            "active"
         );
-
-
-    if (fill) {
-
-        fill.style.width =
-            "0%";
-
-    }
-
-
-    if (percent) {
-
-        percent.textContent =
-            "0%";
 
     }
 
 
     /*
-        Return to whatever page
-        the user launched from.
+        Restore normal GUI.
     */
 
-    const target =
-        document.getElementById(
-            previousView
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
         );
 
+
+    const content =
+        document.querySelector(
+            ".content"
+        );
+
+
+    const close =
+        document.querySelector(
+            ".window-close"
+        );
+
+
+    if (sidebar) {
+
+        sidebar.style.display =
+            "";
+
+    }
+
+
+    if (content) {
+
+        content.style.display =
+            "";
+
+    }
+
+
+    if (close) {
+
+        close.style.display =
+            "";
+
+    }
+
+
+    /*
+        Return to Launch tab.
+    */
 
     document
         .querySelectorAll(".view")
@@ -633,9 +799,15 @@ function cancelLaunch() {
         });
 
 
-    if (target) {
+    const launchView =
+        document.getElementById(
+            "launch"
+        );
 
-        target.classList.add(
+
+    if (launchView) {
+
+        launchView.classList.add(
             "active"
         );
 
@@ -655,7 +827,7 @@ function cancelLaunch() {
 
             if (
                 button.dataset.view ===
-                previousView
+                "launch"
             ) {
 
                 button.classList.add(
@@ -665,6 +837,24 @@ function cancelLaunch() {
             }
 
         });
+
+
+    /*
+        Reset queue progress.
+    */
+
+    const fill =
+        document.getElementById(
+            "queue-progress-fill"
+        );
+
+
+    if (fill) {
+
+        fill.style.width =
+            "0%";
+
+    }
 
 }
 
@@ -696,12 +886,6 @@ function finishLaunch() {
         );
 
 
-    const percent =
-        document.getElementById(
-            "queue-percent"
-        );
-
-
     const time =
         document.getElementById(
             "queue-time"
@@ -717,14 +901,6 @@ function finishLaunch() {
     if (fill) {
 
         fill.style.width =
-            "100%";
-
-    }
-
-
-    if (percent) {
-
-        percent.textContent =
             "100%";
 
     }
@@ -747,7 +923,11 @@ function finishLaunch() {
 
 
     /*
-        Respect the existing settings.
+        Keep the full-screen launch state
+        after the queue has finished.
+
+        Existing launch settings are then
+        respected.
     */
 
     const minimise =
