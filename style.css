@@ -402,10 +402,6 @@ button {
 }
 
 
-/* ==================================================
-   NAVIGATION
-   ================================================== */
-
 .nav {
 
     margin-top: 42px;
@@ -868,14 +864,8 @@ h1 {
 
 
 /* ==================================================
-   LAUNCH PAGE
+   LAUNCH
    ================================================== */
-
-.launch-view {
-
-    padding-top: 1px;
-}
-
 
 .launch-panel {
 
@@ -903,21 +893,6 @@ h1 {
     font-size: 27px;
 
     letter-spacing: -1.3px;
-}
-
-
-.launch-version {
-
-    position: absolute;
-
-    top: 59px;
-    left: 1px;
-
-    color: #50534f;
-
-    font-family: monospace;
-
-    font-size: 9px;
 }
 
 
@@ -1229,7 +1204,7 @@ h1 {
     justify-content: center;
 
     background:
-        rgba(15,16,15,.98);
+        rgba(15,16,15,.985);
 
     opacity: 0;
 
@@ -1238,8 +1213,8 @@ h1 {
     pointer-events: none;
 
     transition:
-        opacity .2s ease,
-        visibility .2s ease;
+        opacity .45s cubic-bezier(.22,1,.36,1),
+        visibility .45s;
 }
 
 
@@ -1258,6 +1233,25 @@ h1 {
     width: 360px;
 
     text-align: center;
+
+    transform:
+        translateY(8px);
+
+    opacity: 0;
+
+    transition:
+        transform .55s cubic-bezier(.22,1,.36,1),
+        opacity .45s ease;
+}
+
+
+.launching-screen.active
+.launching-content {
+
+    transform:
+        translateY(0);
+
+    opacity: 1;
 }
 
 
@@ -1280,6 +1274,10 @@ h1 {
     font-size: 25px;
 
     letter-spacing: -1px;
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
 }
 
 
@@ -1290,10 +1288,16 @@ h1 {
     color: #5e615c;
 
     font-size: 9px;
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
 }
 
 
 .launching-progress {
+
+    position: relative;
 
     width: 100%;
     height: 3px;
@@ -1310,13 +1314,72 @@ h1 {
 
 .launching-progress-fill {
 
+    position: relative;
+
     width: 0%;
     height: 100%;
 
+    border-radius: inherit;
+
     background: #929b92;
 
+    transform-origin: left center;
+
+    will-change: width;
+
     transition:
-        width .3s ease;
+        width 1.2s
+        cubic-bezier(.22,.7,.2,1);
+}
+
+
+.launching-progress-fill::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: -35px;
+
+    width: 80px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.16),
+            transparent
+        );
+
+    animation:
+        progressGlow 1.8s ease-in-out infinite;
+}
+
+
+@keyframes progressGlow {
+
+    0% {
+
+        transform:
+            translateX(-70px);
+
+        opacity: 0;
+    }
+
+    35% {
+
+        opacity: .7;
+    }
+
+    100% {
+
+        transform:
+            translateX(70px);
+
+        opacity: 0;
+    }
 }
 
 
@@ -1337,6 +1400,16 @@ h1 {
 }
 
 
+.launching-status-text {
+
+    min-width: 100px;
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
+}
+
+
 .launching-dot {
 
     width: 5px;
@@ -1345,6 +1418,30 @@ h1 {
     border-radius: 50%;
 
     background: #7d897d;
+
+    animation:
+        statusPulse 1.6s ease-in-out infinite;
+}
+
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+
+        opacity: .45;
+
+        transform:
+            scale(.85);
+    }
+
+    50% {
+
+        opacity: 1;
+
+        transform:
+            scale(1.05);
+    }
 }
 
 
@@ -1371,6 +1468,11 @@ h1 {
     font-size: 9px;
 
     cursor: pointer;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        border-color .18s ease;
 }
 
 
@@ -1379,6 +1481,8 @@ h1 {
     background: #171917;
 
     color: #a3a59f;
+
+    border-color: #41443f;
 }
 
 
