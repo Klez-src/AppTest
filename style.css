@@ -39,13 +39,17 @@ body {
 
 
 button {
+
     user-select: none;
     -webkit-user-select: none;
+
+    font-family: inherit;
+
 }
 
 
 /* ==================================================
-   INTRO — LOCKED
+   INTRO
    ================================================== */
 
 #intro {
@@ -54,18 +58,18 @@ button {
 
     inset: 0;
 
-    z-index: 100;
+    z-index: 1000;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     background: #0f100f;
 
     animation:
         introExit .65s 3.7s forwards;
+
 }
 
 
@@ -87,6 +91,7 @@ button {
 
     animation:
         wordCollapse 3.7s ease forwards;
+
 }
 
 
@@ -106,6 +111,7 @@ button {
     border-radius: 50%;
 
     pointer-events: none;
+
 }
 
 
@@ -118,6 +124,7 @@ button {
 
     animation:
         dotExpand 3.7s ease forwards;
+
 }
 
 
@@ -132,6 +139,7 @@ button {
 
     animation:
         ringOne 3.7s ease forwards;
+
 }
 
 
@@ -146,6 +154,7 @@ button {
 
     animation:
         ringTwo 3.7s ease forwards;
+
 }
 
 
@@ -192,6 +201,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(0);
+
     }
 
     83% {
@@ -201,6 +211,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(1);
+
     }
 
     90% {
@@ -210,6 +221,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(35);
+
     }
 
     100% {
@@ -219,6 +231,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(80);
+
     }
 
 }
@@ -233,6 +246,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(0);
+
     }
 
     82% {
@@ -242,6 +256,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(.8);
+
     }
 
     89% {
@@ -251,6 +266,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(8);
+
     }
 
     100% {
@@ -260,6 +276,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(34);
+
     }
 
 }
@@ -274,6 +291,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(0);
+
     }
 
     85% {
@@ -283,6 +301,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(.7);
+
     }
 
     92% {
@@ -292,6 +311,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(13);
+
     }
 
     100% {
@@ -301,6 +321,7 @@ button {
         transform:
             translate(-50%,-50%)
             scale(32);
+
     }
 
 }
@@ -377,7 +398,7 @@ button {
     padding:
         26px
         17px
-        24px;
+        20px;
 
     border-right:
         1px solid
@@ -416,10 +437,6 @@ button {
 }
 
 
-/* ==================================================
-   NAVIGATION
-   ================================================== */
-
 .nav {
 
     margin-top: 48px;
@@ -436,6 +453,8 @@ button {
 .nav.secondary {
 
     margin-top: auto;
+
+    margin-bottom: 8px;
 
 }
 
@@ -531,12 +550,10 @@ button {
 
 
 /* ==================================================
-   SIDEBAR PROFILE
+   PROFILE
    ================================================== */
 
 .sidebar-profile {
-
-    margin-top: auto;
 
     padding:
         7px
@@ -580,6 +597,8 @@ button {
 
 .content {
 
+    position: relative;
+
     flex: 1;
 
     min-width: 0;
@@ -587,8 +606,8 @@ button {
     height: 100%;
 
     padding:
-        44px
-        58px;
+        31px
+        42px;
 
     overflow: hidden;
 
@@ -611,7 +630,7 @@ button {
     display: block;
 
     animation:
-        viewIn .25s ease;
+        viewIn .22s ease;
 
 }
 
@@ -623,7 +642,7 @@ button {
         opacity: 0;
 
         transform:
-            translateY(4px);
+            translateY(3px);
 
     }
 
@@ -697,14 +716,12 @@ h1 {
 
 .status-area {
 
-    position: relative;
-
-    margin-top: 59px;
+    margin-top: 40px;
 
     padding:
         0
         0
-        31px;
+        24px;
 
     border-bottom:
         1px solid
@@ -733,6 +750,8 @@ h1 {
     width: 6px;
     height: 6px;
 
+    flex-shrink: 0;
+
     border-radius: 50%;
 
     background: #7d897d;
@@ -746,7 +765,7 @@ h1 {
 
 .app-name {
 
-    margin-top: 20px;
+    margin-top: 17px;
 
     color: #e1e2dc;
 
@@ -761,7 +780,7 @@ h1 {
 
 .app-meta {
 
-    margin-top: 5px;
+    margin-top: 4px;
 
     color: #4f524e;
 
@@ -774,20 +793,20 @@ h1 {
 
     max-width: 470px;
 
-    margin-top: 17px;
+    margin-top: 12px;
 
     color: #70736e;
 
     font-size: 11px;
 
-    line-height: 1.7;
+    line-height: 1.6;
 
 }
 
 
 .launch-button {
 
-    margin-top: 25px;
+    margin-top: 19px;
 
     padding:
         9px
@@ -812,7 +831,8 @@ h1 {
 }
 
 
-.launch-button:hover {
+.launch-button:hover,
+.launch-action:hover {
 
     background: #d5d6d1;
 
@@ -825,7 +845,7 @@ h1 {
 
     gap: 58px;
 
-    margin-top: 27px;
+    margin-top: 20px;
 
 }
 
@@ -845,7 +865,7 @@ h1 {
 
 .detail-value {
 
-    margin-top: 7px;
+    margin-top: 6px;
 
     color: #92958f;
 
@@ -867,11 +887,9 @@ h1 {
 
 .launch-panel {
 
-    position: relative;
+    margin-top: 37px;
 
-    min-height: 230px;
-
-    margin-top: 38px;
+    padding-top: 28px;
 
     border-top:
         1px solid
@@ -882,26 +900,20 @@ h1 {
 
 .launch-brand {
 
-    position: absolute;
-
-    top: 28px;
-    left: 0;
-
     color: #dfe0da;
 
-    font-size: 29px;
+    font-size: 25px;
 
-    letter-spacing: -1.3px;
+    line-height: 1;
+
+    letter-spacing: -1.2px;
 
 }
 
 
 .launch-version {
 
-    position: absolute;
-
-    top: 69px;
-    left: 1px;
+    margin-top: 6px;
 
     color: #50534f;
 
@@ -912,12 +924,24 @@ h1 {
 }
 
 
+.launch-lower {
+
+    margin-top: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
 .launch-state {
 
-    position: absolute;
+    display: flex;
 
-    left: 0;
-    bottom: 25px;
+    align-items: center;
 
     color: #737670;
 
@@ -926,35 +950,24 @@ h1 {
 }
 
 
-.launch-state::before {
-
-    content: "";
-
-    display: inline-block;
+.launch-state span {
 
     width: 5px;
     height: 5px;
 
-    margin-right: 8px;
+    margin-right: 9px;
 
     border-radius: 50%;
 
     background: #7d897d;
-
-    vertical-align: 1px;
 
 }
 
 
 .launch-action {
 
-    position: absolute;
-
-    right: 0;
-    bottom: 18px;
-
     padding:
-        10px
+        9px
         18px;
 
     border:
@@ -976,20 +989,13 @@ h1 {
 }
 
 
-.launch-action:hover {
-
-    background: #d5d6d1;
-
-}
-
-
 /* ==================================================
    CHANGELOG
    ================================================== */
 
 .changelog {
 
-    margin-top: 45px;
+    margin-top: 35px;
 
     border-top:
         1px solid
@@ -1003,7 +1009,7 @@ h1 {
     display: flex;
 
     padding:
-        23px
+        19px
         2px;
 
     border-bottom:
@@ -1058,7 +1064,7 @@ h1 {
 
     font-size: 10px;
 
-    line-height: 1.65;
+    line-height: 1.55;
 
 }
 
@@ -1071,7 +1077,7 @@ h1 {
 
     max-width: 620px;
 
-    margin-top: 28px;
+    margin-top: 25px;
 
     border-top:
         1px solid
@@ -1082,7 +1088,7 @@ h1 {
 
 .setting {
 
-    min-height: 58px;
+    min-height: 57px;
 
     display: flex;
 
@@ -1108,7 +1114,7 @@ h1 {
 
 .setting-info {
 
-    margin-top: 5px;
+    margin-top: 4px;
 
     color: #5d605b;
 
@@ -1150,7 +1156,9 @@ h1 {
 
     background: #70746f;
 
-    transition: .18s;
+    transition:
+        transform .18s ease,
+        background .18s ease;
 
 }
 
@@ -1173,7 +1181,7 @@ h1 {
 
 
 /* ==================================================
-   FULL-SCREEN LAUNCHING PAGE
+   LAUNCHING SCREEN
    ================================================== */
 
 .launching-screen {
@@ -1182,15 +1190,21 @@ h1 {
 
     inset: 0;
 
-    z-index: 200;
+    z-index: 2000;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
-    background: #0f100f;
+    background:
+        rgba(15,16,15,.85);
+
+    backdrop-filter:
+        blur(5px);
+
+    -webkit-backdrop-filter:
+        blur(5px);
 
     opacity: 0;
 
@@ -1198,9 +1212,13 @@ h1 {
 
     pointer-events: none;
 
+    transform:
+        scale(1.008);
+
     transition:
-        opacity .18s ease,
-        visibility .18s ease;
+        opacity .32s cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear .32s,
+        transform .32s cubic-bezier(.22,.61,.36,1);
 
 }
 
@@ -1214,21 +1232,47 @@ h1 {
 
     pointer-events: auto;
 
+    transform:
+        scale(1);
+
+    transition:
+        opacity .32s cubic-bezier(.22,.61,.36,1),
+        visibility 0s,
+        transform .32s cubic-bezier(.22,.61,.36,1);
+
 }
 
 
 .launching-content {
 
-    width: 330px;
+    width: min(330px, calc(100% - 70px));
 
-    text-align: left;
+    transform:
+        translateY(8px);
+
+    opacity: 0;
+
+    transition:
+        opacity .4s ease .05s,
+        transform .4s cubic-bezier(.22,.61,.36,1) .05s;
+
+}
+
+
+.launching-screen.visible .launching-content,
+.launching-screen.active .launching-content {
+
+    transform:
+        translateY(0);
+
+    opacity: 1;
 
 }
 
 
 .launching-brand {
 
-    margin-bottom: 38px;
+    margin-bottom: 34px;
 
     color: #dfe0da;
 
@@ -1258,7 +1302,7 @@ h1 {
 
     margin-top: 8px;
 
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 
     color: #686d66;
 
@@ -1275,7 +1319,9 @@ h1 {
 
     overflow: hidden;
 
-    background: #242724;
+    border-radius: 3px;
+
+    background: rgba(255,255,255,.07);
 
 }
 
@@ -1286,10 +1332,14 @@ h1 {
 
     height: 100%;
 
+    border-radius: 3px;
+
     background: #858f81;
 
     transition:
-        width 1s linear;
+        width .8s cubic-bezier(.22,.61,.36,1);
+
+    will-change: width;
 
 }
 
@@ -1322,12 +1372,37 @@ h1 {
 
     background: #858f81;
 
+    animation:
+        statusPulse 1.5s ease-in-out infinite;
+
+}
+
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+
+        opacity: .4;
+
+        transform: scale(.85);
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
 }
 
 
 .launching-cancel {
 
-    margin-top: 24px;
+    margin-top: 22px;
 
     padding: 0;
 
@@ -1341,94 +1416,15 @@ h1 {
 
     cursor: pointer;
 
+    transition:
+        color .15s ease;
+
 }
 
 
 .launching-cancel:hover {
 
     color: #8d9489;
-
-}
-
-
-/* ==================================================
-   WINDOW DRAGGING
-   ================================================== */
-
-body {
-
-    cursor: default;
-
-}
-
-
-/* ==================================================
-   NO SELECTION
-   ================================================== */
-
-::selection {
-
-    background: transparent;
-
-}
-
-
-/* ==================================================
-   MOBILE
-   ================================================== */
-
-@media(max-width:650px) {
-
-    .sidebar {
-
-        width: 145px;
-
-        padding-left: 10px;
-
-        padding-right: 10px;
-
-    }
-
-
-    .brand-name {
-
-        font-size: 14px;
-
-    }
-
-
-    .content {
-
-        padding:
-            30px
-            24px;
-
-    }
-
-
-    .details {
-
-        gap: 25px;
-
-        flex-wrap: wrap;
-
-    }
-
-
-    .launch-action {
-
-        position: static;
-
-        margin-top: 260px;
-
-    }
-
-
-    .launch-state {
-
-        bottom: 75px;
-
-    }
 
 }
 
@@ -1444,7 +1440,7 @@ body {
     top: 0;
     right: 0;
 
-    z-index: 500;
+    z-index: 3000;
 
     width: 42px;
     height: 34px;
@@ -1453,7 +1449,11 @@ body {
 
     border: 0;
 
-    border-radius: 0 0 0 7px;
+    border-radius:
+        0
+        0
+        0
+        7px;
 
     background: transparent;
 
@@ -1464,7 +1464,8 @@ body {
 
     cursor: pointer;
 
-    transition: background .15s ease;
+    transition:
+        background .15s ease;
 
 }
 
@@ -1512,21 +1513,24 @@ body {
 
     background: #666964;
 
-    transition: background .15s ease;
+    transition:
+        background .15s ease;
 
 }
 
 
 .window-close span::before {
 
-    transform: rotate(45deg);
+    transform:
+        rotate(45deg);
 
 }
 
 
 .window-close span::after {
 
-    transform: rotate(-45deg);
+    transform:
+        rotate(-45deg);
 
 }
 
@@ -1564,5 +1568,49 @@ body::-webkit-scrollbar,
 
     width: 0;
     height: 0;
+
+}
+
+
+/* ==================================================
+   MOBILE
+   ================================================== */
+
+@media(max-width:650px) {
+
+    .sidebar {
+
+        width: 145px;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+
+    }
+
+
+    .brand-name {
+
+        font-size: 14px;
+
+    }
+
+
+    .content {
+
+        padding:
+            28px
+            24px;
+
+    }
+
+
+    .details {
+
+        gap: 25px;
+
+        flex-wrap: wrap;
+
+    }
 
 }
