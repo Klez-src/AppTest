@@ -87,7 +87,7 @@ function saveSettings()
     }
     catch
     {
-        // Ignore storage errors.
+        // Storage may be unavailable in some environments.
     }
 }
 
@@ -110,7 +110,7 @@ function updateToggleUI()
 
 
 /* ============================================================
-   WEBVIEW NATIVE MESSAGES
+   NATIVE WEBVIEW MESSAGES
    ============================================================ */
 
 function sendNativeMessage(message)
@@ -129,7 +129,7 @@ function sendNativeMessage(message)
     }
     catch
     {
-        // Running directly in a normal browser.
+        // Normal browser mode.
     }
 }
 
@@ -140,18 +140,30 @@ function sendNativeMessage(message)
 
 function startIntro()
 {
+    /*
+        Keep the original intro timing.
+
+        The intro remains the first thing shown.
+        The application fades in behind it.
+    */
+
     setTimeout(() =>
     {
-        intro.style.opacity = "0";
-
         intro.style.transition =
             "opacity .55s ease";
 
-        app.classList.add("ready");
+        intro.style.opacity =
+            "0";
+
+        app.classList.add(
+            "ready"
+        );
 
         setTimeout(() =>
         {
-            intro.style.display = "none";
+            intro.style.display =
+                "none";
+
         }, 600);
 
     }, 1900);
@@ -166,6 +178,7 @@ const navButtons =
     document.querySelectorAll(
         ".nav-button"
     );
+
 
 const views =
     document.querySelectorAll(
@@ -202,6 +215,9 @@ navButtons.forEach(button =>
         {
             event.stopPropagation();
 
+            if (launchRunning)
+                return;
+
             showView(
                 button.dataset.view
             );
@@ -211,7 +227,7 @@ navButtons.forEach(button =>
 
 
 /* ============================================================
-   SETTINGS BUTTONS
+   SETTINGS
    ============================================================ */
 
 document
@@ -242,75 +258,134 @@ document
    LAUNCH SEQUENCE
    ============================================================ */
 
-let launchRunning = false;
+let launchRunning =
+    false;
 
-let launchTimer = null;
+let launchTimer =
+    null;
 
+let launchFinishTimer =
+    null;
+
+
+/*
+    The sequence lasts 36 seconds.
+
+    It deliberately has multiple phases so the progress
+    does not feel like a simple fake counter.
+*/
 
 const launchStages = [
 
     {
         start: 0,
         end: 8,
+
         title: "Preparing",
-        status: "Starting launch sequence",
-        step: "Initialising"
+
+        status:
+            "Starting launch sequence",
+
+        step:
+            "Initialising"
     },
+
 
     {
         start: 8,
         end: 20,
+
         title: "Checking",
-        status: "Checking required components",
-        step: "Verifying"
+
+        status:
+            "Checking required components",
+
+        step:
+            "Verifying"
     },
+
 
     {
         start: 20,
         end: 34,
+
         title: "Loading",
-        status: "Loading orro components",
-        step: "Loading"
+
+        status:
+            "Loading orro components",
+
+        step:
+            "Loading"
     },
+
 
     {
         start: 34,
         end: 50,
+
         title: "Initialising",
-        status: "Initialising runtime",
-        step: "Initialising runtime"
+
+        status:
+            "Initialising runtime",
+
+        step:
+            "Initialising runtime"
     },
+
 
     {
         start: 50,
         end: 68,
+
         title: "Preparing",
-        status: "Preparing session",
-        step: "Preparing session"
+
+        status:
+            "Preparing session",
+
+        step:
+            "Preparing session"
     },
+
 
     {
         start: 68,
         end: 84,
+
         title: "Starting",
-        status: "Starting orro",
-        step: "Starting"
+
+        status:
+            "Starting orro",
+
+        step:
+            "Starting"
     },
+
 
     {
         start: 84,
         end: 96,
+
         title: "Finalising",
-        status: "Finishing launch sequence",
-        step: "Finalising"
+
+        status:
+            "Finishing launch sequence",
+
+        step:
+            "Finalising"
     },
+
 
     {
         start: 96,
         end: 100,
+
         title: "Complete",
-        status: "Launch complete",
-        step: "Complete"
+
+        status:
+            "Launch complete",
+
+        step:
+            "Complete"
     }
 
 ];
@@ -352,17 +427,22 @@ function updateLaunchUI(percent)
 
 
     const stage =
-        getLaunchStage(rounded);
+        getLaunchStage(
+            rounded
+        );
 
 
     launchTitle.textContent =
         stage.title;
 
+
     launchStatus.textContent =
         stage.status;
 
+
     launchStep.textContent =
         stage.step;
+
 
     launchPercent.textContent =
         `${rounded}%`;
@@ -373,40 +453,82 @@ function updateLaunchUI(percent)
 }
 
 
+/* ============================================================
+   FINISH
+   ============================================================ */
+
 function finishLaunch()
 {
-    clearInterval(launchTimer);
-
-    launchTimer = null;
-
-    updateLaunchUI(100);
+    if (!launchRunning)
+        return;
 
 
-    setTimeout(() =>
-    {
-        if (
-            settings.closeAfterLaunch
-        )
+    clearInterval(
+        launchTimer
+    );
+
+    launchTimer =
+        null;
+
+
+    updateLaunchUI(
+        100
+    );
+
+
+    launchFinishTimer =
+        setTimeout(() =>
         {
-            sendNativeMessage(
-                "window.close"
+
+            launchFinishTimer =
+                null;
+
+
+            /*
+                IMPORTANT:
+
+                If Close after launch is enabled,
+                tell the native C++ shell to close.
+
+                Otherwise return smoothly to Home.
+            */
+
+            if (
+                settings.closeAfterLaunch
+            )
+            {
+                sendNativeMessage(
+                    "window.close"
+                );
+
+                return;
+            }
+
+
+            launchScreen.classList.remove(
+                "visible"
             );
 
-            return;
-        }
+
+            setTimeout(() =>
+            {
+                showView(
+                    "home"
+                );
+
+                launchRunning =
+                    false;
+
+            }, 450);
 
 
-        launchScreen.classList.remove(
-            "visible"
-        );
-
-        showView("home");
-
-        launchRunning = false;
-
-    }, 850);
+        }, 900);
 }
 
+
+/* ============================================================
+   START LAUNCH
+   ============================================================ */
 
 function startLaunch()
 {
@@ -414,31 +536,59 @@ function startLaunch()
         return;
 
 
-    launchRunning = true;
+    launchRunning =
+        true;
 
 
-    // Make sure preferences are current.
     loadSettings();
+
     updateToggleUI();
 
 
-    // Entire menu becomes the launcher.
-    launchScreen.classList.add(
-        "visible"
+    /*
+        Reset the launcher completely.
+    */
+
+    clearInterval(
+        launchTimer
+    );
+
+    clearTimeout(
+        launchFinishTimer
     );
 
 
-    updateLaunchUI(0);
+    launchProgressBar.style.width =
+        "0%";
+
+
+    updateLaunchUI(
+        0
+    );
 
 
     /*
-       36 SECOND REAL-TIME DEMO
+        Let the main application exist underneath
+        the launch screen.
 
-       0% -> 100%
-       approximately 36 seconds.
+        The launch screen then fades naturally over it.
     */
 
-    const duration = 36000;
+    requestAnimationFrame(() =>
+    {
+        launchScreen.classList.add(
+            "visible"
+        );
+    });
+
+
+    /*
+        36 SECOND SEQUENCE
+    */
+
+    const duration =
+        36000;
+
 
     const startTime =
         performance.now();
@@ -447,6 +597,7 @@ function startLaunch()
     launchTimer =
         setInterval(() =>
         {
+
             const elapsed =
                 performance.now() -
                 startTime;
@@ -459,13 +610,18 @@ function startLaunch()
                 );
 
 
-            updateLaunchUI(percent);
+            updateLaunchUI(
+                percent
+            );
 
 
-            if (percent >= 100)
+            if (
+                percent >= 100
+            )
             {
                 finishLaunch();
             }
+
 
         }, 100);
 }
@@ -479,6 +635,7 @@ const homeLaunch =
     document.getElementById(
         "homeLaunch"
     );
+
 
 const launchButton =
     document.getElementById(
@@ -513,12 +670,12 @@ launchButton.addEventListener(
    ============================================================ */
 
 /*
-    The native C++ window has no title bar.
+    The C++ window has no title bar.
 
-    Clicking normal empty areas of the application
-    tells WebView2 to move the native window.
+    Therefore normal empty areas of the UI can drag
+    the native window.
 
-    Buttons and interactive controls are excluded.
+    Interactive controls are excluded.
 */
 
 document.addEventListener(
@@ -555,6 +712,28 @@ document.addEventListener(
 
 
 /* ============================================================
+   TEXT SELECTION PREVENTION
+   ============================================================ */
+
+document.addEventListener(
+    "selectstart",
+    event =>
+    {
+        event.preventDefault();
+    }
+);
+
+
+document.addEventListener(
+    "dragstart",
+    event =>
+    {
+        event.preventDefault();
+    }
+);
+
+
+/* ============================================================
    KEYBOARD SAFETY
    ============================================================ */
 
@@ -562,7 +741,7 @@ document.addEventListener(
     "keydown",
     event =>
     {
-        // Prevent Ctrl+A from selecting the whole UI.
+
         if (
             (event.ctrlKey || event.metaKey) &&
             event.key.toLowerCase() === "a"
@@ -570,6 +749,15 @@ document.addEventListener(
         {
             event.preventDefault();
         }
+
+
+        if (
+            event.key === "F5"
+        )
+        {
+            event.preventDefault();
+        }
+
     }
 );
 
