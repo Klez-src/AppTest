@@ -24,7 +24,7 @@
 
 
 <!-- ==================================================
-     INTRO — LOCKED
+     INTRO
      ================================================== -->
 
 <div id="intro">
@@ -307,17 +307,27 @@
                 </div>
 
 
-                <div class="launch-state">
-                    Ready
+                <div class="launch-lower">
+
+
+                    <div class="launch-state">
+
+                        <span></span>
+
+                        Ready
+
+                    </div>
+
+
+                    <button
+                        class="launch-action"
+                        onclick="launch(this)"
+                    >
+                        Launch
+                    </button>
+
+
                 </div>
-
-
-                <button
-                    class="launch-action"
-                    onclick="launch(this)"
-                >
-                    Launch
-                </button>
 
 
             </div>
@@ -658,6 +668,65 @@
 
 
 <script src="script.js"></script>
+
+
+<!-- ==================================================
+     WINDOW DRAGGING
+     ================================================== -->
+
+<script>
+
+(function () {
+
+    function isInteractive(element) {
+
+        if (!element)
+            return false;
+
+        return !!element.closest(
+            "button, input, textarea, select, a, label, [role='button']"
+        );
+
+    }
+
+
+    document.addEventListener(
+        "mousedown",
+        function (event) {
+
+            if (event.button !== 0)
+                return;
+
+            if (isInteractive(event.target))
+                return;
+
+            if (
+                event.target.closest(
+                    ".launching-screen"
+                )
+            )
+                return;
+
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+
+                window.chrome.webview.postMessage(
+                    "window.drag"
+                );
+
+            }
+
+        },
+        true
+    );
+
+})();
+
+</script>
+
 
 </body>
 
