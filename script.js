@@ -1,10 +1,10 @@
 /* =========================================================
-   ORRO
+   ORRO — SCRIPT
    ========================================================= */
 
 
 /* =========================================================
-   NATIVE WEBVIEW BRIDGE
+   NATIVE WEBVIEW MESSAGE
    ========================================================= */
 
 function nativeMessage(message) {
@@ -24,65 +24,158 @@ function nativeMessage(message) {
 
 
 /* =========================================================
+   CUSTOM WINDOW CONTROLS
+   ========================================================= */
+
+function closeWindow() {
+
+    nativeMessage(
+        "window.close"
+    );
+
+}
+
+
+function minimiseWindow() {
+
+    nativeMessage(
+        "window.minimize"
+    );
+
+}
+
+
+function dragWindow() {
+
+    nativeMessage(
+        "window.drag"
+    );
+
+}
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const app =
+    document.getElementById("app");
+
+const intro =
+    document.getElementById("intro");
+
+const launchingScreen =
+    document.getElementById("launching-screen");
+
+const launchingTitle =
+    document.getElementById("launching-title");
+
+const launchingSubtitle =
+    document.getElementById("launching-subtitle");
+
+const launchingProgress =
+    document.getElementById("launching-progress-fill");
+
+const launchingStatus =
+    document.getElementById("launching-status-text");
+
+const launchingCancel =
+    document.getElementById("launching-cancel");
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        setTimeout(
+            () => {
+
+                if (intro) {
+
+                    intro.classList.add(
+                        "intro-hidden"
+                    );
+
+                }
+
+                if (app) {
+
+                    app.classList.add(
+                        "app-visible"
+                    );
+
+                }
+
+            },
+            900
+        );
+
+    }
+);
+
+
+/* =========================================================
    NAVIGATION
    ========================================================= */
 
 function showView(
-    id,
+    viewName,
     button
 ) {
 
-    var views =
+    const views =
         document.querySelectorAll(
             ".view"
         );
 
+    views.forEach(
+        view => {
 
-    for (
-        var i = 0;
-        i < views.length;
-        i++
-    ) {
+            view.classList.remove(
+                "active"
+            );
 
-        views[i].classList.remove(
-            "active"
-        );
-
-    }
+        }
+    );
 
 
-    var selectedView =
+    const target =
         document.getElementById(
-            id
+            viewName
         );
 
 
-    if (selectedView) {
+    if (!target) {
 
-        selectedView.classList.add(
-            "active"
-        );
+        return;
 
     }
 
 
-    var buttons =
+    target.classList.add(
+        "active"
+    );
+
+
+    const navButtons =
         document.querySelectorAll(
             ".nav button"
         );
 
 
-    for (
-        var j = 0;
-        j < buttons.length;
-        j++
-    ) {
+    navButtons.forEach(
+        navButton => {
 
-        buttons[j].classList.remove(
-            "selected"
-        );
+            navButton.classList.remove(
+                "selected"
+            );
 
-    }
+        }
+    );
 
 
     if (button) {
@@ -91,39 +184,45 @@ function showView(
             "selected"
         );
 
-        return;
-
     }
 
 
-    var matchingButton =
+    /*
+     * Make sure every page remains positioned
+     * at the top and never carries over a
+     * previous scroll position.
+     */
+
+    const content =
         document.querySelector(
-            '.nav button[data-view="' +
-            id +
-            '"]'
+            ".content"
         );
 
 
-    if (matchingButton) {
+    if (content) {
 
-        matchingButton.classList.add(
-            "selected"
-        );
+        content.scrollTop = 0;
 
     }
+
+
+    window.scrollTo(
+        0,
+        0
+    );
 
 }
 
 
 /* =========================================================
-   SETTINGS
+   PERSISTENT SETTINGS
    ========================================================= */
 
-var SETTINGS_KEY =
-    "orro.settings";
+const SETTINGS_KEY =
+    "orro_settings";
 
 
-var defaultSettings = {
+const defaultSettings = {
 
     remember: true,
 
@@ -136,55 +235,63 @@ var defaultSettings = {
 };
 
 
-function getSettings() {
+let settings = {
+    ...defaultSettings
+};
+
+
+/* =========================================================
+   LOAD SETTINGS
+   ========================================================= */
+
+function loadSettings() {
 
     try {
 
-        var stored =
+        const saved =
             localStorage.getItem(
                 SETTINGS_KEY
             );
 
 
-        if (!stored) {
+        if (saved) {
 
-            return Object.assign(
-                {},
-                defaultSettings
-            );
+            const parsed =
+                JSON.parse(
+                    saved
+                );
+
+
+            settings = {
+
+                ...defaultSettings,
+
+                ...parsed
+
+            };
 
         }
 
-
-        var parsed =
-            JSON.parse(
-                stored
-            );
-
-
-        return Object.assign(
-            {},
-            defaultSettings,
-            parsed
-        );
-
     }
-
     catch (error) {
 
-        return Object.assign(
-            {},
-            defaultSettings
-        );
+        settings = {
+            ...defaultSettings
+        };
 
     }
+
+
+    applySettings();
 
 }
 
 
-function saveSettings(
-    settings
-) {
+/* =========================================================
+   SAVE SETTINGS
+   ========================================================= */
+
+function saveSettings() {
 
     try {
 
@@ -196,86 +303,99 @@ function saveSettings(
         );
 
     }
-
     catch (error) {
 
-        return;
+        console.warn(
+            "Unable to save orro settings.",
+            error
+        );
 
     }
 
 }
 
 
-function loadSettings() {
+/* =========================================================
+   APPLY SETTINGS
+   ========================================================= */
 
-    var settings =
-        getSettings();
+function applySettings() {
 
-
-    var toggles =
+    const toggles =
         document.querySelectorAll(
-            ".toggle[data-setting]"
+            ".toggle"
         );
 
 
-    for (
-        var i = 0;
-        i < toggles.length;
-        i++
-    ) {
+    toggles.forEach(
+        toggle => {
 
-        var toggle =
-            toggles[i];
+            const settingName =
+                toggle.dataset.setting;
 
 
-        var settingName =
-            toggle.dataset.setting;
+            if (
+                !settingName ||
+                !(settingName in settings)
+            ) {
+
+                return;
+
+            }
 
 
-        var enabled =
-            !!settings[
-                settingName
-            ];
+            toggle.classList.toggle(
+                "on",
+                Boolean(
+                    settings[
+                        settingName
+                    ]
+                )
+            );
 
 
-        toggle.classList.toggle(
-            "on",
-            enabled
-        );
+            toggle.setAttribute(
+                "aria-pressed",
+                settings[
+                    settingName
+                ]
+                    ? "true"
+                    : "false"
+            );
 
-
-        toggle.setAttribute(
-            "aria-pressed",
-            enabled
-                ? "true"
-                : "false"
-        );
-
-    }
+        }
+    );
 
 }
 
+
+/* =========================================================
+   TOGGLE SETTING
+   ========================================================= */
 
 function toggleSetting(
-    element
+    button
 ) {
 
-    if (!element) {
+    if (!button) {
+
         return;
+
     }
 
 
-    var settingName =
-        element.dataset.setting;
+    const settingName =
+        button.dataset.setting;
 
 
-    if (!settingName) {
+    if (
+        !settingName ||
+        !(settingName in settings)
+    ) {
+
         return;
+
     }
-
-
-    var settings =
-        getSettings();
 
 
     settings[
@@ -286,174 +406,29 @@ function toggleSetting(
         ];
 
 
-    saveSettings(
-        settings
-    );
+    saveSettings();
 
-
-    var enabled =
-        !!settings[
-            settingName
-        ];
-
-
-    element.classList.toggle(
-        "on",
-        enabled
-    );
-
-
-    element.setAttribute(
-        "aria-pressed",
-        enabled
-            ? "true"
-            : "false"
-    );
-
-}
-
-
-loadSettings();
-
-
-/* =========================================================
-   LAUNCHING SCREEN
-   ========================================================= */
-
-var launchingScreen =
-    document.getElementById(
-        "launching-screen"
-    );
-
-
-var launchingProgress =
-    document.getElementById(
-        "launching-progress-fill"
-    );
-
-
-var launchingStatus =
-    document.getElementById(
-        "launching-status-text"
-    );
-
-
-var launchingTitle =
-    document.getElementById(
-        "launching-title"
-    );
-
-
-var launchingSubtitle =
-    document.getElementById(
-        "launching-subtitle"
-    );
-
-
-var launchTimers = [];
-
-var launchRunning =
-    false;
-
-
-/* =========================================================
-   SMOOTH STATUS TRANSITION
-   ========================================================= */
-
-function changeLaunchStatus(
-    text
-) {
-
-    if (
-        launchingStatus.textContent === text
-    ) {
-
-        return;
-
-    }
-
-
-    launchingStatus.style.opacity =
-        "0";
-
-    launchingStatus.style.transform =
-        "translateY(2px)";
-
-
-    setTimeout(
-        function() {
-
-            launchingStatus.textContent =
-                text;
-
-            launchingStatus.style.opacity =
-                "1";
-
-            launchingStatus.style.transform =
-                "translateY(0)";
-
-        },
-        120
-    );
+    applySettings();
 
 }
 
 
 /* =========================================================
-   SMOOTH PROGRESS
+   LAUNCH STATE
    ========================================================= */
 
-function setLaunchProgress(
-    percentage
-) {
+let launchTimer = null;
 
-    launchingProgress.style.width =
-        percentage + "%";
-
-}
+let launchRunning = false;
 
 
 /* =========================================================
-   CLEAR TIMERS
-   ========================================================= */
-
-function clearLaunchTimers() {
-
-    for (
-        var i = 0;
-        i < launchTimers.length;
-        i++
-    ) {
-
-        clearTimeout(
-            launchTimers[i]
-        );
-
-    }
-
-
-    launchTimers = [];
-
-}
-
-
-/* =========================================================
-   START LAUNCH
+   LAUNCH
    ========================================================= */
 
 function launch(
-    button
+    sourceButton
 ) {
-
-    /*
-     * Both Launch buttons always switch
-     * to the Launch page first.
-     */
-
-    showView(
-        "launch"
-    );
-
 
     if (launchRunning) {
 
@@ -462,360 +437,293 @@ function launch(
     }
 
 
-    launchRunning =
-        true;
-
-
-    clearLaunchTimers();
-
-
-    var settings =
-        getSettings();
+    launchRunning = true;
 
 
     /*
-     * Button feedback.
+     * Always move to the Launch page first.
+     * This means pressing Launch from Home and
+     * pressing Launch from the Launch page both
+     * behave consistently.
      */
 
-    var launchButtons =
-        document.querySelectorAll(
-            ".launch-button, .launch-action"
+    const launchButton =
+        document.querySelector(
+            '.nav button[data-view="launch"]'
         );
 
 
-    for (
-        var i = 0;
-        i < launchButtons.length;
-        i++
-    ) {
-
-        launchButtons[i].dataset.originalText =
-            launchButtons[i].textContent;
-
-        launchButtons[i].textContent =
-            "Launching...";
-
-        launchButtons[i].style.opacity =
-            ".55";
-
-    }
-
-
-    /*
-     * Reset overlay.
-     */
-
-    launchingProgress.style.width =
-        "0%";
-
-
-    launchingStatus.textContent =
-        "Initialising";
-
-
-    launchingStatus.style.opacity =
-        "1";
-
-    launchingStatus.style.transform =
-        "translateY(0)";
-
-
-    launchingTitle.textContent =
-        "Launching";
-
-
-    launchingSubtitle.textContent =
-        "Preparing your session.";
-
-
-    /*
-     * Show overlay.
-     */
-
-    launchingScreen.classList.add(
-        "active"
+    showView(
+        "launch",
+        launchButton
     );
 
 
     /*
-     * Native minimise option.
+     * Show the launching overlay after the
+     * navigation has completed.
      */
 
-    if (settings.minimise) {
+    requestAnimationFrame(
+        () => {
 
-        nativeMessage(
-            "window.minimize"
-        );
+            startLaunchScreen();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   START LAUNCH SCREEN
+   ========================================================= */
+
+function startLaunchScreen() {
+
+    if (!launchingScreen) {
+
+        launchRunning = false;
+
+        return;
+
+    }
+
+
+    launchingScreen.classList.add(
+        "visible"
+    );
+
+
+    launchingScreen.classList.remove(
+        "finished"
+    );
+
+
+    if (launchingProgress) {
+
+        launchingProgress.style.width =
+            "0%";
+
+    }
+
+
+    if (launchingTitle) {
+
+        launchingTitle.textContent =
+            "Launching";
+
+    }
+
+
+    if (launchingSubtitle) {
+
+        launchingSubtitle.textContent =
+            "Preparing your session.";
+
+    }
+
+
+    if (launchingStatus) {
+
+        launchingStatus.textContent =
+            "Initialising";
 
     }
 
 
     /*
-     * Smooth launch timeline.
-     *
-     * Each stage has a target progress value.
-     * CSS handles the interpolation between
-     * those values, so the bar never jumps.
+     * Small staged updates make the animation
+     * feel smooth rather than jumping through
+     * several states instantly.
      */
 
-    var stages = [
+    const stages = [
 
         {
-            time: 0,
-            progress: 3,
-            text: "Initialising"
+            progress: 18,
+            status: "Initialising",
+            delay: 120
         },
 
         {
-            time: 2500,
-            progress: 11,
-            text: "Loading configuration"
+            progress: 38,
+            status: "Checking version",
+            delay: 500
         },
 
         {
-            time: 5200,
-            progress: 20,
-            text: "Checking installation"
+            progress: 61,
+            status: "Preparing session",
+            delay: 950
         },
 
         {
-            time: 8000,
-            progress: 30,
-            text: "Checking environment"
-        },
-
-        {
-            time: 10800,
-            progress: 41,
-            text: "Preparing files"
-        },
-
-        {
-            time: 13600,
-            progress: 52,
-            text: "Loading components"
-        },
-
-        {
-            time: 16400,
-            progress: 63,
-            text: "Preparing session"
-        },
-
-        {
-            time: 19300,
-            progress: 73,
-            text: "Initialising services"
-        },
-
-        {
-            time: 22200,
             progress: 82,
-            text: "Starting core"
+            status: "Starting application",
+            delay: 1450
         },
 
         {
-            time: 25100,
-            progress: 90,
-            text: "Connecting"
-        },
-
-        {
-            time: 27900,
-            progress: 96,
-            text: "Starting orro"
-        },
-
-        {
-            time: 30600,
             progress: 100,
-            text: "Ready"
+            status: "Ready",
+            delay: 2050
         }
 
     ];
 
 
-    for (
-        var stageIndex = 0;
-        stageIndex < stages.length;
-        stageIndex++
-    ) {
+    stages.forEach(
+        stage => {
 
-        (function(stage) {
+            setTimeout(
+                () => {
 
-            var timer =
-                setTimeout(
-                    function() {
+                    if (
+                        !launchRunning
+                    ) {
 
-                        setLaunchProgress(
-                            stage.progress
-                        );
+                        return;
+
+                    }
 
 
-                        changeLaunchStatus(
-                            stage.text
-                        );
+                    if (
+                        launchingProgress
+                    ) {
 
-                    },
-                    stage.time
-                );
+                        launchingProgress.style.width =
+                            `${stage.progress}%`;
+
+                    }
 
 
-            launchTimers.push(
-                timer
+                    if (
+                        launchingStatus
+                    ) {
+
+                        launchingStatus.textContent =
+                            stage.status;
+
+                    }
+
+                },
+                stage.delay
             );
 
-        })(stages[stageIndex]);
+        }
+    );
+
+
+    launchTimer =
+        setTimeout(
+            finishLaunch,
+            2350
+        );
+
+}
+
+
+/* =========================================================
+   FINISH LAUNCH
+   ========================================================= */
+
+function finishLaunch() {
+
+    if (!launchRunning) {
+
+        return;
+
+    }
+
+
+    launchRunning = false;
+
+
+    if (launchTimer) {
+
+        clearTimeout(
+            launchTimer
+        );
+
+        launchTimer = null;
+
+    }
+
+
+    if (launchingProgress) {
+
+        launchingProgress.style.width =
+            "100%";
+
+    }
+
+
+    if (launchingStatus) {
+
+        launchingStatus.textContent =
+            "Ready";
 
     }
 
 
     /*
-     * Give the final 100% state time
-     * to settle before closing the overlay.
+     * Respect the user's persistent settings.
      */
 
-    var finishTimer =
+    if (
+        settings.closeAfter
+    ) {
+
         setTimeout(
-            function() {
+            () => {
 
-                launchRunning =
-                    false;
-
-
-                launchingTitle.textContent =
-                    "Ready";
-
-
-                launchingSubtitle.textContent =
-                    "Session ready.";
-
-
-                setLaunchProgress(
-                    100
-                );
-
-
-                changeLaunchStatus(
-                    "Ready"
-                );
-
-
-                /*
-                 * Restore launch buttons.
-                 */
-
-                var buttons =
-                    document.querySelectorAll(
-                        ".launch-button, .launch-action"
-                    );
-
-
-                for (
-                    var i = 0;
-                    i < buttons.length;
-                    i++
-                ) {
-
-                    buttons[i].textContent =
-                        buttons[i].dataset.originalText ||
-                        "Launch";
-
-                    buttons[i].style.opacity =
-                        "1";
-
-                }
-
-
-                /*
-                 * Close if requested.
-                 */
-
-                var currentSettings =
-                    getSettings();
-
-
-                if (
-                    currentSettings.closeAfter
-                ) {
-
-                    var closeTimer =
-                        setTimeout(
-                            function() {
-
-                                nativeMessage(
-                                    "window.close"
-                                );
-
-                            },
-                            700
-                        );
-
-
-                    launchTimers.push(
-                        closeTimer
-                    );
-
-
-                    return;
-
-                }
-
-
-                /*
-                 * Smoothly hide the overlay.
-                 */
-
-                var hideTimer =
-                    setTimeout(
-                        function() {
-
-                            launchingScreen.classList.remove(
-                                "active"
-                            );
-
-
-                            var resetTimer =
-                                setTimeout(
-                                    function() {
-
-                                        launchingProgress.style.width =
-                                            "0%";
-
-                                        launchingStatus.textContent =
-                                            "Initialising";
-
-                                        launchingTitle.textContent =
-                                            "Launching";
-
-                                        launchingSubtitle.textContent =
-                                            "Preparing your session.";
-
-                                    },
-                                    500
-                                );
-
-
-                            launchTimers.push(
-                                resetTimer
-                            );
-
-                        },
-                        1000
-                    );
-
-
-                launchTimers.push(
-                    hideTimer
-                );
+                closeWindow();
 
             },
-            31600
+            250
         );
 
+        return;
 
-    launchTimers.push(
-        finishTimer
+    }
+
+
+    if (
+        settings.minimise
+    ) {
+
+        setTimeout(
+            () => {
+
+                minimiseWindow();
+
+            },
+            250
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Otherwise return to the Launch page.
+     */
+
+    setTimeout(
+        () => {
+
+            if (launchingScreen) {
+
+                launchingScreen.classList.remove(
+                    "visible"
+                );
+
+            }
+
+        },
+        400
     );
 
 }
@@ -827,126 +735,125 @@ function launch(
 
 function cancelLaunch() {
 
-    if (!launchRunning) {
-
-        return;
-
-    }
+    launchRunning = false;
 
 
-    launchRunning =
-        false;
+    if (launchTimer) {
 
-
-    clearLaunchTimers();
-
-
-    launchingScreen.classList.remove(
-        "active"
-    );
-
-
-    launchingProgress.style.width =
-        "0%";
-
-
-    launchingStatus.textContent =
-        "Initialising";
-
-
-    launchingTitle.textContent =
-        "Launching";
-
-
-    launchingSubtitle.textContent =
-        "Preparing your session.";
-
-
-    var buttons =
-        document.querySelectorAll(
-            ".launch-button, .launch-action"
+        clearTimeout(
+            launchTimer
         );
 
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].textContent =
-            buttons[i].dataset.originalText ||
-            "Launch";
-
-        buttons[i].style.opacity =
-            "1";
+        launchTimer = null;
 
     }
 
 
-    showView(
-        "launch"
-    );
+    if (launchingProgress) {
+
+        launchingProgress.style.width =
+            "0%";
+
+    }
+
+
+    if (launchingScreen) {
+
+        launchingScreen.classList.remove(
+            "visible"
+        );
+
+    }
+
+
+    if (launchingStatus) {
+
+        launchingStatus.textContent =
+            "Cancelled";
+
+    }
 
 }
 
 
 /* =========================================================
-   WINDOW DRAGGING
+   KEYBOARD SHORTCUTS
    ========================================================= */
 
 document.addEventListener(
-    "pointerdown",
-    function(event) {
+    "keydown",
+    event => {
+
+        /*
+         * Escape closes the launching screen
+         * if it is currently active.
+         */
 
         if (
-            event.button !== 0
+            event.key === "Escape" &&
+            launchRunning
         ) {
+
+            cancelLaunch();
 
             return;
 
         }
-
-
-        if (
-            event.target.closest(
-                "button"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            event.target.closest(
-                "#launching-screen"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        nativeMessage(
-            "window.drag"
-        );
 
     }
 );
 
 
 /* =========================================================
-   RIGHT CLICK
+   INITIALISE
    ========================================================= */
 
 document.addEventListener(
-    "contextmenu",
-    function(event) {
+    "DOMContentLoaded",
+    () => {
 
-        event.preventDefault();
+        loadSettings();
+
+
+        /*
+         * Make sure Home is selected initially.
+         */
+
+        const homeButton =
+            document.querySelector(
+                '.nav button[data-view="home"]'
+            );
+
+
+        const activeView =
+            document.querySelector(
+                ".view.active"
+            );
+
+
+        if (
+            !activeView
+        ) {
+
+            showView(
+                "home",
+                homeButton
+            );
+
+        }
+
+
+        /*
+         * Prevent accidental browser scrolling.
+         * The application itself is designed to fit
+         * entirely inside the WebView.
+         */
+
+        document.documentElement.style.overflow =
+            "hidden";
+
+        document.body.style.overflow =
+            "hidden";
 
     }
 );
