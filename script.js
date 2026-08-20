@@ -85,11 +85,6 @@ function showView(
     }
 
 
-    /*
-     * If the function was called from
-     * a button, select that button.
-     */
-
     if (button) {
 
         button.classList.add(
@@ -100,11 +95,6 @@ function showView(
 
     }
 
-
-    /*
-     * Otherwise find the correct
-     * navigation button by data-view.
-     */
 
     var matchingButton =
         document.querySelector(
@@ -145,10 +135,6 @@ var defaultSettings = {
 
 };
 
-
-/* =========================================================
-   GET SETTINGS
-   ========================================================= */
 
 function getSettings() {
 
@@ -196,10 +182,6 @@ function getSettings() {
 }
 
 
-/* =========================================================
-   SAVE SETTINGS
-   ========================================================= */
-
 function saveSettings(
     settings
 ) {
@@ -217,20 +199,12 @@ function saveSettings(
 
     catch (error) {
 
-        /*
-         * Nothing else is required here.
-         * WebView2 normally provides persistent
-         * localStorage for this hosted page.
-         */
+        return;
 
     }
 
 }
 
-
-/* =========================================================
-   LOAD SETTINGS
-   ========================================================= */
 
 function loadSettings() {
 
@@ -281,10 +255,6 @@ function loadSettings() {
 
 }
 
-
-/* =========================================================
-   TOGGLE SETTING
-   ========================================================= */
 
 function toggleSetting(
     element
@@ -343,10 +313,6 @@ function toggleSetting(
 }
 
 
-/* =========================================================
-   LOAD SETTINGS IMMEDIATELY
-   ========================================================= */
-
 loadSettings();
 
 
@@ -386,13 +352,69 @@ var launchingSubtitle =
 
 var launchTimers = [];
 
-
 var launchRunning =
     false;
 
 
 /* =========================================================
-   CLEAR LAUNCH TIMERS
+   SMOOTH STATUS TRANSITION
+   ========================================================= */
+
+function changeLaunchStatus(
+    text
+) {
+
+    if (
+        launchingStatus.textContent === text
+    ) {
+
+        return;
+
+    }
+
+
+    launchingStatus.style.opacity =
+        "0";
+
+    launchingStatus.style.transform =
+        "translateY(2px)";
+
+
+    setTimeout(
+        function() {
+
+            launchingStatus.textContent =
+                text;
+
+            launchingStatus.style.opacity =
+                "1";
+
+            launchingStatus.style.transform =
+                "translateY(0)";
+
+        },
+        120
+    );
+
+}
+
+
+/* =========================================================
+   SMOOTH PROGRESS
+   ========================================================= */
+
+function setLaunchProgress(
+    percentage
+) {
+
+    launchingProgress.style.width =
+        percentage + "%";
+
+}
+
+
+/* =========================================================
+   CLEAR TIMERS
    ========================================================= */
 
 function clearLaunchTimers() {
@@ -416,25 +438,6 @@ function clearLaunchTimers() {
 
 
 /* =========================================================
-   UPDATE LAUNCH SCREEN
-   ========================================================= */
-
-function updateLaunch(
-    percentage,
-    status
-) {
-
-    launchingProgress.style.width =
-        percentage + "%";
-
-
-    launchingStatus.textContent =
-        status;
-
-}
-
-
-/* =========================================================
    START LAUNCH
    ========================================================= */
 
@@ -443,13 +446,8 @@ function launch(
 ) {
 
     /*
-     * IMPORTANT:
-     *
-     * Every Launch button goes to the
-     * exact same Launch page first.
-     *
-     * This also changes the selected
-     * sidebar item to Launch.
+     * Both Launch buttons always switch
+     * to the Launch page first.
      */
 
     showView(
@@ -458,11 +456,14 @@ function launch(
 
 
     if (launchRunning) {
+
         return;
+
     }
 
 
-    launchRunning = true;
+    launchRunning =
+        true;
 
 
     clearLaunchTimers();
@@ -476,27 +477,47 @@ function launch(
      * Button feedback.
      */
 
-    if (button) {
+    var launchButtons =
+        document.querySelectorAll(
+            ".launch-button, .launch-action"
+        );
 
-        button.dataset.originalText =
-            button.textContent;
 
-        button.textContent =
+    for (
+        var i = 0;
+        i < launchButtons.length;
+        i++
+    ) {
+
+        launchButtons[i].dataset.originalText =
+            launchButtons[i].textContent;
+
+        launchButtons[i].textContent =
             "Launching...";
 
-        button.style.opacity =
+        launchButtons[i].style.opacity =
             ".55";
 
     }
 
 
     /*
-     * Show launch overlay.
+     * Reset overlay.
      */
 
-    launchingScreen.classList.add(
-        "active"
-    );
+    launchingProgress.style.width =
+        "0%";
+
+
+    launchingStatus.textContent =
+        "Initialising";
+
+
+    launchingStatus.style.opacity =
+        "1";
+
+    launchingStatus.style.transform =
+        "translateY(0)";
 
 
     launchingTitle.textContent =
@@ -507,14 +528,17 @@ function launch(
         "Preparing your session.";
 
 
-    updateLaunch(
-        0,
-        "Initialising"
+    /*
+     * Show overlay.
+     */
+
+    launchingScreen.classList.add(
+        "active"
     );
 
 
     /*
-     * Minimise if enabled.
+     * Native minimise option.
      */
 
     if (settings.minimise) {
@@ -527,79 +551,83 @@ function launch(
 
 
     /*
-     * Launch stages.
+     * Smooth launch timeline.
+     *
+     * Each stage has a target progress value.
+     * CSS handles the interpolation between
+     * those values, so the bar never jumps.
      */
 
     var stages = [
 
         {
-            time: 1500,
-            progress: 4,
+            time: 0,
+            progress: 3,
             text: "Initialising"
         },
 
         {
-            time: 4300,
-            progress: 9,
+            time: 2500,
+            progress: 11,
             text: "Loading configuration"
         },
 
         {
-            time: 7200,
-            progress: 15,
+            time: 5200,
+            progress: 20,
             text: "Checking installation"
         },
 
         {
-            time: 10400,
-            progress: 23,
+            time: 8000,
+            progress: 30,
             text: "Checking environment"
         },
 
         {
-            time: 13900,
-            progress: 31,
+            time: 10800,
+            progress: 41,
             text: "Preparing files"
         },
 
         {
-            time: 17600,
-            progress: 40,
+            time: 13600,
+            progress: 52,
             text: "Loading components"
         },
 
         {
-            time: 21100,
-            progress: 49,
+            time: 16400,
+            progress: 63,
             text: "Preparing session"
         },
 
         {
-            time: 24700,
-            progress: 61,
+            time: 19300,
+            progress: 73,
             text: "Initialising services"
         },
 
         {
-            time: 27900,
-            progress: 70,
+            time: 22200,
+            progress: 82,
             text: "Starting core"
         },
 
         {
-            time: 30700,
-            progress: 79,
+            time: 25100,
+            progress: 90,
             text: "Connecting"
         },
 
         {
-            time: 33100,
-            progress: 90,
+            time: 27900,
+            progress: 96,
             text: "Starting orro"
         },
 
         {
-            time: 35500,
+            time: 30600,
             progress: 100,
             text: "Ready"
         }
@@ -608,9 +636,9 @@ function launch(
 
 
     for (
-        var i = 0;
-        i < stages.length;
-        i++
+        var stageIndex = 0;
+        stageIndex < stages.length;
+        stageIndex++
     ) {
 
         (function(stage) {
@@ -619,8 +647,12 @@ function launch(
                 setTimeout(
                     function() {
 
-                        updateLaunch(
-                            stage.progress,
+                        setLaunchProgress(
+                            stage.progress
+                        );
+
+
+                        changeLaunchStatus(
                             stage.text
                         );
 
@@ -633,13 +665,14 @@ function launch(
                 timer
             );
 
-        })(stages[i]);
+        })(stages[stageIndex]);
 
     }
 
 
     /*
-     * Finish.
+     * Give the final 100% state time
+     * to settle before closing the overlay.
      */
 
     var finishTimer =
@@ -658,14 +691,18 @@ function launch(
                     "Session ready.";
 
 
-                updateLaunch(
-                    100,
+                setLaunchProgress(
+                    100
+                );
+
+
+                changeLaunchStatus(
                     "Ready"
                 );
 
 
                 /*
-                 * Restore ALL launch buttons.
+                 * Restore launch buttons.
                  */
 
                 var buttons =
@@ -691,7 +728,7 @@ function launch(
 
 
                 /*
-                 * Close if enabled.
+                 * Close if requested.
                  */
 
                 var currentSettings =
@@ -702,9 +739,23 @@ function launch(
                     currentSettings.closeAfter
                 ) {
 
-                    nativeMessage(
-                        "window.close"
+                    var closeTimer =
+                        setTimeout(
+                            function() {
+
+                                nativeMessage(
+                                    "window.close"
+                                );
+
+                            },
+                            700
+                        );
+
+
+                    launchTimers.push(
+                        closeTimer
                     );
+
 
                     return;
 
@@ -712,11 +763,10 @@ function launch(
 
 
                 /*
-                 * Otherwise return to
-                 * the Launch page.
+                 * Smoothly hide the overlay.
                  */
 
-                var returnTimer =
+                var hideTimer =
                     setTimeout(
                         function() {
 
@@ -725,31 +775,42 @@ function launch(
                             );
 
 
-                            updateLaunch(
-                                0,
-                                "Initialising"
+                            var resetTimer =
+                                setTimeout(
+                                    function() {
+
+                                        launchingProgress.style.width =
+                                            "0%";
+
+                                        launchingStatus.textContent =
+                                            "Initialising";
+
+                                        launchingTitle.textContent =
+                                            "Launching";
+
+                                        launchingSubtitle.textContent =
+                                            "Preparing your session.";
+
+                                    },
+                                    500
+                                );
+
+
+                            launchTimers.push(
+                                resetTimer
                             );
 
-
-                            launchingTitle.textContent =
-                                "Launching";
-
-
-                            launchingSubtitle.textContent =
-                                "Preparing your session.";
-
                         },
-                        900
+                        1000
                     );
 
 
                 launchTimers.push(
-                    returnTimer
+                    hideTimer
                 );
 
-
             },
-            37000
+            31600
         );
 
 
@@ -767,7 +828,9 @@ function launch(
 function cancelLaunch() {
 
     if (!launchRunning) {
+
         return;
+
     }
 
 
@@ -812,6 +875,7 @@ function cancelLaunch() {
     ) {
 
         buttons[i].textContent =
+            buttons[i].dataset.originalText ||
             "Launch";
 
         buttons[i].style.opacity =
@@ -819,11 +883,6 @@ function cancelLaunch() {
 
     }
 
-
-    /*
-     * Keep the user on the Launch page
-     * after cancelling.
-     */
 
     showView(
         "launch"
@@ -849,10 +908,6 @@ document.addEventListener(
         }
 
 
-        /*
-         * Never steal clicks from buttons.
-         */
-
         if (
             event.target.closest(
                 "button"
@@ -863,10 +918,6 @@ document.addEventListener(
 
         }
 
-
-        /*
-         * Don't drag the launching overlay.
-         */
 
         if (
             event.target.closest(
@@ -888,7 +939,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   DISABLE RIGHT CLICK
+   RIGHT CLICK
    ========================================================= */
 
 document.addEventListener(
