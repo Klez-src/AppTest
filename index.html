@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -15,9 +16,16 @@
         rel="stylesheet"
         href="style.css"
     >
+
 </head>
 
+
 <body>
+
+
+<!-- ==================================================
+     INTRO
+     ================================================== -->
 
 <div id="intro">
 
@@ -26,32 +34,35 @@
     </div>
 
     <div class="intro-dot"></div>
+
     <div class="intro-ring"></div>
+
     <div class="intro-ring-two"></div>
 
 </div>
 
 
+
+<!-- ==================================================
+     APPLICATION
+     ================================================== -->
+
 <div id="app">
 
-    <button
-        type="button"
-        class="window-close"
-        aria-label="Close orro"
-        onclick="closeWindow()"
-    >
-        <span></span>
-    </button>
 
-
-    <!-- SIDEBAR -->
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
 
     <aside class="sidebar">
 
+
         <div class="brand">
+
             <div class="brand-name">
                 orro
             </div>
+
         </div>
 
 
@@ -89,6 +100,7 @@
         </div>
 
 
+
         <div class="nav secondary">
 
             <div class="nav-label">
@@ -106,6 +118,7 @@
         </div>
 
 
+
         <div class="sidebar-profile">
 
             <div class="profile-avatar"></div>
@@ -116,23 +129,34 @@
 
         </div>
 
+
     </aside>
 
 
-    <!-- CONTENT -->
+
+    <!-- ==================================================
+         CONTENT
+         ================================================== -->
 
     <main class="content">
 
 
-        <!-- HOME -->
+        <!-- ==================================================
+             HOME
+             ================================================== -->
 
         <section
             id="home"
             class="view active"
         >
 
+
             <div class="topline">
-                <span>Overview</span>
+
+                <span>
+                    Overview
+                </span>
+
             </div>
 
 
@@ -147,6 +171,7 @@
 
 
             <div class="status-area">
+
 
                 <div class="status-line">
 
@@ -173,17 +198,26 @@
                 </div>
 
 
+                <!--
+                    IMPORTANT:
+                    This button ONLY changes to the
+                    Launch page. It does not start
+                    the queue.
+                -->
+
                 <button
                     class="launch-button"
-                    onclick="launch(this)"
+                    onclick="goToLaunchPage()"
                 >
                     Launch
                 </button>
+
 
             </div>
 
 
             <div class="details">
+
 
                 <div>
 
@@ -210,21 +244,30 @@
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
 
-        <!-- NORMAL LAUNCH PAGE -->
+        <!-- ==================================================
+             LAUNCH
+             ================================================== -->
 
         <section
             id="launch"
             class="view launch-view"
         >
 
+
             <div class="topline">
-                <span>Application</span>
+
+                <span>
+                    Application
+                </span>
+
             </div>
 
 
@@ -238,15 +281,19 @@
             </div>
 
 
+
             <div class="launch-panel">
 
+
                 <div class="launch-panel-top">
+
 
                     <div>
 
                         <div class="launch-brand">
                             orro
                         </div>
+
 
                         <div class="launch-version">
                             version 1.0.0
@@ -263,10 +310,13 @@
 
                     </div>
 
+
                 </div>
 
 
+
                 <div class="launch-divider"></div>
+
 
 
                 <div class="launch-info">
@@ -275,6 +325,7 @@
                         Ready to launch
                     </div>
 
+
                     <div class="launch-info-text">
                         Start a new orro session.
                     </div>
@@ -282,7 +333,9 @@
                 </div>
 
 
+
                 <div class="launch-panel-bottom">
+
 
                     <div class="launch-time">
 
@@ -299,139 +352,45 @@
                     </div>
 
 
+                    <!--
+                        THIS button actually starts
+                        the full-screen queue.
+                    -->
+
                     <button
                         class="launch-action"
-                        onclick="launch(this)"
+                        onclick="launch()"
                     >
                         Launch
                     </button>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
 
-        <!-- QUEUE PAGE -->
-
-        <section
-            id="queue"
-            class="view queue-view"
-        >
-
-            <div class="queue-content">
-
-                <div class="queue-brand">
-                    orro
-                </div>
-
-
-                <h1>
-                    You're in the queue.
-                </h1>
-
-
-                <div class="queue-ahead">
-
-                    <span
-                        id="queue-ahead-number"
-                    >
-                        3
-                    </span>
-
-                    <span>
-                        people ahead of you
-                    </span>
-
-                </div>
-
-
-                <div class="queue-progress-area">
-
-                    <div class="queue-progress-top">
-
-                        <span>
-                            Queue progress
-                        </span>
-
-                        <span
-                            id="queue-percent"
-                        >
-                            0%
-                        </span>
-
-                    </div>
-
-
-                    <div class="queue-progress">
-
-                        <div
-                            id="queue-progress-fill"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="queue-details">
-
-                    <div class="queue-detail">
-
-                        <span>
-                            Estimated wait
-                        </span>
-
-                        <strong
-                            id="queue-time"
-                        >
-                            ~29 seconds
-                        </strong>
-
-                    </div>
-
-
-                    <div class="queue-detail">
-
-                        <span>
-                            Queue position
-                        </span>
-
-                        <strong
-                            id="queue-position"
-                        >
-                            4
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="queue-cancel"
-                    onclick="cancelLaunch()"
-                >
-                    Cancel
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- CHANGELOG -->
+        <!-- ==================================================
+             CHANGELOG
+             ================================================== -->
 
         <section
             id="changes"
             class="view"
         >
 
+
             <div class="topline">
-                <span>Updates</span>
+
+                <span>
+                    Updates
+                </span>
+
             </div>
 
 
@@ -447,7 +406,9 @@
 
             <div class="changelog">
 
+
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -466,6 +427,7 @@
                             Initial release
                         </div>
 
+
                         <div class="release-text">
                             New interface, startup sequence,
                             launcher shell and first public build.
@@ -473,10 +435,13 @@
 
                     </div>
 
+
                 </div>
 
 
+
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -495,29 +460,40 @@
                             Interface refinement
                         </div>
 
+
                         <div class="release-text">
                             Improved navigation and launch flow.
                         </div>
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
 
-        <!-- SETTINGS -->
+        <!-- ==================================================
+             SETTINGS
+             ================================================== -->
 
         <section
             id="settings"
             class="view"
         >
 
+
             <div class="topline">
-                <span>Preferences</span>
+
+                <span>
+                    Preferences
+                </span>
+
             </div>
 
 
@@ -535,6 +511,7 @@
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -556,11 +533,13 @@
                         onclick="toggleSetting(this)"
                     ></button>
 
+
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -582,11 +561,13 @@
                         onclick="toggleSetting(this)"
                     ></button>
 
+
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -608,11 +589,13 @@
                         onclick="toggleSetting(this)"
                     ></button>
 
+
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -634,16 +617,141 @@
                         onclick="toggleSetting(this)"
                     ></button>
 
+
                 </div>
 
 
             </div>
 
+
         </section>
+
+
+
+        <!-- ==================================================
+             FULL-SCREEN QUEUE
+             ================================================== -->
+
+        <section
+            id="queue"
+            class="queue-screen"
+        >
+
+
+            <div class="queue-inner">
+
+
+                <div class="queue-brand">
+                    orro
+                </div>
+
+
+                <h1>
+                    You're in the queue.
+                </h1>
+
+
+                <div class="queue-ahead">
+
+                    <span id="queue-ahead-number">
+                        3
+                    </span>
+
+                    <span>
+                        people ahead of you
+                    </span>
+
+                </div>
+
+
+
+                <div class="queue-progress-area">
+
+
+                    <div class="queue-progress">
+
+                        <div
+                            id="queue-progress-fill"
+                            class="queue-progress-fill"
+                        ></div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="queue-details">
+
+
+                    <div class="queue-detail">
+
+                        <span>
+                            Estimated wait
+                        </span>
+
+                        <strong id="queue-time">
+                            ~29 seconds
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="queue-detail">
+
+                        <span>
+                            Queue position
+                        </span>
+
+                        <strong id="queue-position">
+                            4
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <button
+                    class="queue-cancel"
+                    onclick="cancelLaunch()"
+                >
+                    Cancel
+                </button>
+
+
+            </div>
+
+
+        </section>
+
 
     </main>
 
+
+
+    <!-- ==================================================
+         CLOSE BUTTON
+         ================================================== -->
+
+    <button
+        type="button"
+        class="window-close"
+        aria-label="Close orro"
+        onclick="closeWindow()"
+    >
+
+        <span></span>
+
+    </button>
+
+
 </div>
+
 
 
 <script src="script.js"></script>
