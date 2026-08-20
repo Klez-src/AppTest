@@ -24,7 +24,7 @@
 
 
 <!-- ==================================================
-     INTRO
+     INTRO — LOCKED
      ================================================== -->
 
 <div id="intro">
@@ -60,9 +60,7 @@
         aria-label="Close orro"
         onclick="closeWindow()"
     >
-
         <span></span>
-
     </button>
 
 
@@ -74,8 +72,6 @@
     <aside class="sidebar">
 
 
-        <!-- BRAND -->
-
         <div class="brand">
 
             <div class="brand-name">
@@ -85,13 +81,7 @@
         </div>
 
 
-
-        <!-- WORKSPACE NAVIGATION -->
-
-        <nav
-            class="nav"
-            aria-label="Workspace"
-        >
+        <div class="nav">
 
             <div class="nav-label">
                 Workspace
@@ -99,42 +89,34 @@
 
 
             <button
-                type="button"
                 class="selected"
                 data-view="home"
-                onclick="showView('home', this)"
+                onclick="showView('home',this)"
             >
                 Home
             </button>
 
 
             <button
-                type="button"
                 data-view="launch"
-                onclick="showView('launch', this)"
+                onclick="showView('launch',this)"
             >
                 Launch
             </button>
 
 
             <button
-                type="button"
                 data-view="changes"
-                onclick="showView('changes', this)"
+                onclick="showView('changes',this)"
             >
                 Changelog
             </button>
 
-        </nav>
+        </div>
 
 
 
-        <!-- PREFERENCES NAVIGATION -->
-
-        <nav
-            class="nav secondary"
-            aria-label="Preferences"
-        >
+        <div class="nav secondary">
 
             <div class="nav-label">
                 Preferences
@@ -142,18 +124,15 @@
 
 
             <button
-                type="button"
                 data-view="settings"
-                onclick="showView('settings', this)"
+                onclick="showView('settings',this)"
             >
                 Settings
             </button>
 
-        </nav>
+        </div>
 
 
-
-        <!-- USER -->
 
         <div class="sidebar-profile">
 
@@ -163,12 +142,8 @@
             ></div>
 
 
-            <div class="profile-details">
-
-                <div class="profile-name">
-                    username
-                </div>
-
+            <div class="profile-name">
+                username
             </div>
 
         </div>
@@ -179,7 +154,7 @@
 
 
     <!-- ==================================================
-         MAIN CONTENT
+         CONTENT
          ================================================== -->
 
     <main class="content">
@@ -196,9 +171,11 @@
 
 
             <div class="topline">
+
                 <span>
                     Overview
                 </span>
+
             </div>
 
 
@@ -241,7 +218,6 @@
 
 
                 <button
-                    type="button"
                     class="launch-button"
                     onclick="launch(this)"
                 >
@@ -258,11 +234,11 @@
                 <div>
 
                     <div class="detail-label">
-                        Release
+                        Version
                     </div>
 
                     <div class="detail-value">
-                        Latest
+                        1.0.0
                     </div>
 
                 </div>
@@ -271,11 +247,11 @@
                 <div>
 
                     <div class="detail-label">
-                        Status
+                        Release
                     </div>
 
                     <div class="detail-value">
-                        Ready
+                        Latest
                     </div>
 
                 </div>
@@ -317,11 +293,17 @@
             </div>
 
 
+
             <div class="launch-panel">
 
 
                 <div class="launch-brand">
                     orro
+                </div>
+
+
+                <div class="launch-version">
+                    1.0.0
                 </div>
 
 
@@ -331,7 +313,6 @@
 
 
                 <button
-                    type="button"
                     class="launch-action"
                     onclick="launch(this)"
                 >
@@ -498,10 +479,8 @@
 
 
                     <button
-                        type="button"
                         class="toggle on"
                         data-setting="remember"
-                        aria-label="Remember session"
                         aria-pressed="true"
                         onclick="toggleSetting(this)"
                     ></button>
@@ -528,10 +507,8 @@
 
 
                     <button
-                        type="button"
                         class="toggle on"
                         data-setting="updates"
-                        aria-label="Automatic updates"
                         aria-pressed="true"
                         onclick="toggleSetting(this)"
                     ></button>
@@ -558,10 +535,8 @@
 
 
                     <button
-                        type="button"
                         class="toggle"
                         data-setting="minimise"
-                        aria-label="Minimise on launch"
                         aria-pressed="false"
                         onclick="toggleSetting(this)"
                     ></button>
@@ -588,10 +563,8 @@
 
 
                     <button
-                        type="button"
                         class="toggle"
                         data-setting="closeAfter"
-                        aria-label="Close after launch"
                         aria-pressed="false"
                         onclick="toggleSetting(this)"
                     ></button>
@@ -666,7 +639,6 @@
 
 
             <button
-                type="button"
                 id="launching-cancel"
                 class="launching-cancel"
                 onclick="cancelLaunch()"
