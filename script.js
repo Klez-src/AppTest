@@ -1,478 +1,585 @@
-/* ==================================================
-   NAVIGATION
-   ================================================== */
-
-function showView(id, button){
-
-    var views =
-        document.querySelectorAll(".view");
+"use strict";
 
 
-    for(
-        var i = 0;
-        i < views.length;
-        i++
-    ){
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
 
-        views[i]
-            .classList
-            .remove("active");
+const intro =
+    document.getElementById("intro");
 
-    }
+const app =
+    document.getElementById("app");
 
+const launchScreen =
+    document.getElementById("launchScreen");
 
-    document
-        .getElementById(id)
-        .classList
-        .add("active");
+const launchTitle =
+    document.getElementById("launchTitle");
 
+const launchStatus =
+    document.getElementById("launchStatus");
 
-    var buttons =
-        document.querySelectorAll(
-            ".nav button"
-        );
+const launchProgressBar =
+    document.getElementById("launchProgressBar");
 
+const launchStep =
+    document.getElementById("launchStep");
 
-    for(
-        var j = 0;
-        j < buttons.length;
-        j++
-    ){
-
-        buttons[j]
-            .classList
-            .remove("selected");
-
-    }
+const launchPercent =
+    document.getElementById("launchPercent");
 
 
-    button
-        .classList
-        .add("selected");
-
-}
-
-
-
-/* ==================================================
+/* ============================================================
    SETTINGS
-   ================================================== */
+   ============================================================ */
 
-function toggle(element){
+const DEFAULT_SETTINGS = {
 
-    element
-        .classList
-        .toggle("on");
+    rememberSession: true,
 
+    automaticUpdates: true,
+
+    closeAfterLaunch: false
+
+};
+
+
+let settings = {
+    ...DEFAULT_SETTINGS
+};
+
+
+function loadSettings()
+{
+    try
+    {
+        const saved =
+            localStorage.getItem(
+                "orro-settings"
+            );
+
+        if (saved)
+        {
+            settings = {
+                ...DEFAULT_SETTINGS,
+                ...JSON.parse(saved)
+            };
+        }
+    }
+    catch
+    {
+        settings = {
+            ...DEFAULT_SETTINGS
+        };
+    }
 }
 
 
+function saveSettings()
+{
+    try
+    {
+        localStorage.setItem(
+            "orro-settings",
+            JSON.stringify(settings)
+        );
+    }
+    catch
+    {
+        // Ignore storage errors.
+    }
+}
 
-/* ==================================================
-   LAUNCH SCREEN
-   ================================================== */
 
-var launchRunning = false;
+function updateToggleUI()
+{
+    document
+        .querySelectorAll(".toggle")
+        .forEach(toggle =>
+        {
+            const name =
+                toggle.dataset.setting;
 
-var launchDuration = 35000;
+            toggle.classList.toggle(
+                "on",
+                !!settings[name]
+            );
+        });
+}
 
 
-var launchPhases = [
+/* ============================================================
+   WEBVIEW NATIVE MESSAGES
+   ============================================================ */
+
+function sendNativeMessage(message)
+{
+    try
+    {
+        if (
+            window.chrome &&
+            window.chrome.webview
+        )
+        {
+            window.chrome.webview.postMessage(
+                message
+            );
+        }
+    }
+    catch
+    {
+        // Running directly in a normal browser.
+    }
+}
+
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+
+function startIntro()
+{
+    setTimeout(() =>
+    {
+        intro.style.opacity = "0";
+
+        intro.style.transition =
+            "opacity .55s ease";
+
+        app.classList.add("ready");
+
+        setTimeout(() =>
+        {
+            intro.style.display = "none";
+        }, 600);
+
+    }, 1900);
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+const navButtons =
+    document.querySelectorAll(
+        ".nav-button"
+    );
+
+const views =
+    document.querySelectorAll(
+        ".view"
+    );
+
+
+function showView(viewName)
+{
+    navButtons.forEach(button =>
+    {
+        button.classList.toggle(
+            "selected",
+            button.dataset.view === viewName
+        );
+    });
+
+
+    views.forEach(view =>
+    {
+        view.classList.toggle(
+            "active",
+            view.id === viewName
+        );
+    });
+}
+
+
+navButtons.forEach(button =>
+{
+    button.addEventListener(
+        "click",
+        event =>
+        {
+            event.stopPropagation();
+
+            showView(
+                button.dataset.view
+            );
+        }
+    );
+});
+
+
+/* ============================================================
+   SETTINGS BUTTONS
+   ============================================================ */
+
+document
+    .querySelectorAll(".toggle")
+    .forEach(toggle =>
+    {
+        toggle.addEventListener(
+            "click",
+            event =>
+            {
+                event.stopPropagation();
+
+                const name =
+                    toggle.dataset.setting;
+
+                settings[name] =
+                    !settings[name];
+
+                saveSettings();
+
+                updateToggleUI();
+            }
+        );
+    });
+
+
+/* ============================================================
+   LAUNCH SEQUENCE
+   ============================================================ */
+
+let launchRunning = false;
+
+let launchTimer = null;
+
+
+const launchStages = [
 
     {
-        progress:0,
-        title:"Preparing",
-        status:"Starting launch sequence",
-        step:"Initialising"
+        start: 0,
+        end: 8,
+        title: "Preparing",
+        status: "Starting launch sequence",
+        step: "Initialising"
     },
 
     {
-        progress:.10,
-        title:"Preparing",
-        status:"Checking local environment",
-        step:"Checking environment"
+        start: 8,
+        end: 20,
+        title: "Checking",
+        status: "Checking required components",
+        step: "Verifying"
     },
 
     {
-        progress:.22,
-        title:"Initialising",
-        status:"Preparing orro components",
-        step:"Initialising components"
+        start: 20,
+        end: 34,
+        title: "Loading",
+        status: "Loading orro components",
+        step: "Loading"
     },
 
     {
-        progress:.36,
-        title:"Initialising",
-        status:"Loading application data",
-        step:"Loading data"
+        start: 34,
+        end: 50,
+        title: "Initialising",
+        status: "Initialising runtime",
+        step: "Initialising runtime"
     },
 
     {
-        progress:.50,
-        title:"Starting",
-        status:"Starting launcher services",
-        step:"Starting services"
+        start: 50,
+        end: 68,
+        title: "Preparing",
+        status: "Preparing session",
+        step: "Preparing session"
     },
 
     {
-        progress:.64,
-        title:"Starting",
-        status:"Preparing session",
-        step:"Preparing session"
+        start: 68,
+        end: 84,
+        title: "Starting",
+        status: "Starting orro",
+        step: "Starting"
     },
 
     {
-        progress:.78,
-        title:"Verifying",
-        status:"Checking launch state",
-        step:"Verifying state"
+        start: 84,
+        end: 96,
+        title: "Finalising",
+        status: "Finishing launch sequence",
+        step: "Finalising"
     },
 
     {
-        progress:.90,
-        title:"Finishing",
-        status:"Finalising launch",
-        step:"Finalising"
-    },
-
-    {
-        progress:.985,
-        title:"Ready",
-        status:"Launch sequence complete",
-        step:"Complete"
+        start: 96,
+        end: 100,
+        title: "Complete",
+        status: "Launch complete",
+        step: "Complete"
     }
 
 ];
 
 
-
-function updateLaunchPhase(progress){
-
-    var phase =
-        launchPhases[0];
-
-
-    for(
-        var i = 0;
-        i < launchPhases.length;
+function getLaunchStage(percent)
+{
+    for (
+        let i = 0;
+        i < launchStages.length;
         i++
-    ){
+    )
+    {
+        const stage =
+            launchStages[i];
 
-        if(
-            progress >=
-            launchPhases[i].progress
-        ){
-
-            phase =
-                launchPhases[i];
-
+        if (
+            percent >= stage.start &&
+            percent <= stage.end
+        )
+        {
+            return stage;
         }
-
     }
 
-
-    document
-        .getElementById(
-            "launchTitle"
-        )
-        .textContent =
-        phase.title;
-
-
-    document
-        .getElementById(
-            "launchStatus"
-        )
-        .textContent =
-        phase.status;
-
-
-    document
-        .getElementById(
-            "launchStep"
-        )
-        .textContent =
-        phase.step;
-
+    return launchStages[
+        launchStages.length - 1
+    ];
 }
 
 
+function updateLaunchUI(percent)
+{
+    const rounded =
+        Math.min(
+            100,
+            Math.floor(percent)
+        );
 
-/* ==================================================
-   LAUNCH
-   ================================================== */
 
-function launch(button){
+    const stage =
+        getLaunchStage(rounded);
 
-    if(launchRunning){
 
+    launchTitle.textContent =
+        stage.title;
+
+    launchStatus.textContent =
+        stage.status;
+
+    launchStep.textContent =
+        stage.step;
+
+    launchPercent.textContent =
+        `${rounded}%`;
+
+
+    launchProgressBar.style.width =
+        `${rounded}%`;
+}
+
+
+function finishLaunch()
+{
+    clearInterval(launchTimer);
+
+    launchTimer = null;
+
+    updateLaunchUI(100);
+
+
+    setTimeout(() =>
+    {
+        if (
+            settings.closeAfterLaunch
+        )
+        {
+            sendNativeMessage(
+                "window.close"
+            );
+
+            return;
+        }
+
+
+        launchScreen.classList.remove(
+            "visible"
+        );
+
+        showView("home");
+
+        launchRunning = false;
+
+    }, 850);
+}
+
+
+function startLaunch()
+{
+    if (launchRunning)
         return;
-
-    }
 
 
     launchRunning = true;
 
 
-    var screen =
-        document.getElementById(
-            "launchScreen"
-        );
+    // Make sure preferences are current.
+    loadSettings();
+    updateToggleUI();
 
 
-    var progressBar =
-        document.getElementById(
-            "launchProgressBar"
-        );
-
-
-    var percent =
-        document.getElementById(
-            "launchPercent"
-        );
-
-
-    var time =
-        document.getElementById(
-            "launchTime"
-        );
-
-
-    var footer =
-        document.getElementById(
-            "launchFooterStatus"
-        );
-
-
-    progressBar.style.width =
-        "0%";
-
-
-    percent.textContent =
-        "0%";
-
-
-    time.textContent =
-        "00:35";
-
-
-    footer.textContent =
-        "Launching";
-
-
-    document
-        .getElementById(
-            "launchTitle"
-        )
-        .textContent =
-        "Preparing";
-
-
-    document
-        .getElementById(
-            "launchStatus"
-        )
-        .textContent =
-        "Starting launch sequence";
-
-
-    document
-        .getElementById(
-            "launchStep"
-        )
-        .textContent =
-        "Initialising";
-
-
-    screen.classList.add(
+    // Entire menu becomes the launcher.
+    launchScreen.classList.add(
         "visible"
     );
 
 
-    var start =
+    updateLaunchUI(0);
+
+
+    /*
+       36 SECOND REAL-TIME DEMO
+
+       0% -> 100%
+       approximately 36 seconds.
+    */
+
+    const duration = 36000;
+
+    const startTime =
         performance.now();
 
 
-
-    function update(now){
-
-        var elapsed =
-            now - start;
-
-
-        var progress =
-            Math.min(
-                elapsed /
-                launchDuration,
-                1
-            );
+    launchTimer =
+        setInterval(() =>
+        {
+            const elapsed =
+                performance.now() -
+                startTime;
 
 
-        var percentage =
-            Math.floor(
-                progress * 100
-            );
+            const percent =
+                Math.min(
+                    100,
+                    (elapsed / duration) * 100
+                );
 
 
-        var remaining =
-            Math.max(
-                0,
-                Math.ceil(
-                    (launchDuration - elapsed) /
-                    1000
-                )
-            );
+            updateLaunchUI(percent);
 
 
-        progressBar.style.width =
-            percentage + "%";
+            if (percent >= 100)
+            {
+                finishLaunch();
+            }
+
+        }, 100);
+}
 
 
-        percent.textContent =
-            percentage + "%";
+/* ============================================================
+   LAUNCH BUTTONS
+   ============================================================ */
+
+const homeLaunch =
+    document.getElementById(
+        "homeLaunch"
+    );
+
+const launchButton =
+    document.getElementById(
+        "launchButton"
+    );
 
 
-        var minutes =
-            Math.floor(
-                remaining / 60
-            );
+homeLaunch.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        startLaunch();
+    }
+);
 
 
-        var seconds =
-            remaining % 60;
+launchButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        startLaunch();
+    }
+);
 
 
-        time.textContent =
+/* ============================================================
+   WINDOW DRAGGING
+   ============================================================ */
 
-            String(minutes)
-                .padStart(2,"0")
+/*
+    The native C++ window has no title bar.
 
-            + ":"
+    Clicking normal empty areas of the application
+    tells WebView2 to move the native window.
 
-            +
+    Buttons and interactive controls are excluded.
+*/
 
-            String(seconds)
-                .padStart(2,"0");
-
-
-        updateLaunchPhase(
-            progress
-        );
-
-
-        if(
-            progress < 1
-        ){
-
-            requestAnimationFrame(
-                update
-            );
-
+document.addEventListener(
+    "mousedown",
+    event =>
+    {
+        if (
+            event.button !== 0
+        )
+        {
             return;
-
         }
 
 
-        finishLaunch();
-
-    }
-
-
-    requestAnimationFrame(
-        update
-    );
-
-}
+        const target =
+            event.target;
 
 
-
-/* ==================================================
-   FINISH
-   ================================================== */
-
-function finishLaunch(){
-
-    document
-        .getElementById(
-            "launchProgressBar"
+        if (
+            target.closest(
+                "button, input, textarea, select, a"
+            )
         )
-        .style.width =
-        "100%";
+        {
+            return;
+        }
 
 
-    document
-        .getElementById(
-            "launchPercent"
-        )
-        .textContent =
-        "100%";
-
-
-    document
-        .getElementById(
-            "launchTime"
-        )
-        .textContent =
-        "00:00";
-
-
-    document
-        .getElementById(
-            "launchTitle"
-        )
-        .textContent =
-        "Ready";
-
-
-    document
-        .getElementById(
-            "launchStatus"
-        )
-        .textContent =
-        "Launch sequence complete";
-
-
-    document
-        .getElementById(
-            "launchStep"
-        )
-        .textContent =
-        "Complete";
-
-
-    document
-        .getElementById(
-            "launchFooterStatus"
-        )
-        .textContent =
-        "Ready";
-
-
-    setTimeout(function(){
-
-        var screen =
-            document.getElementById(
-                "launchScreen"
-            );
-
-
-        screen.classList.remove(
-            "visible"
+        sendNativeMessage(
+            "window.drag"
         );
+    }
+);
 
 
-        setTimeout(function(){
+/* ============================================================
+   KEYBOARD SAFETY
+   ============================================================ */
 
-            screen.style.display =
-                "none";
+document.addEventListener(
+    "keydown",
+    event =>
+    {
+        // Prevent Ctrl+A from selecting the whole UI.
+        if (
+            (event.ctrlKey || event.metaKey) &&
+            event.key.toLowerCase() === "a"
+        )
+        {
+            event.preventDefault();
+        }
+    }
+);
 
 
-            launchRunning =
-                false;
+/* ============================================================
+   STARTUP
+   ============================================================ */
 
-        },300);
+loadSettings();
 
+updateToggleUI();
 
-    },700);
-
-}
+startIntro();
