@@ -11,14 +11,16 @@
 
     <title>orro</title>
 
+    <!-- Cache-busted deliberately so WebView2 doesn't keep old CSS -->
     <link
         rel="stylesheet"
-        href="style.css"
+        href="style.css?v=orro-4"
     >
 </head>
 
 
 <body>
+
 
 <!-- =========================================================
      INTRO
@@ -26,17 +28,21 @@
 
 <div id="intro">
 
-    <div class="intro-word">
-        orro
+    <div class="intro-center">
+
+        <div class="intro-word">
+            orro
+        </div>
+
+        <div class="intro-dot"></div>
+
+        <div class="intro-ring"></div>
+        <div class="intro-ring-two"></div>
+
     </div>
 
-    <div class="intro-dot"></div>
-
-    <div class="intro-ring"></div>
-
-    <div class="intro-ring-two"></div>
-
 </div>
+
 
 
 <!-- =========================================================
@@ -54,19 +60,20 @@
 
 
         <div class="brand">
-            <span class="brand-name">orro</span>
+            orro
         </div>
 
 
-        <div class="nav">
+        <div class="navigation">
 
-            <div class="nav-label">
-                Workspace
+
+            <div class="nav-section-label">
+                WORKSPACE
             </div>
 
 
             <button
-                class="nav-button selected"
+                class="nav-button active"
                 data-view="home"
             >
                 Home
@@ -88,13 +95,9 @@
                 Changelog
             </button>
 
-        </div>
 
-
-        <div class="nav preferences">
-
-            <div class="nav-label">
-                Preferences
+            <div class="nav-section-label preferences-label">
+                PREFERENCES
             </div>
 
 
@@ -105,6 +108,7 @@
                 Settings
             </button>
 
+
         </div>
 
 
@@ -112,35 +116,26 @@
 
         <div class="account">
 
-            <div class="account-avatar"></div>
+            <div class="account-avatar">
+                U
+            </div>
 
-            <span class="account-name">
+            <div class="account-name">
                 username
-            </span>
+            </div>
 
         </div>
+
 
     </aside>
 
 
+
     <!-- =====================================================
-         CONTENT
+         MAIN CONTENT
          ===================================================== -->
 
     <main class="content">
-
-
-        <!-- =================================================
-             WINDOW CONTROLS
-             ================================================= -->
-
-        <button
-            class="close-button"
-            id="closeButton"
-            aria-label="Close"
-        >
-            <span></span>
-        </button>
 
 
         <!-- =================================================
@@ -167,12 +162,16 @@
             </p>
 
 
-            <div class="home-status">
+            <div class="home-info">
 
+                <div class="status-row">
 
-                <div class="status">
                     <span class="status-dot"></span>
-                    Partially detected
+
+                    <span>
+                        Partially detected
+                    </span>
+
                 </div>
 
 
@@ -204,10 +203,11 @@
 
             <div class="details">
 
+
                 <div class="detail">
 
                     <span>
-                        Version
+                        VERSION
                     </span>
 
                     <strong>
@@ -220,7 +220,7 @@
                 <div class="detail">
 
                     <span>
-                        Release
+                        RELEASE
                     </span>
 
                     <strong>
@@ -233,7 +233,7 @@
                 <div class="detail">
 
                     <span>
-                        Status
+                        STATUS
                     </span>
 
                     <strong>
@@ -242,9 +242,11 @@
 
                 </div>
 
+
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -271,8 +273,7 @@
             </p>
 
 
-            <div class="launch-area">
-
+            <div class="launch-card">
 
                 <div>
 
@@ -280,11 +281,9 @@
                         orro
                     </div>
 
-
-                    <div class="launch-meta">
+                    <div class="launch-version">
                         1.0.0
                     </div>
-
 
                     <div class="ready">
 
@@ -307,6 +306,7 @@
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -339,28 +339,20 @@
                 <div class="change">
 
                     <div class="change-version">
-
                         1.0.0
-
-                        <span>
-                            current
-                        </span>
-
                     </div>
 
+                    <div class="change-tag">
+                        CURRENT
+                    </div>
 
-                    <div>
+                    <div class="change-title">
+                        Initial release
+                    </div>
 
-                        <div class="change-title">
-                            Initial release
-                        </div>
-
-
-                        <div class="change-description">
-                            New interface, startup sequence,
-                            launcher shell and first public build.
-                        </div>
-
+                    <div class="change-description">
+                        New interface, startup sequence,
+                        launcher shell and first public build.
                     </div>
 
                 </div>
@@ -369,34 +361,28 @@
                 <div class="change">
 
                     <div class="change-version">
-
                         0.9.2
-
-                        <span>
-                            previous
-                        </span>
-
                     </div>
 
+                    <div class="change-tag">
+                        PREVIOUS
+                    </div>
 
-                    <div>
+                    <div class="change-title">
+                        Interface refinement
+                    </div>
 
-                        <div class="change-title">
-                            Interface refinement
-                        </div>
-
-
-                        <div class="change-description">
-                            Improved navigation and launch flow.
-                        </div>
-
+                    <div class="change-description">
+                        Improved navigation and launch flow.
                     </div>
 
                 </div>
 
+
             </div>
 
         </section>
+
 
 
         <!-- =================================================
@@ -444,9 +430,11 @@
                     <button
                         class="toggle"
                         data-setting="rememberSession"
+                        aria-label="Remember session"
                     ></button>
 
                 </div>
+
 
 
                 <div class="setting">
@@ -467,32 +455,11 @@
                     <button
                         class="toggle"
                         data-setting="automaticUpdates"
+                        aria-label="Automatic updates"
                     ></button>
 
                 </div>
 
-
-                <div class="setting">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Minimise on launch
-                        </div>
-
-                        <div class="setting-info">
-                            Minimise the launcher when the sequence starts.
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="toggle"
-                        data-setting="minimiseOnLaunch"
-                    ></button>
-
-                </div>
 
 
                 <div class="setting">
@@ -513,15 +480,33 @@
                     <button
                         class="toggle"
                         data-setting="closeAfterLaunch"
+                        aria-label="Close after launch"
                     ></button>
 
                 </div>
+
 
             </div>
 
         </section>
 
+
     </main>
+
+
+
+    <!-- =====================================================
+         CLOSE BUTTON
+         ===================================================== -->
+
+    <button
+        id="closeButton"
+        class="close-button"
+        aria-label="Close"
+    >
+        ×
+    </button>
+
 
 
     <!-- =====================================================
@@ -531,78 +516,63 @@
     <div id="launchScreen">
 
 
-        <div class="launch-screen-inner">
+        <div class="launch-screen-content">
 
 
-            <div class="launch-screen-top">
+            <div class="launch-screen-brand">
+                orro
+            </div>
 
-                <span class="launch-eyebrow">
-                    orro
-                </span>
 
-                <span
-                    class="launch-close"
-                    id="launchClose"
-                >
-                    cancel
-                </span>
+            <div
+                id="launchTitle"
+                class="launch-title"
+            >
+                Preparing
+            </div>
+
+
+            <div
+                id="launchStatus"
+                class="launch-status"
+            >
+                Starting launch sequence
+            </div>
+
+
+            <div class="progress-container">
+
+                <div
+                    id="launchProgressBar"
+                    class="progress-bar"
+                ></div>
 
             </div>
 
 
-            <div class="launch-center">
+            <div class="launch-progress-info">
 
+                <span id="launchStep">
+                    Initialising
+                </span>
 
-                <div
-                    id="launchTitle"
-                    class="launch-title"
-                >
-                    Preparing
-                </div>
-
-
-                <div
-                    id="launchStatus"
-                    class="launch-status"
-                >
-                    Starting launch sequence
-                </div>
-
-
-                <div class="launch-progress">
-
-                    <div
-                        id="launchProgressBar"
-                        class="launch-progress-bar"
-                    ></div>
-
-                </div>
-
-
-                <div class="launch-bottom">
-
-                    <span id="launchStep">
-                        Initialising
-                    </span>
-
-
-                    <span id="launchPercent">
-                        0%
-                    </span>
-
-                </div>
+                <span id="launchPercent">
+                    0%
+                </span>
 
             </div>
+
 
         </div>
 
+
     </div>
+
 
 </div>
 
 
-<script src="script.js"></script>
+<script src="script.js?v=orro-4"></script>
 
 </body>
-
 </html>
