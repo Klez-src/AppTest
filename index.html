@@ -1,88 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    >
+
+    <title>orro</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
 <!-- ==================================================
-     FULL-SCREEN QUEUE
+     INTRO
      ================================================== -->
 
-<section
-    id="queue"
-    class="queue-screen"
->
+<div id="intro">
 
-    <div class="queue-inner">
-
-        <div class="queue-brand">
-            orro
-        </div>
-
-
-        <h1>
-            You're in the queue.
-        </h1>
-
-
-        <div class="queue-ahead">
-
-            <span id="queue-ahead-number">
-                3
-            </span>
-
-            <span>
-                people ahead of you
-            </span>
-
-        </div>
-
-
-        <div class="queue-progress-area">
-
-            <div class="queue-progress">
-
-                <div
-                    id="queue-progress-fill"
-                    class="queue-progress-fill"
-                ></div>
-
-            </div>
-
-        </div>
-
-
-        <div class="queue-details">
-
-            <div class="queue-detail">
-
-                <span>
-                    Estimated wait
-                </span>
-
-                <strong id="queue-time">
-                    ~29 seconds
-                </strong>
-
-            </div>
-
-
-            <div class="queue-detail">
-
-                <span>
-                    Queue position
-                </span>
-
-                <strong id="queue-position">
-                    4
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <button
-            class="queue-cancel"
-            onclick="cancelLaunch()"
-        >
-            Cancel
-        </button>
-
+    <div class="intro-word">
+        orro
     </div>
 
-</section>
+    <div class="intro-dot"></div>
+
+    <div class="intro-ring"></div>
+
+    <div class="intro-ring-two"></div>
+
+</div>
+
+
+<!-- ==================================================
+     APPLICATION
+     ================================================== -->
+
+<div id="app">
+
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-name">
+                orro
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-label">
+                Workspace
+            </div>
+
+            <button
+                class="selected"
+                data-view="home"
+                onclick="showView('home', this)"
+            >
+                Home
+            </button>
+
+            <button
+                data-view="launch"
+                onclick="showView('launch', this)"
+            >
+                Launch
+            </button>
+
+            <button
+                data-view="changes"
+                onclick="showView('changes', this)"
+            >
+                Changelog
+            </button>
+
+        </div>
+
+
+        <div class="nav secondary">
+
+            <div class="nav-label">
+                Preferences
+            </div>
+
+            <button
+                data-view="settings"
+                onclick="showView('settings', this)"
+            >
+                Settings
+            </button>
+
+        </div>
+
+
+        <!-- ==================================================
+             USER
+             ================================================== -->
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+                <span></span>
+            </div>
+
+            <div class="user-name">
+                username
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==================================================
+         CONTENT
+         ================================================== -->
+
+    <main class="content">
+
+
+        <!-- =================================================
+             HOME
+             ================================================= -->
+
+        <section
+            id="home"
+            class="view active"
+        >
+
+            <div class="topline">
+                <span>Overview</span>
+            </div>
+
+
+            <h1>
+                Welcome back.
+            </h1>
+
+
+            <div class="lead">
+                Everything is ready.
+            </div>
+
+
+            <div class="status-area">
+
+                <div class="status-line">
+
+                    <span class="status-light"></span>
+
+                    Partially detected
+
+                </div>
+
+
+                <div class="app-name">
+                    orro
+                </div>
+
+
+                <div class="app-meta">
+                    Latest release
+                </div>
+
+
+                <div class="app-description">
+                    The latest version of orro is installed
+                    and ready to launch.
+                </div>
+
+
+                <button
+                    class="launch-button"
+                    onclick="goToLaunchPage()"
+                >
+                    Launch
+                </button>
+
+            </div>
+
+
+            <div class="details">
+
+                <div>
+
+                    <div class="detail-label">
+                        Version
+                    </div>
+
+                    <div class="detail-value">
+                        1.0.0
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Release
+                    </div>
+
+                    <div class="detail-value">
+                        Latest
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-label">
+                        Status
+                    </div>
+
+                    <div class="detail-value">
+                        Ready
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             LAUNCH
+             ================================================= -->
+
+        <section
+            id="launch"
+            class="view launch-view"
+        >
+
+            <div class="topline">
+                <span>Application</span>
+            </div>
+
+
+            <h1>
+                Launch
+            </h1>
+
+
+            <div class="lead">
+                Start a new session.
+            </div>
+
+
+            <div class="launch-panel">
+
+                <div class="launch-brand">
+                    orro
+                </div>
+
+
+                <div class="launch-state">
+                    Ready
+                </div>
+
+
+                <button
+                    class="launch-action"
+                    onclick="launch()"
+                >
+                    Launch
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CHANGELOG
+             ================================================= -->
+
+        <section
+            id="changes"
+            class="view"
+        >
+
+            <div class="topline">
+                <span>Updates</span>
+            </div>
+
+
+            <h1>
+                Changelog
+            </h1>
+
+
+            <div class="lead">
+                What's changed in orro.
+            </div>
+
+
+            <div class="changelog">
+
+                <div class="release">
+
+                    <div class="release-version">
+
+                        1.0.0
+
+                        <div class="release-date">
+                            CURRENT
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="release-title">
+                            Initial release
+                        </div>
+
+                        <div class="release-text">
+                            New interface, startup sequence,
+                            launcher shell and first public build.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="release">
+
+                    <div class="release-version">
+
+                        0.9.2
+
+                        <div class="release-date">
+                            PREVIOUS
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="release-title">
+                            Interface refinement
+                        </div>
+
+                        <div class="release-text">
+                            Improved navigation and launch flow.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SETTINGS
+             ================================================= -->
+
+        <section
+            id="settings"
+            class="view"
+        >
+
+            <div class="topline">
+                <span>Preferences</span>
+            </div>
+
+
+            <h1>
+                Settings
+            </h1>
+
+
+            <div class="lead">
+                A few things you can change.
+            </div>
+
+
+            <div class="settings">
+
+                <div class="setting">
+
+                    <div>
+
+                        <div class="setting-name">
+                            Remember session
+                        </div>
+
+                        <div class="setting-info">
+                            Keep your session between launches.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle on"
+                        data-setting="remember"
+                        aria-pressed="true"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <div>
+
+                        <div class="setting-name">
+                            Automatic updates
+                        </div>
+
+                        <div class="setting-info">
+                            Check for new versions at startup.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle on"
+                        data-setting="updates"
+                        aria-pressed="true"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <div>
+
+                        <div class="setting-name">
+                            Minimise on launch
+                        </div>
+
+                        <div class="setting-info">
+                            Hide the interface after launching.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle"
+                        data-setting="minimise"
+                        aria-pressed="false"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="setting">
+
+                    <div>
+
+                        <div class="setting-name">
+                            Close after launch
+                        </div>
+
+                        <div class="setting-info">
+                            Close orro when the launch finishes.
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="toggle"
+                        data-setting="closeAfter"
+                        aria-pressed="false"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==================================================
+         FULL SCREEN QUEUE / LAUNCH
+         ================================================== -->
+
+    <section
+        id="queue"
+        class="queue-screen"
+    >
+
+        <div class="queue-inner">
+
+            <div class="queue-brand">
+                orro
+            </div>
+
+
+            <h1>
+                You're in the queue.
+            </h1>
+
+
+            <div class="queue-ahead">
+
+                <span id="queue-ahead-number">
+                    3
+                </span>
+
+                <span>
+                    people ahead of you
+                </span>
+
+            </div>
+
+
+            <div class="queue-progress-area">
+
+                <div class="queue-progress">
+
+                    <div
+                        id="queue-progress-fill"
+                        class="queue-progress-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <div class="queue-details">
+
+                <div class="queue-detail">
+
+                    <span>
+                        Estimated wait
+                    </span>
+
+                    <strong id="queue-time">
+                        ~29 seconds
+                    </strong>
+
+                </div>
+
+
+                <div class="queue-detail">
+
+                    <span>
+                        Queue position
+                    </span>
+
+                    <strong id="queue-position">
+                        4
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="queue-cancel"
+                onclick="cancelLaunch()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CLOSE BUTTON
+         ================================================== -->
+
+    <button
+        type="button"
+        class="window-close"
+        onclick="closeWindow()"
+        aria-label="Close"
+    >
+        ×
+    </button>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
