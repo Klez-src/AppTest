@@ -51,7 +51,7 @@
 
 
     <!-- ==================================================
-         WINDOW CLOSE
+         CUSTOM WINDOW CLOSE
          ================================================== -->
 
     <button
@@ -60,7 +60,9 @@
         aria-label="Close orro"
         onclick="closeWindow()"
     >
+
         <span></span>
+
     </button>
 
 
@@ -72,6 +74,8 @@
     <aside class="sidebar">
 
 
+        <!-- BRAND -->
+
         <div class="brand">
 
             <div class="brand-name">
@@ -80,6 +84,9 @@
 
         </div>
 
+
+
+        <!-- WORKSPACE NAVIGATION -->
 
         <nav
             class="nav"
@@ -122,6 +129,8 @@
 
 
 
+        <!-- PREFERENCES NAVIGATION -->
+
         <nav
             class="nav secondary"
             aria-label="Preferences"
@@ -144,6 +153,8 @@
 
 
 
+        <!-- USER -->
+
         <div class="sidebar-profile">
 
             <div
@@ -158,10 +169,6 @@
                     username
                 </div>
 
-                <div class="profile-status">
-                    Local session
-                </div>
-
             </div>
 
         </div>
@@ -172,7 +179,7 @@
 
 
     <!-- ==================================================
-         CONTENT
+         MAIN CONTENT
          ================================================== -->
 
     <main class="content">
@@ -187,8 +194,11 @@
             class="view active"
         >
 
+
             <div class="topline">
-                <span>Overview</span>
+                <span>
+                    Overview
+                </span>
             </div>
 
 
@@ -203,6 +213,7 @@
 
 
             <div class="status-area">
+
 
                 <div class="status-line">
 
@@ -237,10 +248,12 @@
                     Launch
                 </button>
 
+
             </div>
 
 
             <div class="details">
+
 
                 <div>
 
@@ -267,6 +280,7 @@
 
                 </div>
 
+
             </div>
 
 
@@ -283,8 +297,13 @@
             class="view launch-view"
         >
 
+
             <div class="topline">
-                <span>Application</span>
+
+                <span>
+                    Application
+                </span>
+
             </div>
 
 
@@ -299,6 +318,7 @@
 
 
             <div class="launch-panel">
+
 
                 <div class="launch-brand">
                     orro
@@ -318,6 +338,7 @@
                     Launch
                 </button>
 
+
             </div>
 
 
@@ -334,8 +355,13 @@
             class="view"
         >
 
+
             <div class="topline">
-                <span>Updates</span>
+
+                <span>
+                    Updates
+                </span>
+
             </div>
 
 
@@ -351,7 +377,9 @@
 
             <div class="changelog">
 
+
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -378,11 +406,13 @@
 
                     </div>
 
+
                 </div>
 
 
 
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -408,7 +438,9 @@
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
@@ -426,8 +458,13 @@
             class="view"
         >
 
+
             <div class="topline">
-                <span>Preferences</span>
+
+                <span>
+                    Preferences
+                </span>
+
             </div>
 
 
@@ -443,7 +480,9 @@
 
             <div class="settings">
 
+
                 <div class="setting">
+
 
                     <div>
 
@@ -460,17 +499,20 @@
 
                     <button
                         type="button"
-                        class="toggle"
+                        class="toggle on"
                         data-setting="remember"
                         aria-label="Remember session"
+                        aria-pressed="true"
                         onclick="toggleSetting(this)"
                     ></button>
+
 
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -487,17 +529,20 @@
 
                     <button
                         type="button"
-                        class="toggle"
+                        class="toggle on"
                         data-setting="updates"
                         aria-label="Automatic updates"
+                        aria-pressed="true"
                         onclick="toggleSetting(this)"
                     ></button>
+
 
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -517,14 +562,17 @@
                         class="toggle"
                         data-setting="minimise"
                         aria-label="Minimise on launch"
+                        aria-pressed="false"
                         onclick="toggleSetting(this)"
                     ></button>
+
 
                 </div>
 
 
 
                 <div class="setting">
+
 
                     <div>
 
@@ -544,10 +592,13 @@
                         class="toggle"
                         data-setting="closeAfter"
                         aria-label="Close after launch"
+                        aria-pressed="false"
                         onclick="toggleSetting(this)"
                     ></button>
 
+
                 </div>
+
 
             </div>
 
@@ -568,7 +619,9 @@
         class="launching-screen"
     >
 
+
         <div class="launching-content">
+
 
             <div class="launching-brand">
                 orro
@@ -605,10 +658,7 @@
 
                 <span class="launching-dot"></span>
 
-                <span
-                    id="launching-status-text"
-                    class="launching-status-text"
-                >
+                <span id="launching-status-text">
                     Initialising
                 </span>
 
@@ -624,12 +674,15 @@
                 Cancel
             </button>
 
+
         </div>
+
 
     </div>
 
 
 </div>
+
 
 
 <script src="script.js"></script>
