@@ -2,32 +2,33 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width,initial-scale=1"
-    >
+<meta charset="UTF-8">
 
-    <title>orro</title>
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+<title>orro</title>
+
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+
 </head>
 
 <body>
 
+
 <!-- ==================================================
-     INTRO
+     INTRO — LOCKED
      ================================================== -->
 
 <div id="intro">
 
-    <div class="intro-word">
-        orro
-    </div>
+    <div class="intro-word">orro</div>
 
     <div class="intro-dot"></div>
 
@@ -44,11 +45,13 @@
 
 <div id="app">
 
+
     <!-- ==================================================
          SIDEBAR
          ================================================== -->
 
     <aside class="sidebar">
+
 
         <div class="brand">
 
@@ -65,24 +68,24 @@
                 Workspace
             </div>
 
+
             <button
                 class="selected"
-                data-view="home"
-                onclick="showView('home', this)"
+                onclick="showView('home',this)"
             >
                 Home
             </button>
 
+
             <button
-                data-view="launch"
-                onclick="showView('launch', this)"
+                onclick="showView('launch',this)"
             >
                 Launch
             </button>
 
+
             <button
-                data-view="changes"
-                onclick="showView('changes', this)"
+                onclick="showView('changes',this)"
             >
                 Changelog
             </button>
@@ -96,9 +99,9 @@
                 Preferences
             </div>
 
+
             <button
-                data-view="settings"
-                onclick="showView('settings', this)"
+                onclick="showView('settings',this)"
             >
                 Settings
             </button>
@@ -106,9 +109,7 @@
         </div>
 
 
-        <!-- ==================================================
-             USER
-             ================================================== -->
+        <!-- USER -->
 
         <div class="sidebar-user">
 
@@ -122,6 +123,7 @@
 
         </div>
 
+
     </aside>
 
 
@@ -132,9 +134,9 @@
     <main class="content">
 
 
-        <!-- =================================================
+        <!-- ==================================================
              HOME
-             ================================================= -->
+             ================================================== -->
 
         <section
             id="home"
@@ -142,7 +144,15 @@
         >
 
             <div class="topline">
-                <span>Overview</span>
+
+                <span>
+                    Overview
+                </span>
+
+                <span class="version">
+                    v1.0.0
+                </span>
+
             </div>
 
 
@@ -157,6 +167,7 @@
 
 
             <div class="status-area">
+
 
                 <div class="status-line">
 
@@ -173,7 +184,7 @@
 
 
                 <div class="app-meta">
-                    Latest release
+                    version 1.0.0 · latest
                 </div>
 
 
@@ -183,6 +194,10 @@
                 </div>
 
 
+                <!-- IMPORTANT:
+                     This only navigates to Launch.
+                     It does NOT start the queue. -->
+
                 <button
                     class="launch-button"
                     onclick="goToLaunchPage()"
@@ -190,10 +205,12 @@
                     Launch
                 </button>
 
+
             </div>
 
 
             <div class="details">
+
 
                 <div>
 
@@ -228,27 +245,33 @@
                     </div>
 
                     <div class="detail-value">
-                        Ready
+                        Partially detected
                     </div>
 
                 </div>
+
 
             </div>
 
         </section>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              LAUNCH
-             ================================================= -->
+             ================================================== -->
 
         <section
             id="launch"
             class="view launch-view"
         >
 
+
             <div class="topline">
-                <span>Application</span>
+
+                <span>
+                    Application
+                </span>
+
             </div>
 
 
@@ -264,8 +287,14 @@
 
             <div class="launch-panel">
 
+
                 <div class="launch-brand">
                     orro
+                </div>
+
+
+                <div class="launch-version">
+                    1.0.0
                 </div>
 
 
@@ -276,27 +305,34 @@
 
                 <button
                     class="launch-action"
-                    onclick="launch()"
+                    onclick="launch(this)"
                 >
                     Launch
                 </button>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              CHANGELOG
-             ================================================= -->
+             ================================================== -->
 
         <section
             id="changes"
             class="view"
         >
 
+
             <div class="topline">
-                <span>Updates</span>
+
+                <span>
+                    Updates
+                </span>
+
             </div>
 
 
@@ -312,7 +348,9 @@
 
             <div class="changelog">
 
+
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -331,6 +369,7 @@
                             Initial release
                         </div>
 
+
                         <div class="release-text">
                             New interface, startup sequence,
                             launcher shell and first public build.
@@ -338,10 +377,12 @@
 
                     </div>
 
+
                 </div>
 
 
                 <div class="release">
+
 
                     <div class="release-version">
 
@@ -360,30 +401,39 @@
                             Interface refinement
                         </div>
 
+
                         <div class="release-text">
                             Improved navigation and launch flow.
                         </div>
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              SETTINGS
-             ================================================= -->
+             ================================================== -->
 
         <section
             id="settings"
             class="view"
         >
 
+
             <div class="topline">
-                <span>Preferences</span>
+
+                <span>
+                    Preferences
+                </span>
+
             </div>
 
 
@@ -398,6 +448,7 @@
 
 
             <div class="settings">
+
 
                 <div class="setting">
 
@@ -417,8 +468,8 @@
                     <button
                         class="toggle on"
                         data-setting="remember"
-                        aria-pressed="true"
                         onclick="toggleSetting(this)"
+                        aria-label="Remember session"
                     ></button>
 
                 </div>
@@ -442,8 +493,8 @@
                     <button
                         class="toggle on"
                         data-setting="updates"
-                        aria-pressed="true"
                         onclick="toggleSetting(this)"
+                        aria-label="Automatic updates"
                     ></button>
 
                 </div>
@@ -467,8 +518,8 @@
                     <button
                         class="toggle"
                         data-setting="minimise"
-                        aria-pressed="false"
                         onclick="toggleSetting(this)"
+                        aria-label="Minimise on launch"
                     ></button>
 
                 </div>
@@ -492,44 +543,49 @@
                     <button
                         class="toggle"
                         data-setting="closeAfter"
-                        aria-pressed="false"
                         onclick="toggleSetting(this)"
+                        aria-label="Close after launch"
                     ></button>
 
                 </div>
 
+
             </div>
 
+
         </section>
+
 
     </main>
 
 
     <!-- ==================================================
-         FULL SCREEN QUEUE / LAUNCH
+         FULLSCREEN QUEUE
          ================================================== -->
 
     <section
-        id="queue"
+        id="queue-screen"
         class="queue-screen"
     >
 
-        <div class="queue-inner">
+
+        <div class="queue-content">
+
 
             <div class="queue-brand">
                 orro
             </div>
 
 
-            <h1>
+            <div class="queue-title">
                 You're in the queue.
-            </h1>
+            </div>
 
 
             <div class="queue-ahead">
 
                 <span id="queue-ahead-number">
-                    3
+                    2
                 </span>
 
                 <span>
@@ -539,23 +595,20 @@
             </div>
 
 
-            <div class="queue-progress-area">
+            <div class="queue-progress">
 
-                <div class="queue-progress">
-
-                    <div
-                        id="queue-progress-fill"
-                        class="queue-progress-fill"
-                    ></div>
-
-                </div>
+                <div
+                    id="queue-progress-fill"
+                    class="queue-progress-fill"
+                ></div>
 
             </div>
 
 
-            <div class="queue-details">
+            <div class="queue-info">
 
-                <div class="queue-detail">
+
+                <div class="queue-info-item">
 
                     <span>
                         Estimated wait
@@ -568,29 +621,33 @@
                 </div>
 
 
-                <div class="queue-detail">
+                <div class="queue-info-item">
 
                     <span>
-                        Queue position
+                        Position
                     </span>
 
                     <strong id="queue-position">
-                        4
+                        3
                     </strong>
 
                 </div>
+
 
             </div>
 
 
             <button
+                id="queue-cancel"
                 class="queue-cancel"
                 onclick="cancelLaunch()"
             >
                 Cancel
             </button>
 
+
         </div>
+
 
     </section>
 
@@ -600,7 +657,6 @@
          ================================================== -->
 
     <button
-        type="button"
         class="window-close"
         onclick="closeWindow()"
         aria-label="Close"
@@ -608,10 +664,12 @@
         ×
     </button>
 
+
 </div>
 
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
