@@ -1,6 +1,8 @@
 /* =========================================================
-   ORRO LOADER
+   ORRO
    ========================================================= */
+
+"use strict";
 
 
 /* =========================================================
@@ -24,120 +26,20 @@ function nativeMessage(message) {
 
 
 /* =========================================================
-   NAVIGATION
+   SETTINGS
    ========================================================= */
 
-function showView(
-    id,
-    button
-) {
-
-    if (launchRunning) {
-        return;
-    }
-
-
-    var views =
-        document.querySelectorAll(
-            ".view"
-        );
-
-
-    for (
-        var i = 0;
-        i < views.length;
-        i++
-    ) {
-
-        views[i].classList.remove(
-            "active"
-        );
-
-    }
-
-
-    var selectedView =
-        document.getElementById(
-            id
-        );
-
-
-    if (selectedView) {
-
-        selectedView.classList.add(
-            "active"
-        );
-
-    }
-
-
-    var buttons =
-        document.querySelectorAll(
-            ".nav button"
-        );
-
-
-    for (
-        var j = 0;
-        j < buttons.length;
-        j++
-    ) {
-
-        buttons[j].classList.remove(
-            "selected"
-        );
-
-    }
-
-
-    if (button) {
-
-        button.classList.add(
-            "selected"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   HOME -> LAUNCH PAGE
-   ========================================================= */
-
-function goToLaunchPage() {
-
-    var launchButton =
-        document.querySelector(
-            '.nav button[onclick*="showView(\'launch\'"]'
-        );
-
-
-    showView(
-        "launch",
-        launchButton
-    );
-
-}
-
-
-/* =========================================================
-   SETTINGS STORAGE
-   ========================================================= */
-
-var SETTINGS_KEY =
+const SETTINGS_KEY =
     "orro.settings";
 
 
-var defaultSettings = {
+const DEFAULT_SETTINGS = {
 
-    remember: true,
+    rememberSession: true,
 
-    updates: true,
+    automaticUpdates: true,
 
-    minimise: false,
-
-    closeAfter: false
+    minimiseOnLaunch: false
 
 };
 
@@ -146,42 +48,38 @@ function getSettings() {
 
     try {
 
-        var stored =
+        const saved =
             localStorage.getItem(
                 SETTINGS_KEY
             );
 
 
-        if (!stored) {
+        if (!saved) {
 
-            return Object.assign(
-                {},
-                defaultSettings
-            );
+            return {
+                ...DEFAULT_SETTINGS
+            };
 
         }
 
 
-        var parsed =
-            JSON.parse(
-                stored
-            );
+        return {
 
+            ...DEFAULT_SETTINGS,
 
-        return Object.assign(
-            {},
-            defaultSettings,
-            parsed
-        );
+            ...JSON.parse(
+                saved
+            )
+
+        };
 
     }
 
-    catch (error) {
+    catch {
 
-        return Object.assign(
-            {},
-            defaultSettings
-        );
+        return {
+            ...DEFAULT_SETTINGS
+        };
 
     }
 
@@ -194,7 +92,7 @@ function saveSettings(
 
     try {
 
-        window.localStorage.setItem(
+        localStorage.setItem(
             SETTINGS_KEY,
             JSON.stringify(
                 settings
@@ -203,11 +101,11 @@ function saveSettings(
 
     }
 
-    catch (error) {
+    catch {
 
         /*
-         * WebView storage can theoretically
-         * be unavailable. The UI still works.
+         * Storage can be unavailable in
+         * unusual WebView configurations.
          */
 
     }
@@ -216,145 +114,293 @@ function saveSettings(
 
 
 /* =========================================================
-   LOAD SETTINGS
+   SETTINGS UI
    ========================================================= */
 
-function loadSettings() {
+function updateSettingsUI() {
 
-    var settings =
+    const settings =
         getSettings();
 
 
-    var toggles =
-        document.querySelectorAll(
-            ".toggle[data-setting]"
+    document
+        .querySelectorAll(
+            "[data-setting]"
+        )
+        .forEach(
+            toggle => {
+
+                const name =
+                    toggle.dataset.setting;
+
+
+                toggle.classList.toggle(
+                    "on",
+                    Boolean(
+                        settings[name]
+                    )
+                );
+
+            }
         );
-
-
-    for (
-        var i = 0;
-        i < toggles.length;
-        i++
-    ) {
-
-        var toggle =
-            toggles[i];
-
-
-        var settingName =
-            toggle.dataset.setting;
-
-
-        var enabled =
-            !!settings[
-                settingName
-            ];
-
-
-        toggle.classList.toggle(
-            "on",
-            enabled
-        );
-
-    }
 
 }
 
 
-loadSettings();
+document
+    .querySelectorAll(
+        "[data-setting]"
+    )
+    .forEach(
+        toggle => {
+
+            toggle.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+
+                    const settings =
+                        getSettings();
+
+
+                    const name =
+                        toggle.dataset.setting;
+
+
+                    settings[name] =
+                        !settings[name];
+
+
+                    saveSettings(
+                        settings
+                    );
+
+
+                    updateSettingsUI();
+
+                }
+            );
+
+        }
+    );
+
+
+updateSettingsUI();
 
 
 /* =========================================================
-   TOGGLE SETTING
+   PAGE NAVIGATION
    ========================================================= */
 
-function toggleSetting(
-    element
+const navItems =
+    document.querySelectorAll(
+        ".nav-item"
+    );
+
+
+const pages =
+    document.querySelectorAll(
+        ".page"
+    );
+
+
+function showPage(
+    name
 ) {
 
-    if (!element) {
+    /*
+     * Never navigate while the fullscreen
+     * queue is active.
+     */
+
+    if (launchRunning) {
+
         return;
+
     }
 
 
-    var settingName =
-        element.dataset.setting;
+    navItems.forEach(
+        item => {
 
+            item.classList.toggle(
+                "active",
+                item.dataset.page === name
+            );
 
-    if (!settingName) {
-        return;
-    }
-
-
-    var settings =
-        getSettings();
-
-
-    settings[
-        settingName
-    ] =
-        !settings[
-            settingName
-        ];
-
-
-    saveSettings(
-        settings
+        }
     );
 
 
-    element.classList.toggle(
-        "on",
-        settings[
-            settingName
-        ]
+    pages.forEach(
+        page => {
+
+            page.classList.toggle(
+                "active",
+                page.id ===
+                "page-" + name
+            );
+
+        }
     );
 
 }
+
+
+navItems.forEach(
+    item => {
+
+        item.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+
+                showPage(
+                    item.dataset.page
+                );
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================================================
-   CLOSE WINDOW
+   HOME LAUNCH BUTTON
    ========================================================= */
 
-function closeWindow() {
-
-    nativeMessage(
-        "window.close"
+const homeLaunchButton =
+    document.getElementById(
+        "homeLaunchButton"
     );
 
-}
+
+homeLaunchButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        /*
+         * IMPORTANT:
+         *
+         * Home Launch does NOT start
+         * the queue.
+         *
+         * It simply opens Launch.
+         */
+
+        showPage(
+            "launch"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   QUEUE ELEMENTS
+   ========================================================= */
+
+const launchingPage =
+    document.getElementById(
+        "launching-page"
+    );
+
+
+const launchProgress =
+    document.getElementById(
+        "launchProgress"
+    );
+
+
+const queueAhead =
+    document.getElementById(
+        "queueAhead"
+    );
+
+
+const queueEstimate =
+    document.getElementById(
+        "queueEstimate"
+    );
+
+
+const queuePosition =
+    document.getElementById(
+        "queuePosition"
+    );
+
+
+const launchButton =
+    document.getElementById(
+        "launchButton"
+    );
+
+
+const cancelButton =
+    document.getElementById(
+        "cancelLaunch"
+    );
 
 
 /* =========================================================
    LAUNCH STATE
    ========================================================= */
 
-var launchRunning =
+let launchRunning =
     false;
 
 
-var launchAnimation =
+let launchFrame =
     null;
 
 
-var launchStartedAt =
+let launchStart =
     0;
 
 
-var launchDuration =
+let launchDuration =
     0;
 
 
-var queueAhead =
+let initialQueueAhead =
     1;
 
 
 /* =========================================================
-   RANDOM QUEUE
+   RANDOM VALUES
    ========================================================= */
 
-function randomQueueAhead() {
+/*
+ * 25–33 seconds.
+ *
+ * This keeps it around 29 seconds
+ * without making every launch identical.
+ */
+
+function getLaunchDuration() {
+
+    return (
+        25000 +
+        Math.floor(
+            Math.random() * 9000
+        )
+    );
+
+}
+
+
+/*
+ * 1–4 people ahead.
+ */
+
+function getQueueAhead() {
 
     return (
         Math.floor(
@@ -365,154 +411,68 @@ function randomQueueAhead() {
 }
 
 
-/*
- * Roughly 29 seconds.
- *
- * Range:
- * 25–33 seconds.
- *
- * So it can be 27 one time,
- * 29 another, 31 another, etc.
- */
-
-function randomLaunchDuration() {
-
-    return (
-        Math.floor(
-            Math.random() * 9
-        ) + 25
-    ) * 1000;
-
-}
-
-
 /* =========================================================
-   QUEUE ELEMENTS
-   ========================================================= */
-
-function queueElement(
-    id
-) {
-
-    return document.getElementById(
-        id
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE QUEUE
+   QUEUE UI
    ========================================================= */
 
 function updateQueue(
     progress
 ) {
 
-    var fill =
-        queueElement(
-            "queue-progress-fill"
+    /*
+     * Smoothly reduce the queue count.
+     */
+
+    const remainingAhead =
+        Math.max(
+            0,
+            Math.ceil(
+                initialQueueAhead *
+                (1 - progress)
+            )
         );
 
 
-    var ahead =
-        queueElement(
-            "queue-ahead-number"
+    const currentPosition =
+        Math.max(
+            1,
+            remainingAhead + 1
         );
 
 
-    var position =
-        queueElement(
-            "queue-position"
-        );
+    queueAhead.textContent =
+        remainingAhead;
 
 
-    var time =
-        queueElement(
-            "queue-time"
-        );
+    queuePosition.textContent =
+        currentPosition;
 
 
-    if (fill) {
-
-        fill.style.width =
-            (
-                progress * 100
-            ) + "%";
-
-    }
+    launchProgress.style.width =
+        (
+            progress * 100
+        ) + "%";
 
 
-    if (ahead) {
-
-        /*
-         * Keep the queue feeling natural.
-         * People gradually leave the queue
-         * instead of the number jumping every
-         * frame.
-         */
-
-        var displayedAhead =
-            Math.max(
-                0,
-                Math.ceil(
-                    queueAhead *
-                    (1 - progress)
-                )
-            );
-
-
-        ahead.textContent =
-            displayedAhead;
-
-    }
-
-
-    if (position) {
-
-        var displayedPosition =
-            Math.max(
-                1,
-                Math.ceil(
+    const remainingSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                (
+                    launchDuration -
                     (
-                        queueAhead + 1
-                    ) *
-                    (1 - progress)
-                )
-            );
+                        performance.now() -
+                        launchStart
+                    )
+                ) / 1000
+            )
+        );
 
 
-        position.textContent =
-            displayedPosition;
-
-    }
-
-
-    if (time) {
-
-        var elapsed =
-            performance.now() -
-            launchStartedAt;
-
-
-        var remaining =
-            Math.max(
-                0,
-                Math.ceil(
-                    (
-                        launchDuration -
-                        elapsed
-                    ) / 1000
-                )
-            );
-
-
-        time.textContent =
-            "~" +
-            remaining +
-            " seconds";
-
-    }
+    queueEstimate.textContent =
+        "~" +
+        remainingSeconds +
+        " seconds";
 
 }
 
@@ -521,19 +481,21 @@ function updateQueue(
    QUEUE ANIMATION
    ========================================================= */
 
-function animateQueue() {
+function animateLaunch() {
 
     if (!launchRunning) {
+
         return;
+
     }
 
 
-    var elapsed =
+    const elapsed =
         performance.now() -
-        launchStartedAt;
+        launchStart;
 
 
-    var progress =
+    const progress =
         Math.min(
             elapsed /
             launchDuration,
@@ -557,9 +519,9 @@ function animateQueue() {
     }
 
 
-    launchAnimation =
+    launchFrame =
         requestAnimationFrame(
-            animateQueue
+            animateLaunch
         );
 
 }
@@ -569,12 +531,12 @@ function animateQueue() {
    START LAUNCH
    ========================================================= */
 
-function launch(
-    button
-) {
+function startLaunch() {
 
     if (launchRunning) {
+
         return;
+
     }
 
 
@@ -582,166 +544,65 @@ function launch(
         true;
 
 
-    queueAhead =
-        randomQueueAhead();
+    initialQueueAhead =
+        getQueueAhead();
 
 
     launchDuration =
-        randomLaunchDuration();
+        getLaunchDuration();
 
 
-    launchStartedAt =
+    launchStart =
         performance.now();
 
 
-    var settings =
+    /*
+     * Reset queue.
+     */
+
+    queueAhead.textContent =
+        initialQueueAhead;
+
+
+    queuePosition.textContent =
+        initialQueueAhead + 1;
+
+
+    queueEstimate.textContent =
+        "~" +
+        Math.ceil(
+            launchDuration / 1000
+        ) +
+        " seconds";
+
+
+    launchProgress.style.width =
+        "0%";
+
+
+    /*
+     * Take over the ENTIRE GUI.
+     *
+     * The launching page sits above
+     * the sidebar and main UI.
+     */
+
+    launchingPage.classList.add(
+        "active"
+    );
+
+
+    /*
+     * Minimise setting.
+     */
+
+    const settings =
         getSettings();
 
 
-    var queue =
-        document.getElementById(
-            "queue-screen"
-        );
-
-
-    var fill =
-        queueElement(
-            "queue-progress-fill"
-        );
-
-
-    var ahead =
-        queueElement(
-            "queue-ahead-number"
-        );
-
-
-    var position =
-        queueElement(
-            "queue-position"
-        );
-
-
-    var time =
-        queueElement(
-            "queue-time"
-        );
-
-
-    if (button) {
-
-        button.dataset.originalText =
-            button.textContent;
-
-        button.style.opacity =
-            ".55";
-
-        button.disabled =
-            true;
-
-    }
-
-
-    if (fill) {
-
-        fill.style.width =
-            "0%";
-
-    }
-
-
-    if (ahead) {
-
-        ahead.textContent =
-            queueAhead;
-
-    }
-
-
-    if (position) {
-
-        position.textContent =
-            queueAhead + 1;
-
-    }
-
-
-    if (time) {
-
-        time.textContent =
-            "~" +
-            Math.ceil(
-                launchDuration / 1000
-            ) +
-            " seconds";
-
-    }
-
-
-    /*
-     * The queue replaces the whole UI.
-     */
-
-    var sidebar =
-        document.querySelector(
-            ".sidebar"
-        );
-
-
-    var content =
-        document.querySelector(
-            ".content"
-        );
-
-
-    var close =
-        document.querySelector(
-            ".window-close"
-        );
-
-
-    if (sidebar) {
-
-        sidebar.style.display =
-            "none";
-
-    }
-
-
-    if (content) {
-
-        content.style.display =
-            "none";
-
-    }
-
-
-    if (close) {
-
-        close.style.display =
-            "none";
-
-    }
-
-
-    if (queue) {
-
-        queue.classList.add(
-            "active"
-        );
-
-    }
-
-
-    /*
-     * Honour minimise-on-launch.
-     *
-     * The queue is still started first,
-     * so the setting behaves exactly as
-     * the native window setting says.
-     */
-
-    if (settings.minimise) {
+    if (
+        settings.minimiseOnLaunch
+    ) {
 
         nativeMessage(
             "window.minimize"
@@ -750,12 +611,28 @@ function launch(
     }
 
 
-    launchAnimation =
+    launchFrame =
         requestAnimationFrame(
-            animateQueue
+            animateLaunch
         );
 
 }
+
+
+/* =========================================================
+   LAUNCH BUTTON
+   ========================================================= */
+
+launchButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        startLaunch();
+
+    }
+);
 
 
 /* =========================================================
@@ -765,7 +642,9 @@ function launch(
 function cancelLaunch() {
 
     if (!launchRunning) {
+
         return;
+
     }
 
 
@@ -773,115 +652,64 @@ function cancelLaunch() {
         false;
 
 
-    if (launchAnimation) {
+    if (launchFrame) {
 
         cancelAnimationFrame(
-            launchAnimation
+            launchFrame
         );
 
-        launchAnimation =
+        launchFrame =
             null;
 
     }
 
 
-    var queue =
-        document.getElementById(
-            "queue-screen"
-        );
+    launchingPage.classList.remove(
+        "active"
+    );
 
 
-    if (queue) {
-
-        queue.classList.remove(
-            "active"
-        );
-
-    }
+    launchProgress.style.width =
+        "0%";
 
 
-    var sidebar =
-        document.querySelector(
-            ".sidebar"
-        );
+    queueAhead.textContent =
+        initialQueueAhead;
 
 
-    var content =
-        document.querySelector(
-            ".content"
-        );
+    queuePosition.textContent =
+        initialQueueAhead + 1;
 
 
-    var close =
-        document.querySelector(
-            ".window-close"
-        );
-
-
-    if (sidebar) {
-
-        sidebar.style.display =
-            "";
-
-    }
-
-
-    if (content) {
-
-        content.style.display =
-            "";
-
-    }
-
-
-    if (close) {
-
-        close.style.display =
-            "";
-
-    }
-
-
-    var buttons =
-        document.querySelectorAll(
-            ".launch-button, .launch-action"
-        );
-
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].disabled =
-            false;
-
-        buttons[i].style.opacity =
-            "1";
-
-        buttons[i].textContent =
-            "Launch";
-
-    }
+    queueEstimate.textContent =
+        "~" +
+        Math.ceil(
+            launchDuration / 1000
+        ) +
+        " seconds";
 
 
     /*
-     * Return to the Launch tab.
+     * Return to Launch page.
      */
 
-    var launchButton =
-        document.querySelector(
-            '.nav button[onclick*="showView(\'launch\'"]'
-        );
-
-
-    showView(
-        "launch",
-        launchButton
+    showPage(
+        "launch"
     );
 
 }
+
+
+cancelButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        cancelLaunch();
+
+    }
+);
 
 
 /* =========================================================
@@ -894,211 +722,120 @@ function finishLaunch() {
         false;
 
 
-    if (launchAnimation) {
+    if (launchFrame) {
 
         cancelAnimationFrame(
-            launchAnimation
+            launchFrame
         );
 
-        launchAnimation =
+        launchFrame =
             null;
 
     }
 
 
-    var fill =
-        queueElement(
-            "queue-progress-fill"
-        );
+    launchProgress.style.width =
+        "100%";
 
 
-    var ahead =
-        queueElement(
-            "queue-ahead-number"
-        );
+    queueAhead.textContent =
+        "0";
 
 
-    var position =
-        queueElement(
-            "queue-position"
-        );
+    queuePosition.textContent =
+        "1";
 
 
-    var time =
-        queueElement(
-            "queue-time"
-        );
-
-
-    if (fill) {
-
-        fill.style.width =
-            "100%";
-
-    }
-
-
-    if (ahead) {
-
-        ahead.textContent =
-            "0";
-
-    }
-
-
-    if (position) {
-
-        position.textContent =
-            "1";
-
-    }
-
-
-    if (time) {
-
-        time.textContent =
-            "Ready";
-
-    }
-
-
-    var settings =
-        getSettings();
+    queueEstimate.textContent =
+        "Ready";
 
 
     /*
-     * Restore the normal UI after
-     * the queue has completed.
+     * Keep the fullscreen launch page
+     * visible for a tiny moment so the
+     * completed bar doesn't flash away.
      */
 
-    var queue =
-        document.getElementById(
-            "queue-screen"
-        );
+    setTimeout(
+        () => {
+
+            launchingPage.classList.remove(
+                "active"
+            );
 
 
-    if (queue) {
+            /*
+             * Respect close-after-launch
+             * only if it exists in stored
+             * settings from an older version.
+             */
 
-        queue.classList.remove(
-            "active"
-        );
-
-    }
-
-
-    var sidebar =
-        document.querySelector(
-            ".sidebar"
-        );
+            const settings =
+                getSettings();
 
 
-    var content =
-        document.querySelector(
-            ".content"
-        );
-
-
-    var close =
-        document.querySelector(
-            ".window-close"
-        );
-
-
-    if (sidebar) {
-
-        sidebar.style.display =
-            "";
-
-    }
-
-
-    if (content) {
-
-        content.style.display =
-            "";
-
-    }
-
-
-    if (close) {
-
-        close.style.display =
-            "";
-
-    }
-
-
-    var buttons =
-        document.querySelectorAll(
-            ".launch-button, .launch-action"
-        );
-
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].disabled =
-            false;
-
-        buttons[i].style.opacity =
-            "1";
-
-        buttons[i].textContent =
-            "Launch";
-
-    }
-
-
-    /*
-     * Close after launch if enabled.
-     */
-
-    if (settings.closeAfter) {
-
-        setTimeout(
-            function () {
+            if (
+                settings.closeAfter === true
+            ) {
 
                 nativeMessage(
                     "window.close"
                 );
 
-            },
-            250
-        );
+                return;
 
-        return;
-
-    }
+            }
 
 
-    /*
-     * Otherwise remain on Launch.
-     */
+            showPage(
+                "launch"
+            );
 
-    var launchButton =
-        document.querySelector(
-            '.nav button[onclick*="showView(\'launch\'"]'
-        );
-
-
-    showView(
-        "launch",
-        launchButton
+        },
+        450
     );
 
 }
 
 
 /* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+const closeButton =
+    document.getElementById(
+        "closeButton"
+    );
+
+
+closeButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        nativeMessage(
+            "window.close"
+        );
+
+    }
+);
+
+
+/* =========================================================
    DRAG FROM ANYWHERE
    ========================================================= */
 
+/*
+ * The cursor stays as the normal arrow.
+ *
+ * Any non-button area can request the
+ * native C++ window drag.
+ */
+
 document.addEventListener(
     "pointerdown",
-    function(event) {
+    event => {
 
         if (
             event.button !== 0
@@ -1110,12 +847,13 @@ document.addEventListener(
 
 
         /*
-         * Buttons must stay clickable.
+         * Don't drag when clicking
+         * interactive controls.
          */
 
         if (
             event.target.closest(
-                "button"
+                "button, input, select, textarea, a"
             )
         ) {
 
@@ -1124,14 +862,33 @@ document.addEventListener(
         }
 
 
-        /*
-         * The queue itself is deliberately
-         * draggable too.
-         */
-
         nativeMessage(
             "window.drag"
         );
+
+    }
+);
+
+
+/* =========================================================
+   DISABLE TEXT SELECTION / DRAG
+   ========================================================= */
+
+document.addEventListener(
+    "selectstart",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "dragstart",
+    event => {
+
+        event.preventDefault();
 
     }
 );
@@ -1143,9 +900,18 @@ document.addEventListener(
 
 document.addEventListener(
     "contextmenu",
-    function(event) {
+    event => {
 
         event.preventDefault();
 
     }
+);
+
+
+/* =========================================================
+   DEFAULT PAGE
+   ========================================================= */
+
+showPage(
+    "home"
 );
