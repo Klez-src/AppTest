@@ -1,23 +1,13 @@
-/* ==================================================
-   ORRO
-   ================================================== */
-
-let launchRunning = false;
-
-let launchAnimation = null;
-
-let launchStartedAt = 0;
-
-let launchDuration = 0;
-
-let queueAhead = 1;
+/* =========================================================
+   ORRO LOADER
+   ========================================================= */
 
 
-/* ==================================================
-   CLOSE
-   ================================================== */
+/* =========================================================
+   NATIVE WEBVIEW BRIDGE
+   ========================================================= */
 
-function closeWindow() {
+function nativeMessage(message) {
 
     if (
         window.chrome &&
@@ -25,7 +15,7 @@ function closeWindow() {
     ) {
 
         window.chrome.webview.postMessage(
-            "window.close"
+            message
         );
 
     }
@@ -33,59 +23,12 @@ function closeWindow() {
 }
 
 
-/* ==================================================
-   WINDOW DRAG
-   ================================================== */
-
-document.addEventListener(
-    "mousedown",
-    function (event) {
-
-        if (event.button !== 0) {
-            return;
-        }
-
-
-        /*
-         * Never treat actual controls as
-         * draggable areas.
-         */
-
-        if (
-            event.target.closest(
-                "button, input, select, textarea, a"
-            )
-        ) {
-            return;
-        }
-
-
-        /*
-         * While the full queue is visible,
-         * allow dragging from the queue itself.
-         */
-
-        if (
-            window.chrome &&
-            window.chrome.webview
-        ) {
-
-            window.chrome.webview.postMessage(
-                "window.drag"
-            );
-
-        }
-
-    }
-);
-
-
-/* ==================================================
+/* =========================================================
    NAVIGATION
-   ================================================== */
+   ========================================================= */
 
 function showView(
-    viewId,
+    id,
     button
 ) {
 
@@ -94,48 +37,57 @@ function showView(
     }
 
 
-    document
-        .querySelectorAll(".view")
-        .forEach(
-            function (view) {
-
-                view.classList.remove(
-                    "active"
-                );
-
-            }
+    var views =
+        document.querySelectorAll(
+            ".view"
         );
 
 
-    const target =
-        document.getElementById(
-            viewId
+    for (
+        var i = 0;
+        i < views.length;
+        i++
+    ) {
+
+        views[i].classList.remove(
+            "active"
         );
 
-
-    if (!target) {
-        return;
     }
 
 
-    target.classList.add(
-        "active"
-    );
-
-
-    document
-        .querySelectorAll(
-            ".nav button"
-        )
-        .forEach(
-            function (navButton) {
-
-                navButton.classList.remove(
-                    "selected"
-                );
-
-            }
+    var selectedView =
+        document.getElementById(
+            id
         );
+
+
+    if (selectedView) {
+
+        selectedView.classList.add(
+            "active"
+        );
+
+    }
+
+
+    var buttons =
+        document.querySelectorAll(
+            ".nav button"
+        );
+
+
+    for (
+        var j = 0;
+        j < buttons.length;
+        j++
+    ) {
+
+        buttons[j].classList.remove(
+            "selected"
+        );
+
+    }
 
 
     if (button) {
@@ -149,158 +101,258 @@ function showView(
 }
 
 
-/* ==================================================
-   HOME LAUNCH BUTTON
-   ================================================== */
+/* =========================================================
+   HOME -> LAUNCH PAGE
+   ========================================================= */
 
 function goToLaunchPage() {
 
-    const button =
+    var launchButton =
         document.querySelector(
-            '.nav button[data-view="launch"]'
+            '.nav button[onclick*="showView(\'launch\'"]'
         );
 
 
     showView(
         "launch",
-        button
+        launchButton
     );
 
 }
 
 
-/* ==================================================
-   SETTINGS
-   ================================================== */
+/* =========================================================
+   SETTINGS STORAGE
+   ========================================================= */
 
-function toggleSetting(button) {
-
-    if (!button) {
-        return;
-    }
+var SETTINGS_KEY =
+    "orro.settings";
 
 
-    const setting =
-        button.dataset.setting;
+var defaultSettings = {
+
+    remember: true,
+
+    updates: true,
+
+    minimise: false,
+
+    closeAfter: false
+
+};
 
 
-    if (!setting) {
-        return;
-    }
-
-
-    const enabled =
-        !button.classList.contains(
-            "on"
-        );
-
-
-    button.classList.toggle(
-        "on",
-        enabled
-    );
-
-
-    button.setAttribute(
-        "aria-pressed",
-        enabled
-            ? "true"
-            : "false"
-    );
-
+function getSettings() {
 
     try {
 
-        localStorage.setItem(
-            "orro_setting_" + setting,
-            enabled
-                ? "true"
-                : "false"
+        var stored =
+            localStorage.getItem(
+                SETTINGS_KEY
+            );
+
+
+        if (!stored) {
+
+            return Object.assign(
+                {},
+                defaultSettings
+            );
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                stored
+            );
+
+
+        return Object.assign(
+            {},
+            defaultSettings,
+            parsed
         );
 
     }
+
     catch (error) {
 
-        console.warn(
-            "Unable to save setting:",
-            error
+        return Object.assign(
+            {},
+            defaultSettings
         );
 
     }
 
 }
 
+
+function saveSettings(
+    settings
+) {
+
+    try {
+
+        window.localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(
+                settings
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        /*
+         * WebView storage can theoretically
+         * be unavailable. The UI still works.
+         */
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD SETTINGS
+   ========================================================= */
 
 function loadSettings() {
 
-    document
-        .querySelectorAll(
+    var settings =
+        getSettings();
+
+
+    var toggles =
+        document.querySelectorAll(
             ".toggle[data-setting]"
-        )
-        .forEach(
-            function (button) {
-
-                const setting =
-                    button.dataset.setting;
-
-
-                try {
-
-                    const saved =
-                        localStorage.getItem(
-                            "orro_setting_" +
-                            setting
-                        );
-
-
-                    /*
-                     * No saved value:
-                     * retain the HTML default.
-                     */
-
-                    if (
-                        saved === null
-                    ) {
-                        return;
-                    }
-
-
-                    const enabled =
-                        saved === "true";
-
-
-                    button.classList.toggle(
-                        "on",
-                        enabled
-                    );
-
-
-                    button.setAttribute(
-                        "aria-pressed",
-                        enabled
-                            ? "true"
-                            : "false"
-                    );
-
-                }
-                catch (error) {
-
-                    console.warn(
-                        "Unable to load setting:",
-                        error
-                    );
-
-                }
-
-            }
         );
+
+
+    for (
+        var i = 0;
+        i < toggles.length;
+        i++
+    ) {
+
+        var toggle =
+            toggles[i];
+
+
+        var settingName =
+            toggle.dataset.setting;
+
+
+        var enabled =
+            !!settings[
+                settingName
+            ];
+
+
+        toggle.classList.toggle(
+            "on",
+            enabled
+        );
+
+    }
 
 }
 
 
-/* ==================================================
+loadSettings();
+
+
+/* =========================================================
+   TOGGLE SETTING
+   ========================================================= */
+
+function toggleSetting(
+    element
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    var settingName =
+        element.dataset.setting;
+
+
+    if (!settingName) {
+        return;
+    }
+
+
+    var settings =
+        getSettings();
+
+
+    settings[
+        settingName
+    ] =
+        !settings[
+            settingName
+        ];
+
+
+    saveSettings(
+        settings
+    );
+
+
+    element.classList.toggle(
+        "on",
+        settings[
+            settingName
+        ]
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE WINDOW
+   ========================================================= */
+
+function closeWindow() {
+
+    nativeMessage(
+        "window.close"
+    );
+
+}
+
+
+/* =========================================================
+   LAUNCH STATE
+   ========================================================= */
+
+var launchRunning =
+    false;
+
+
+var launchAnimation =
+    null;
+
+
+var launchStartedAt =
+    0;
+
+
+var launchDuration =
+    0;
+
+
+var queueAhead =
+    1;
+
+
+/* =========================================================
    RANDOM QUEUE
-   ================================================== */
+   ========================================================= */
 
 function randomQueueAhead() {
 
@@ -313,47 +365,71 @@ function randomQueueAhead() {
 }
 
 
-function randomLaunchDuration() {
+/*
+ * Roughly 29 seconds.
+ *
+ * Range:
+ * 25–33 seconds.
+ *
+ * So it can be 27 one time,
+ * 29 another, 31 another, etc.
+ */
 
-    /*
-     * Roughly 29 seconds.
-     *
-     * Random range:
-     * 25–34 seconds.
-     */
+function randomLaunchDuration() {
 
     return (
         Math.floor(
-            Math.random() * 10
+            Math.random() * 9
         ) + 25
     ) * 1000;
 
 }
 
 
-/* ==================================================
-   QUEUE DISPLAY
-   ================================================== */
+/* =========================================================
+   QUEUE ELEMENTS
+   ========================================================= */
 
-function updateQueueDisplay(
+function queueElement(
+    id
+) {
+
+    return document.getElementById(
+        id
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE QUEUE
+   ========================================================= */
+
+function updateQueue(
     progress
 ) {
 
-    const fill =
-        document.getElementById(
+    var fill =
+        queueElement(
             "queue-progress-fill"
         );
 
 
-    const time =
-        document.getElementById(
-            "queue-time"
+    var ahead =
+        queueElement(
+            "queue-ahead-number"
         );
 
 
-    const ahead =
-        document.getElementById(
-            "queue-ahead-number"
+    var position =
+        queueElement(
+            "queue-position"
+        );
+
+
+    var time =
+        queueElement(
+            "queue-time"
         );
 
 
@@ -367,14 +443,59 @@ function updateQueueDisplay(
     }
 
 
+    if (ahead) {
+
+        /*
+         * Keep the queue feeling natural.
+         * People gradually leave the queue
+         * instead of the number jumping every
+         * frame.
+         */
+
+        var displayedAhead =
+            Math.max(
+                0,
+                Math.ceil(
+                    queueAhead *
+                    (1 - progress)
+                )
+            );
+
+
+        ahead.textContent =
+            displayedAhead;
+
+    }
+
+
+    if (position) {
+
+        var displayedPosition =
+            Math.max(
+                1,
+                Math.ceil(
+                    (
+                        queueAhead + 1
+                    ) *
+                    (1 - progress)
+                )
+            );
+
+
+        position.textContent =
+            displayedPosition;
+
+    }
+
+
     if (time) {
 
-        const elapsed =
+        var elapsed =
             performance.now() -
             launchStartedAt;
 
 
-        const remaining =
+        var remaining =
             Math.max(
                 0,
                 Math.ceil(
@@ -393,36 +514,12 @@ function updateQueueDisplay(
 
     }
 
-
-    if (ahead) {
-
-        /*
-         * Keep the queue count visually
-         * stable for most of the wait, then
-         * smoothly reduce it toward zero.
-         */
-
-        const displayedAhead =
-            Math.max(
-                0,
-                Math.ceil(
-                    queueAhead *
-                    (1 - progress)
-                )
-            );
-
-
-        ahead.textContent =
-            displayedAhead;
-
-    }
-
 }
 
 
-/* ==================================================
+/* =========================================================
    QUEUE ANIMATION
-   ================================================== */
+   ========================================================= */
 
 function animateQueue() {
 
@@ -431,12 +528,12 @@ function animateQueue() {
     }
 
 
-    const elapsed =
+    var elapsed =
         performance.now() -
         launchStartedAt;
 
 
-    const progress =
+    var progress =
         Math.min(
             elapsed /
             launchDuration,
@@ -444,13 +541,7 @@ function animateQueue() {
         );
 
 
-    /*
-     * requestAnimationFrame keeps the bar
-     * continuously smooth instead of using
-     * chunky interval jumps.
-     */
-
-    updateQueueDisplay(
+    updateQueue(
         progress
     );
 
@@ -474,18 +565,21 @@ function animateQueue() {
 }
 
 
-/* ==================================================
+/* =========================================================
    START LAUNCH
-   ================================================== */
+   ========================================================= */
 
-function launch() {
+function launch(
+    button
+) {
 
     if (launchRunning) {
         return;
     }
 
 
-    launchRunning = true;
+    launchRunning =
+        true;
 
 
     queueAhead =
@@ -500,34 +594,52 @@ function launch() {
         performance.now();
 
 
-    const queue =
+    var settings =
+        getSettings();
+
+
+    var queue =
         document.getElementById(
-            "queue"
+            "queue-screen"
         );
 
 
-    const fill =
-        document.getElementById(
+    var fill =
+        queueElement(
             "queue-progress-fill"
         );
 
 
-    const ahead =
-        document.getElementById(
+    var ahead =
+        queueElement(
             "queue-ahead-number"
         );
 
 
-    const position =
-        document.getElementById(
+    var position =
+        queueElement(
             "queue-position"
         );
 
 
-    const time =
-        document.getElementById(
+    var time =
+        queueElement(
             "queue-time"
         );
+
+
+    if (button) {
+
+        button.dataset.originalText =
+            button.textContent;
+
+        button.style.opacity =
+            ".55";
+
+        button.disabled =
+            true;
+
+    }
 
 
     if (fill) {
@@ -567,22 +679,22 @@ function launch() {
 
 
     /*
-     * Hide the normal application.
+     * The queue replaces the whole UI.
      */
 
-    const sidebar =
+    var sidebar =
         document.querySelector(
             ".sidebar"
         );
 
 
-    const content =
+    var content =
         document.querySelector(
             ".content"
         );
 
 
-    const close =
+    var close =
         document.querySelector(
             ".window-close"
         );
@@ -612,15 +724,27 @@ function launch() {
     }
 
 
-    /*
-     * Show the queue over the
-     * entire application.
-     */
-
     if (queue) {
 
         queue.classList.add(
             "active"
+        );
+
+    }
+
+
+    /*
+     * Honour minimise-on-launch.
+     *
+     * The queue is still started first,
+     * so the setting behaves exactly as
+     * the native window setting says.
+     */
+
+    if (settings.minimise) {
+
+        nativeMessage(
+            "window.minimize"
         );
 
     }
@@ -634,9 +758,9 @@ function launch() {
 }
 
 
-/* ==================================================
+/* =========================================================
    CANCEL
-   ================================================== */
+   ========================================================= */
 
 function cancelLaunch() {
 
@@ -645,7 +769,8 @@ function cancelLaunch() {
     }
 
 
-    launchRunning = false;
+    launchRunning =
+        false;
 
 
     if (launchAnimation) {
@@ -654,14 +779,15 @@ function cancelLaunch() {
             launchAnimation
         );
 
-        launchAnimation = null;
+        launchAnimation =
+            null;
 
     }
 
 
-    const queue =
+    var queue =
         document.getElementById(
-            "queue"
+            "queue-screen"
         );
 
 
@@ -674,19 +800,19 @@ function cancelLaunch() {
     }
 
 
-    const sidebar =
+    var sidebar =
         document.querySelector(
             ".sidebar"
         );
 
 
-    const content =
+    var content =
         document.querySelector(
             ".content"
         );
 
 
-    const close =
+    var close =
         document.querySelector(
             ".window-close"
         );
@@ -716,64 +842,56 @@ function cancelLaunch() {
     }
 
 
-    /*
-     * Return to Launch page.
-     */
-
-    document
-        .querySelectorAll(".view")
-        .forEach(
-            function (view) {
-
-                view.classList.remove(
-                    "active"
-                );
-
-            }
+    var buttons =
+        document.querySelectorAll(
+            ".launch-button, .launch-action"
         );
 
 
-    const launchView =
-        document.getElementById(
-            "launch"
-        );
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
+    ) {
 
+        buttons[i].disabled =
+            false;
 
-    if (launchView) {
+        buttons[i].style.opacity =
+            "1";
 
-        launchView.classList.add(
-            "active"
-        );
+        buttons[i].textContent =
+            "Launch";
 
     }
 
 
-    document
-        .querySelectorAll(
-            ".nav button"
-        )
-        .forEach(
-            function (button) {
+    /*
+     * Return to the Launch tab.
+     */
 
-                button.classList.toggle(
-                    "selected",
-                    button.dataset.view ===
-                    "launch"
-                );
-
-            }
+    var launchButton =
+        document.querySelector(
+            '.nav button[onclick*="showView(\'launch\'"]'
         );
+
+
+    showView(
+        "launch",
+        launchButton
+    );
 
 }
 
 
-/* ==================================================
-   FINISH LAUNCH
-   ================================================== */
+/* =========================================================
+   FINISH
+   ========================================================= */
 
 function finishLaunch() {
 
-    launchRunning = false;
+    launchRunning =
+        false;
 
 
     if (launchAnimation) {
@@ -782,26 +900,33 @@ function finishLaunch() {
             launchAnimation
         );
 
-        launchAnimation = null;
+        launchAnimation =
+            null;
 
     }
 
 
-    const fill =
-        document.getElementById(
+    var fill =
+        queueElement(
             "queue-progress-fill"
         );
 
 
-    const time =
-        document.getElementById(
-            "queue-time"
+    var ahead =
+        queueElement(
+            "queue-ahead-number"
         );
 
 
-    const ahead =
-        document.getElementById(
-            "queue-ahead-number"
+    var position =
+        queueElement(
+            "queue-position"
+        );
+
+
+    var time =
+        queueElement(
+            "queue-time"
         );
 
 
@@ -809,14 +934,6 @@ function finishLaunch() {
 
         fill.style.width =
             "100%";
-
-    }
-
-
-    if (time) {
-
-        time.textContent =
-            "Ready";
 
     }
 
@@ -829,61 +946,206 @@ function finishLaunch() {
     }
 
 
-    const minimise =
-        document.querySelector(
-            '[data-setting="minimise"]'
-        );
+    if (position) {
 
-
-    const closeAfter =
-        document.querySelector(
-            '[data-setting="closeAfter"]'
-        );
-
-
-    if (
-        minimise &&
-        minimise.classList.contains("on")
-    ) {
-
-        if (
-            window.chrome &&
-            window.chrome.webview
-        ) {
-
-            window.chrome.webview.postMessage(
-                "window.minimize"
-            );
-
-        }
+        position.textContent =
+            "1";
 
     }
 
 
-    if (
-        closeAfter &&
-        closeAfter.classList.contains("on")
+    if (time) {
+
+        time.textContent =
+            "Ready";
+
+    }
+
+
+    var settings =
+        getSettings();
+
+
+    /*
+     * Restore the normal UI after
+     * the queue has completed.
+     */
+
+    var queue =
+        document.getElementById(
+            "queue-screen"
+        );
+
+
+    if (queue) {
+
+        queue.classList.remove(
+            "active"
+        );
+
+    }
+
+
+    var sidebar =
+        document.querySelector(
+            ".sidebar"
+        );
+
+
+    var content =
+        document.querySelector(
+            ".content"
+        );
+
+
+    var close =
+        document.querySelector(
+            ".window-close"
+        );
+
+
+    if (sidebar) {
+
+        sidebar.style.display =
+            "";
+
+    }
+
+
+    if (content) {
+
+        content.style.display =
+            "";
+
+    }
+
+
+    if (close) {
+
+        close.style.display =
+            "";
+
+    }
+
+
+    var buttons =
+        document.querySelectorAll(
+            ".launch-button, .launch-action"
+        );
+
+
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
     ) {
+
+        buttons[i].disabled =
+            false;
+
+        buttons[i].style.opacity =
+            "1";
+
+        buttons[i].textContent =
+            "Launch";
+
+    }
+
+
+    /*
+     * Close after launch if enabled.
+     */
+
+    if (settings.closeAfter) {
 
         setTimeout(
-            closeWindow,
-            350
+            function () {
+
+                nativeMessage(
+                    "window.close"
+                );
+
+            },
+            250
         );
 
+        return;
+
     }
+
+
+    /*
+     * Otherwise remain on Launch.
+     */
+
+    var launchButton =
+        document.querySelector(
+            '.nav button[onclick*="showView(\'launch\'"]'
+        );
+
+
+    showView(
+        "launch",
+        launchButton
+    );
 
 }
 
 
-/* ==================================================
-   INITIALISE
-   ================================================== */
+/* =========================================================
+   DRAG FROM ANYWHERE
+   ========================================================= */
 
 document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    "pointerdown",
+    function(event) {
 
-        loadSettings();
+        if (
+            event.button !== 0
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Buttons must stay clickable.
+         */
+
+        if (
+            event.target.closest(
+                "button"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * The queue itself is deliberately
+         * draggable too.
+         */
+
+        nativeMessage(
+            "window.drag"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   RIGHT CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "contextmenu",
+    function(event) {
+
+        event.preventDefault();
 
     }
 );
