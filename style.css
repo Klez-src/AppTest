@@ -65,7 +65,7 @@ body {
 
     overflow: hidden;
 
-    background: #0f1017;
+    background: #0d0e15;
 
 }
 
@@ -82,11 +82,7 @@ body {
     left: 0;
     right: 0;
 
-    height: 39px;
-
-    display: flex;
-
-    align-items: center;
+    height: 38px;
 
     z-index: 50;
 
@@ -101,7 +97,10 @@ body {
 
     inset: 0;
 
-    pointer-events: none;
+    /*
+       JS/C++ can use this area for dragging.
+       There is deliberately no branding here.
+    */
 
 }
 
@@ -116,6 +115,8 @@ body {
 
     top: 8px;
     right: 9px;
+
+    height: 22px;
 
     display: flex;
 
@@ -197,7 +198,7 @@ body {
 
     position: absolute;
 
-    top: 39px;
+    top: 38px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -215,31 +216,40 @@ body {
 
 
 /* =========================================================
-   TOP GAME SELECTOR
+   TOP SELECTOR — OUTER LAYER
    ========================================================= */
 
 /*
-   IMPORTANT:
-   This is intentionally a very subtle outer layer.
+   This is the rounded rectangle visible BEHIND
+   "All games / CS:GO / CS:2".
 
-   The screenshot has:
-       page background
-           ↓
-       extremely subtle selector shell
-           ↓
-       individual rounded tab surfaces
-           ↓
-       active tab gets its own purple-toned surface
+   It is separate from the individual buttons.
 */
+
+.game-tabs-shell {
+
+    width: 100%;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    padding: 3px;
+
+    border-radius: 14px;
+
+    background: #11121a;
+
+}
+
+
+/* =========================================================
+   TOP SELECTOR — INNER LAYER
+   ========================================================= */
 
 .game-tabs {
 
-    position: relative;
-
     width: 100%;
-    height: 39px;
-
-    flex-shrink: 0;
+    height: 34px;
 
     display: grid;
 
@@ -250,24 +260,24 @@ body {
 
     gap: 4px;
 
-    padding: 4px;
+    padding: 2px;
 
-    border-radius: 14px;
+    border-radius: 11px;
 
-    background: #11121b;
+    background: #14151f;
 
 }
 
 
 /* =========================================================
-   INDIVIDUAL TABS
+   INDIVIDUAL GAME TAB
    ========================================================= */
 
 .game-tab {
 
     position: relative;
 
-    height: 31px;
+    height: 30px;
 
     display: flex;
 
@@ -280,11 +290,11 @@ body {
 
     border: 0;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
-    background: #171724;
+    background: #191a26;
 
-    color: #777887;
+    color: #777888;
 
     font-family: inherit;
 
@@ -308,12 +318,12 @@ body {
 
 
 /* =========================================================
-   INACTIVE HOVER
+   TAB HOVER
    ========================================================= */
 
 .game-tab:hover {
 
-    background: #1a1a28;
+    background: #1c1d29;
 
     color: #8d8c9c;
 
@@ -321,12 +331,12 @@ body {
 
 
 /* =========================================================
-   ACTIVE TAB
+   ACTIVE CS:GO
    ========================================================= */
 
 .game-tab.active {
 
-    background: #28202e;
+    background: #2a2130;
 
     color: #8250e8;
 
@@ -335,7 +345,7 @@ body {
 
 .game-tab.active:hover {
 
-    background: #2b2131;
+    background: #2d2233;
 
     color: #8954ed;
 
@@ -376,7 +386,7 @@ body {
 
     background: #858594;
 
-    color: #171724;
+    color: #191a26;
 
     font-size: 7px;
 
@@ -405,7 +415,7 @@ body {
 }
 
 
-/* CS2 */
+/* CS:2 */
 
 .cs2-icon {
 
@@ -415,14 +425,13 @@ body {
 
     letter-spacing: -1.2px;
 
-    transform:
-        skew(-13deg);
+    transform: skew(-13deg);
 
 }
 
 
 /* =========================================================
-   TAB LABELS
+   TAB LABEL
    ========================================================= */
 
 .tab-label {
@@ -436,16 +445,49 @@ body {
 
 
 /* =========================================================
-   GAME AREA
+   MAIN GAME PANEL
    ========================================================= */
 
-.games {
+/*
+   THIS is the large rounded rectangle from the screenshot.
+
+   It starts beneath the top selector,
+   sits behind BOTH game cards,
+   and ends before the Inject button.
+
+   It is deliberately a different shade from the
+   surrounding page.
+*/
+
+.games-panel {
 
     flex: 1;
 
     min-height: 0;
 
-    margin-top: 9px;
+    margin-top: 8px;
+
+    margin-bottom: 7px;
+
+    padding: 11px 11px 10px;
+
+    overflow: hidden;
+
+    border-radius: 13px;
+
+    background: #14151f;
+
+}
+
+
+/* =========================================================
+   GAME LIST
+   ========================================================= */
+
+.games {
+
+    width: 100%;
+    height: 100%;
 
     overflow: hidden;
 
@@ -453,7 +495,7 @@ body {
 
 
 /* =========================================================
-   GAME CARD — OUTER LAYER
+   GAME CARD — OUTER EDGE
    ========================================================= */
 
 .game-card {
@@ -465,9 +507,9 @@ body {
 
     padding: 1px;
 
-    border-radius: 13px;
+    border-radius: 12px;
 
-    background: #252635;
+    background: #272837;
 
     overflow: hidden;
 
@@ -475,7 +517,7 @@ body {
 
 
 /* =========================================================
-   GAME CARD — INNER LAYER
+   GAME CARD — INNER SURFACE
    ========================================================= */
 
 .game-card-inner {
@@ -490,9 +532,9 @@ body {
     padding:
         9px 9px 9px 11px;
 
-    border-radius: 12px;
+    border-radius: 11px;
 
-    background: #191a27;
+    background: #1a1b28;
 
 }
 
@@ -532,7 +574,7 @@ body {
 
 
 /* =========================================================
-   GAME ACTIONS
+   ACTION COLUMN
    ========================================================= */
 
 .game-actions {
@@ -568,7 +610,7 @@ body {
 
     background: #302532;
 
-    color: #bc6d7c;
+    color: #bd6d7d;
 
     font-size: 9px;
 
@@ -582,7 +624,7 @@ body {
 
 
 /* =========================================================
-   VERSION
+   GAME VERSION
    ========================================================= */
 
 .game-version {
@@ -613,7 +655,7 @@ body {
 
 
 /* =========================================================
-   HIDDEN GAMES
+   HIDDEN GAME
    ========================================================= */
 
 .hidden-game {
@@ -727,8 +769,7 @@ body {
 
     background: #ded9e9;
 
-    transform:
-        rotate(27deg);
+    transform: rotate(27deg);
 
 }
 
@@ -833,8 +874,6 @@ body {
     color: #686977;
 
     font-size: 10px;
-
-    letter-spacing: -0.1px;
 
 }
 
@@ -967,6 +1006,7 @@ html,
 body,
 #app,
 .content,
+.games-panel,
 .games {
 
     scrollbar-width: none;
@@ -978,12 +1018,13 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 #app::-webkit-scrollbar,
 .content::-webkit-scrollbar,
+.games-panel::-webkit-scrollbar,
 .games::-webkit-scrollbar {
+
+    display: none;
 
     width: 0;
     height: 0;
-
-    display: none;
 
 }
 
