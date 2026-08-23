@@ -14,19 +14,25 @@ body {
     height: 100%;
 
     margin: 0;
+    padding: 0;
 
     overflow: hidden;
 
-    background: #101017;
+    background: #101016;
 
-    color: #dddde7;
+    color: #d9d9e2;
 
     font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
+        Arial,
         sans-serif;
+
+    font-size: 13px;
+
+    font-weight: 400;
 
     -webkit-font-smoothing: antialiased;
 
@@ -45,10 +51,9 @@ body {
 
 button {
 
-    font: inherit;
+    font-family: inherit;
 
     border: 0;
-
     outline: none;
 
 }
@@ -68,12 +73,7 @@ button {
     overflow: hidden;
 
     background:
-        radial-gradient(
-            ellipse at 50% -20%,
-            rgba(105, 67, 190, .055),
-            transparent 55%
-        ),
-        #101017;
+        #101016;
 
 }
 
@@ -86,7 +86,8 @@ button {
 
     position: relative;
 
-    height: 60px;
+    width: 100%;
+    height: 43px;
 
     display: flex;
 
@@ -95,8 +96,7 @@ button {
     justify-content: space-between;
 
     padding:
-        0
-        17px;
+        0 13px;
 
     z-index: 20;
 
@@ -109,76 +109,18 @@ button {
 
     align-items: center;
 
-    gap: 8px;
-
 }
 
 
 .brand-name {
 
-    color: #dedee7;
+    color: #d7d7df;
 
     font-size: 12px;
 
-    font-weight: 500;
+    font-weight: 450;
 
-    letter-spacing: -.1px;
-
-}
-
-
-.brand-mark {
-
-    position: relative;
-
-    width: 19px;
-    height: 13px;
-
-    transform:
-        rotate(25deg);
-
-}
-
-
-.brand-mark::before {
-
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    top: 3px;
-
-    width: 14px;
-    height: 7px;
-
-    background: #dfe0e9;
-
-    clip-path:
-        polygon(
-            0 0,
-            100% 50%,
-            0 100%
-        );
-
-}
-
-
-.brand-mark::after {
-
-    content: "";
-
-    position: absolute;
-
-    right: 0;
-    top: 2px;
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: #101017;
+    letter-spacing: -.15px;
 
 }
 
@@ -193,26 +135,26 @@ button {
 
     align-items: center;
 
-    gap: 4px;
+    gap: 2px;
 
 }
 
 
 .window-button {
 
-    width: 25px;
-    height: 25px;
+    width: 23px;
+    height: 23px;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
+    border-radius: 7px;
+
     background: transparent;
 
-    color: #6d6e78;
-
-    border-radius: 5px;
+    color: #686975;
 
     cursor: pointer;
 
@@ -225,16 +167,16 @@ button {
 
 .window-button:hover {
 
-    background: #1b1b24;
+    background: #191921;
 
-    color: #c8c8d1;
+    color: #b8b8c1;
 
 }
 
 
 .window-button.minimize span {
 
-    width: 10px;
+    width: 9px;
     height: 1px;
 
     background: currentColor;
@@ -244,7 +186,7 @@ button {
 
 .window-button.close {
 
-    font-size: 19px;
+    font-size: 18px;
 
     font-weight: 300;
 
@@ -255,15 +197,15 @@ button {
 
 .window-button.close:hover {
 
-    background: #30202a;
+    background: #292027;
 
-    color: #dedee7;
+    color: #d5d5dd;
 
 }
 
 
 /* =========================================================
-   CONTENT
+   MAIN CONTENT
    ========================================================= */
 
 .content {
@@ -273,7 +215,7 @@ button {
     left: 0;
     right: 0;
 
-    top: 60px;
+    top: 43px;
     bottom: 0;
 
     display: flex;
@@ -281,9 +223,7 @@ button {
     flex-direction: column;
 
     padding:
-        0
-        10px
-        9px;
+        0 10px 9px;
 
 }
 
@@ -295,44 +235,48 @@ button {
 .game-tabs {
 
     width: 100%;
-    height: 42px;
+    height: 39px;
+
+    flex-shrink: 0;
 
     display: grid;
 
     grid-template-columns:
-        1.15fr
+        1.2fr
         1fr
         .9fr;
 
-    gap: 5px;
+    gap: 4px;
 
     padding: 4px;
 
-    border-radius: 12px;
+    border-radius: 13px;
 
-    background: #161620;
+    background: #171720;
 
 }
 
 
 .game-tab {
 
-    height: 34px;
+    height: 31px;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
-
-    border-radius: 9px;
+    border-radius: 10px;
 
     background: transparent;
 
-    color: #747582;
+    color: #777884;
 
     font-size: 11px;
+
+    font-weight: 400;
+
+    letter-spacing: -.1px;
 
     cursor: pointer;
 
@@ -345,7 +289,7 @@ button {
 
 .game-tab:hover {
 
-    color: #aaaab5;
+    color: #a3a3ae;
 
 }
 
@@ -353,66 +297,13 @@ button {
 .game-tab.active {
 
     background:
-        linear-gradient(
-            180deg,
-            #211a38,
-            #1c1830
-        );
+        #211a38;
 
-    color: #9b70ff;
+    color: #9666ff;
 
     box-shadow:
         inset 0 0 0 1px
-        rgba(125, 79, 239, .12);
-
-}
-
-
-.tab-icon {
-
-    font-size: 14px;
-
-    color: #8251ef;
-
-    line-height: 1;
-
-}
-
-
-.all-tab .tab-icon {
-
-    width: 14px;
-    height: 14px;
-
-    display: grid;
-
-    place-items: center;
-
-    border-radius: 50%;
-
-    background: #777985;
-
-    color: #161620;
-
-    font-size: 7px;
-
-}
-
-
-.all-tab.active {
-
-    color: #b3b3be;
-
-}
-
-
-.cs2-icon {
-
-    color: #8b8c98;
-
-    font-size: 12px;
-
-    font-weight: 600;
+        rgba(137, 85, 255, .08);
 
 }
 
@@ -429,20 +320,19 @@ button {
 
     margin-top: 9px;
 
-    padding: 1px;
-
     overflow: hidden;
 
 }
 
 
+/* =========================================================
+   GAME CARD
+   ========================================================= */
+
 .game-card {
 
-    position: relative;
-
     width: 100%;
-
-    height: 70px;
+    height: 67px;
 
     display: flex;
 
@@ -451,38 +341,29 @@ button {
     margin-bottom: 7px;
 
     padding:
-        10px;
+        10px 10px 10px 12px;
 
     border:
         1px solid
-        #252532;
+        #252531;
 
-    border-radius: 12px;
+    border-radius: 13px;
 
     background:
-        linear-gradient(
-            135deg,
-            #15151e,
-            #13131b
-        );
-
-    box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.08);
+        #15151e;
 
     transition:
-        border-color .15s ease,
         background .15s ease,
-        transform .15s ease;
+        border-color .15s ease;
 
 }
 
 
 .game-card:hover {
 
-    border-color: #30303e;
-
     background: #171720;
+
+    border-color: #2c2c39;
 
 }
 
@@ -495,77 +376,6 @@ button {
 
 
 /* =========================================================
-   GAME ICONS
-   ========================================================= */
-
-.game-icon {
-
-    width: 49px;
-    height: 49px;
-
-    flex-shrink: 0;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background: #0e0e15;
-
-    overflow: hidden;
-
-}
-
-
-.primordial-icon {
-
-    color: #d8d9e4;
-
-    font-size: 27px;
-
-}
-
-
-.primordial-icon span {
-
-    transform:
-        rotate(45deg);
-
-}
-
-
-.gamesense-icon {
-
-    color: #e8e9ed;
-
-    font-size: 17px;
-
-    letter-spacing: -1px;
-
-}
-
-
-.gamesense-icon span {
-
-    font-weight: 300;
-
-}
-
-
-.cs2-game-icon {
-
-    color: #8f91a0;
-
-    font-size: 22px;
-
-    font-weight: 700;
-
-}
-
-
-/* =========================================================
    GAME INFO
    ========================================================= */
 
@@ -573,18 +383,20 @@ button {
 
     min-width: 0;
 
-    margin-left: 13px;
+    flex: 1;
 
 }
 
 
 .game-name {
 
-    color: #d7d7e1;
+    color: #d5d5de;
 
     font-size: 14px;
 
     font-weight: 400;
+
+    letter-spacing: -.2px;
 
     white-space: nowrap;
 
@@ -599,59 +411,59 @@ button {
 
     width: 94px;
 
-    margin-left: auto;
+    flex-shrink: 0;
 
     display: flex;
 
     flex-direction: column;
 
-    align-items: stretch;
-
-    gap: 5px;
+    gap: 4px;
 
 }
 
 
 .subscription {
 
-    height: 21px;
+    width: 100%;
+    height: 20px;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    padding: 0 6px;
-
-    border-radius: 3px;
+    border-radius: 4px;
 
     background: #29202b;
 
-    color: #bc6e7b;
+    color: #b96e7b;
 
     font-size: 9px;
 
-    white-space: nowrap;
+    font-weight: 400;
 
 }
 
 
 .game-version {
 
-    height: 21px;
+    width: 100%;
+    height: 20px;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    border-radius: 3px;
+    border-radius: 4px;
 
-    background: #1f1f2a;
+    background: #20202a;
 
-    color: #777885;
+    color: #777884;
 
     font-size: 9px;
+
+    font-weight: 400;
 
 }
 
@@ -672,15 +484,13 @@ button {
     align-items: center;
     justify-content: center;
 
-    gap: 6px;
-
-    border-radius: 7px;
+    border-radius: 9px;
 
     background:
         linear-gradient(
             180deg,
-            #8050e9,
-            #7646dc
+            #8050e9 0%,
+            #7547dd 100%
         );
 
     color: #eee9ff;
@@ -689,11 +499,13 @@ button {
 
     font-weight: 400;
 
+    letter-spacing: -.2px;
+
     cursor: pointer;
 
     box-shadow:
-        0 8px 22px
-        rgba(111, 64, 221, .18);
+        0 7px 20px
+        rgba(105, 59, 220, .18);
 
     transition:
         filter .15s ease,
@@ -705,7 +517,7 @@ button {
 .inject-button:hover {
 
     filter:
-        brightness(1.08);
+        brightness(1.07);
 
 }
 
@@ -714,62 +526,6 @@ button {
 
     transform:
         scale(.985);
-
-}
-
-
-.inject-mark {
-
-    position: relative;
-
-    width: 19px;
-    height: 12px;
-
-    transform:
-        rotate(25deg);
-
-}
-
-
-.inject-mark::before {
-
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    top: 3px;
-
-    width: 14px;
-    height: 7px;
-
-    background: #e8e3ff;
-
-    clip-path:
-        polygon(
-            0 0,
-            100% 50%,
-            0 100%
-        );
-
-}
-
-
-.inject-mark::after {
-
-    content: "";
-
-    position: absolute;
-
-    right: 0;
-    top: 2px;
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: #7646dc;
 
 }
 
@@ -792,7 +548,7 @@ button {
     justify-content: center;
 
     background:
-        rgba(13, 13, 20, .985);
+        rgba(16, 16, 22, .975);
 
     backdrop-filter:
         blur(8px);
@@ -805,7 +561,7 @@ button {
     display: flex;
 
     animation:
-        queueIn .25s ease;
+        queueIn .22s ease-out;
 
 }
 
@@ -829,7 +585,7 @@ button {
 
 .queue-content {
 
-    width: 285px;
+    width: 270px;
 
     text-align: center;
 
@@ -838,87 +594,28 @@ button {
 
 .queue-brand {
 
-    display: flex;
+    margin-bottom: 30px;
 
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    color: #d8d8e2;
+    color: #d7d7df;
 
     font-size: 12px;
 
-    margin-bottom: 35px;
+    font-weight: 450;
 
-}
-
-
-.queue-brand-mark {
-
-    position: relative;
-
-    width: 18px;
-    height: 12px;
-
-    transform:
-        rotate(25deg);
-
-}
-
-
-.queue-brand-mark::before {
-
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    top: 3px;
-
-    width: 14px;
-    height: 7px;
-
-    background: #dddde7;
-
-    clip-path:
-        polygon(
-            0 0,
-            100% 50%,
-            0 100%
-        );
-
-}
-
-
-.queue-brand-mark::after {
-
-    content: "";
-
-    position: absolute;
-
-    right: 0;
-    top: 2px;
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: #101017;
+    letter-spacing: -.15px;
 
 }
 
 
 .queue-title {
 
-    color: #e2e2eb;
+    color: #e1e1e9;
 
-    font-size: 25px;
+    font-size: 23px;
 
     font-weight: 400;
 
-    letter-spacing: -.8px;
+    letter-spacing: -.7px;
 
 }
 
@@ -927,7 +624,7 @@ button {
 
     margin-top: 7px;
 
-    color: #6e6f7b;
+    color: #6d6e79;
 
     font-size: 10px;
 
@@ -936,18 +633,18 @@ button {
 
 .queue-number {
 
-    margin-top: 30px;
+    margin-top: 28px;
 
-    color: #999aa7;
+    color: #999aa5;
 
-    font-size: 11px;
+    font-size: 10px;
 
 }
 
 
 .queue-number span {
 
-    color: #a979ff;
+    color: #9868ff;
 
     font-size: 22px;
 
@@ -960,7 +657,7 @@ button {
 
     margin-left: 5px;
 
-    color: #696a76;
+    color: #696a75;
 
     font-size: 10px;
 
@@ -970,15 +667,15 @@ button {
 .queue-progress {
 
     width: 100%;
-    height: 2px;
+    height: 3px;
 
-    margin-top: 20px;
+    margin-top: 18px;
 
     overflow: hidden;
 
-    border-radius: 2px;
+    border-radius: 999px;
 
-    background: #272631;
+    background: #292832;
 
 }
 
@@ -989,9 +686,10 @@ button {
 
     height: 100%;
 
-    background: #8552ed;
+    border-radius: 999px;
 
-    border-radius: inherit;
+    background:
+        #8050e9;
 
     will-change: width;
 
@@ -1002,9 +700,11 @@ button {
 
     display: flex;
 
+    align-items: center;
+
     justify-content: space-between;
 
-    margin-top: 10px;
+    margin-top: 9px;
 
     color: #555662;
 
@@ -1015,7 +715,7 @@ button {
 
 .queue-bottom b {
 
-    color: #777885;
+    color: #777883;
 
     font-weight: 400;
 
@@ -1024,25 +724,31 @@ button {
 
 .cancel-button {
 
-    margin-top: 26px;
+    margin-top: 24px;
 
-    padding: 7px 14px;
+    padding:
+        7px 13px;
+
+    border-radius: 8px;
 
     background: transparent;
 
-    color: #60616d;
+    color: #62636e;
 
     font-size: 9px;
 
     cursor: pointer;
 
     transition:
-        color .15s ease;
+        color .15s ease,
+        background .15s ease;
 
 }
 
 
 .cancel-button:hover {
+
+    background: #191921;
 
     color: #a2a3ad;
 
@@ -1050,18 +756,8 @@ button {
 
 
 /* =========================================================
-   NO SCROLLBARS
+   SCROLLBARS
    ========================================================= */
-
-::-webkit-scrollbar {
-
-    width: 0;
-    height: 0;
-
-    display: none;
-
-}
-
 
 html,
 body,
@@ -1074,17 +770,25 @@ body,
 }
 
 
-/* =========================================================
-   DRAGGING
-   ========================================================= */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#app::-webkit-scrollbar,
+.content::-webkit-scrollbar,
+.games::-webkit-scrollbar {
 
-[ data-no-drag ] {
+    width: 0;
+    height: 0;
 
-    -webkit-app-region: no-drag;
+    display: none;
 
 }
 
 
+/* =========================================================
+   NO HAND CURSOR
+   ========================================================= */
+
+body,
 .topbar,
 .content {
 
@@ -1094,14 +798,22 @@ body,
 
 
 /* =========================================================
-   SMALL WINDOWS
+   SMALL WINDOW
    ========================================================= */
 
-@media (max-width: 420px) {
+@media (max-width: 320px) {
+
+    .content {
+
+        padding-left: 9px;
+        padding-right: 9px;
+
+    }
+
 
     .game-actions {
 
-        width: 84px;
+        width: 90px;
 
     }
 
