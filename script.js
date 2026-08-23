@@ -1,7 +1,3 @@
-/* =========================================================
-   ORRO
-   ========================================================= */
-
 "use strict";
 
 
@@ -26,308 +22,42 @@ function nativeMessage(message) {
 
 
 /* =========================================================
-   SETTINGS
+   ELEMENTS
    ========================================================= */
 
-const SETTINGS_KEY =
-    "orro.settings";
-
-
-const DEFAULT_SETTINGS = {
-
-    rememberSession: true,
-
-    automaticUpdates: true,
-
-    minimiseOnLaunch: false
-
-};
-
-
-function getSettings() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(
-                SETTINGS_KEY
-            );
-
-
-        if (!saved) {
-
-            return {
-                ...DEFAULT_SETTINGS
-            };
-
-        }
-
-
-        return {
-
-            ...DEFAULT_SETTINGS,
-
-            ...JSON.parse(
-                saved
-            )
-
-        };
-
-    }
-
-    catch {
-
-        return {
-            ...DEFAULT_SETTINGS
-        };
-
-    }
-
-}
-
-
-function saveSettings(
-    settings
-) {
-
-    try {
-
-        localStorage.setItem(
-            SETTINGS_KEY,
-            JSON.stringify(
-                settings
-            )
-        );
-
-    }
-
-    catch {
-
-        /*
-         * Storage can be unavailable in
-         * unusual WebView configurations.
-         */
-
-    }
-
-}
-
-
-/* =========================================================
-   SETTINGS UI
-   ========================================================= */
-
-function updateSettingsUI() {
-
-    const settings =
-        getSettings();
-
-
-    document
-        .querySelectorAll(
-            "[data-setting]"
-        )
-        .forEach(
-            toggle => {
-
-                const name =
-                    toggle.dataset.setting;
-
-
-                toggle.classList.toggle(
-                    "on",
-                    Boolean(
-                        settings[name]
-                    )
-                );
-
-            }
-        );
-
-}
-
-
-document
-    .querySelectorAll(
-        "[data-setting]"
-    )
-    .forEach(
-        toggle => {
-
-            toggle.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-
-                    const settings =
-                        getSettings();
-
-
-                    const name =
-                        toggle.dataset.setting;
-
-
-                    settings[name] =
-                        !settings[name];
-
-
-                    saveSettings(
-                        settings
-                    );
-
-
-                    updateSettingsUI();
-
-                }
-            );
-
-        }
-    );
-
-
-updateSettingsUI();
-
-
-/* =========================================================
-   PAGE NAVIGATION
-   ========================================================= */
-
-const navItems =
+const tabs =
     document.querySelectorAll(
-        ".nav-item"
+        ".game-tab"
     );
 
 
-const pages =
+const cards =
     document.querySelectorAll(
-        ".page"
+        ".game-card"
     );
 
 
-function showPage(
-    name
-) {
-
-    /*
-     * Never navigate while the fullscreen
-     * queue is active.
-     */
-
-    if (launchRunning) {
-
-        return;
-
-    }
-
-
-    navItems.forEach(
-        item => {
-
-            item.classList.toggle(
-                "active",
-                item.dataset.page === name
-            );
-
-        }
-    );
-
-
-    pages.forEach(
-        page => {
-
-            page.classList.toggle(
-                "active",
-                page.id ===
-                "page-" + name
-            );
-
-        }
-    );
-
-}
-
-
-navItems.forEach(
-    item => {
-
-        item.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                showPage(
-                    item.dataset.page
-                );
-
-            }
-        );
-
-    }
-);
-
-
-/* =========================================================
-   HOME LAUNCH BUTTON
-   ========================================================= */
-
-const homeLaunchButton =
+const injectButton =
     document.getElementById(
-        "homeLaunchButton"
+        "injectButton"
     );
 
 
-homeLaunchButton.addEventListener(
-    "click",
-    event => {
-
-        event.stopPropagation();
-
-        /*
-         * IMPORTANT:
-         *
-         * Home Launch does NOT start
-         * the queue.
-         *
-         * It simply opens Launch.
-         */
-
-        showPage(
-            "launch"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   QUEUE ELEMENTS
-   ========================================================= */
-
-const launchingPage =
+const queueScreen =
     document.getElementById(
-        "launching-page"
+        "queueScreen"
     );
 
 
-const launchProgress =
+const queueProgress =
     document.getElementById(
-        "launchProgress"
+        "queueProgress"
     );
 
 
-const queueAhead =
+const queueCount =
     document.getElementById(
-        "queueAhead"
-    );
-
-
-const queueEstimate =
-    document.getElementById(
-        "queueEstimate"
+        "queueCount"
     );
 
 
@@ -337,54 +67,147 @@ const queuePosition =
     );
 
 
-const launchButton =
+const queueTime =
     document.getElementById(
-        "launchButton"
+        "queueTime"
     );
 
 
-const cancelButton =
+const cancelQueue =
     document.getElementById(
-        "cancelLaunch"
+        "cancelQueue"
+    );
+
+
+const closeButton =
+    document.getElementById(
+        "closeButton"
+    );
+
+
+const minimizeButton =
+    document.getElementById(
+        "minimizeButton"
     );
 
 
 /* =========================================================
-   LAUNCH STATE
+   GAME TAB
    ========================================================= */
 
-let launchRunning =
+const GAME_KEY =
+    "undercal.selectedGame";
+
+
+function setGame(
+    game
+) {
+
+    localStorage.setItem(
+        GAME_KEY,
+        game
+    );
+
+
+    tabs.forEach(
+        tab => {
+
+            tab.classList.toggle(
+                "active",
+                tab.dataset.game === game
+            );
+
+        }
+    );
+
+
+    cards.forEach(
+        card => {
+
+            const games =
+                card.dataset.games
+                    .split(",");
+
+
+            const visible =
+                game === "all" ||
+                games.includes(game);
+
+
+            card.classList.toggle(
+                "hidden-game",
+                !visible
+            );
+
+        }
+    );
+
+}
+
+
+tabs.forEach(
+    tab => {
+
+        tab.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+                setGame(
+                    tab.dataset.game
+                );
+
+            }
+        );
+
+    }
+);
+
+
+const savedGame =
+    localStorage.getItem(
+        GAME_KEY
+    );
+
+
+setGame(
+    savedGame || "csgo"
+);
+
+
+/* =========================================================
+   QUEUE
+   ========================================================= */
+
+let queueRunning =
     false;
 
 
-let launchFrame =
+let queueFrame =
     null;
 
 
-let launchStart =
+let queueStart =
     0;
 
 
-let launchDuration =
+let queueDuration =
     0;
 
 
-let initialQueueAhead =
-    1;
+let startingAhead =
+    0;
 
-
-/* =========================================================
-   RANDOM VALUES
-   ========================================================= */
 
 /*
- * 25–33 seconds.
+ * Roughly 29 seconds,
+ * but not exactly 29 every time.
  *
- * This keeps it around 29 seconds
- * without making every launch identical.
+ * 25–33 seconds.
  */
 
-function getLaunchDuration() {
+function randomDuration() {
 
     return (
         25000 +
@@ -400,7 +223,7 @@ function getLaunchDuration() {
  * 1–4 people ahead.
  */
 
-function getQueueAhead() {
+function randomQueue() {
 
     return (
         Math.floor(
@@ -411,79 +234,62 @@ function getQueueAhead() {
 }
 
 
-/* =========================================================
-   QUEUE UI
-   ========================================================= */
-
 function updateQueue(
     progress
 ) {
 
-    /*
-     * Smoothly reduce the queue count.
-     */
-
-    const remainingAhead =
+    const remaining =
         Math.max(
             0,
             Math.ceil(
-                initialQueueAhead *
+                startingAhead *
                 (1 - progress)
             )
         );
 
 
-    const currentPosition =
-        Math.max(
-            1,
-            remainingAhead + 1
-        );
-
-
-    queueAhead.textContent =
-        remainingAhead;
+    queueCount.textContent =
+        remaining;
 
 
     queuePosition.textContent =
-        currentPosition;
+        remaining + 1;
 
 
-    launchProgress.style.width =
+    queueProgress.style.width =
         (
             progress * 100
         ) + "%";
 
 
-    const remainingSeconds =
+    const elapsed =
+        performance.now() -
+        queueStart;
+
+
+    const seconds =
         Math.max(
             0,
             Math.ceil(
                 (
-                    launchDuration -
-                    (
-                        performance.now() -
-                        launchStart
-                    )
+                    queueDuration -
+                    elapsed
                 ) / 1000
             )
         );
 
 
-    queueEstimate.textContent =
+    queueTime.textContent =
         "~" +
-        remainingSeconds +
+        seconds +
         " seconds";
 
 }
 
 
-/* =========================================================
-   QUEUE ANIMATION
-   ========================================================= */
+function animateQueue() {
 
-function animateLaunch() {
-
-    if (!launchRunning) {
+    if (!queueRunning) {
 
         return;
 
@@ -492,13 +298,13 @@ function animateLaunch() {
 
     const elapsed =
         performance.now() -
-        launchStart;
+        queueStart;
 
 
     const progress =
         Math.min(
             elapsed /
-            launchDuration,
+            queueDuration,
             1
         );
 
@@ -512,124 +318,147 @@ function animateLaunch() {
         progress >= 1
     ) {
 
-        finishLaunch();
+        finishQueue();
 
         return;
 
     }
 
 
-    launchFrame =
+    queueFrame =
         requestAnimationFrame(
-            animateLaunch
+            animateQueue
         );
 
 }
 
 
-/* =========================================================
-   START LAUNCH
-   ========================================================= */
+function startQueue() {
 
-function startLaunch() {
-
-    if (launchRunning) {
+    if (queueRunning) {
 
         return;
 
     }
 
 
-    launchRunning =
+    queueRunning =
         true;
 
 
-    initialQueueAhead =
-        getQueueAhead();
+    startingAhead =
+        randomQueue();
 
 
-    launchDuration =
-        getLaunchDuration();
+    queueDuration =
+        randomDuration();
 
 
-    launchStart =
+    queueStart =
         performance.now();
 
 
-    /*
-     * Reset queue.
-     */
-
-    queueAhead.textContent =
-        initialQueueAhead;
+    queueCount.textContent =
+        startingAhead;
 
 
     queuePosition.textContent =
-        initialQueueAhead + 1;
+        startingAhead + 1;
 
 
-    queueEstimate.textContent =
+    queueTime.textContent =
         "~" +
         Math.ceil(
-            launchDuration / 1000
+            queueDuration / 1000
         ) +
         " seconds";
 
 
-    launchProgress.style.width =
+    queueProgress.style.width =
         "0%";
 
 
-    /*
-     * Take over the ENTIRE GUI.
-     *
-     * The launching page sits above
-     * the sidebar and main UI.
-     */
-
-    launchingPage.classList.add(
+    queueScreen.classList.add(
         "active"
     );
 
 
-    /*
-     * Minimise setting.
-     */
-
-    const settings =
-        getSettings();
-
-
-    if (
-        settings.minimiseOnLaunch
-    ) {
-
-        nativeMessage(
-            "window.minimize"
-        );
-
-    }
-
-
-    launchFrame =
+    queueFrame =
         requestAnimationFrame(
-            animateLaunch
+            animateQueue
         );
 
 }
 
 
 /* =========================================================
-   LAUNCH BUTTON
+   FINISH
    ========================================================= */
 
-launchButton.addEventListener(
+function finishQueue() {
+
+    queueRunning =
+        false;
+
+
+    if (queueFrame) {
+
+        cancelAnimationFrame(
+            queueFrame
+        );
+
+        queueFrame =
+            null;
+
+    }
+
+
+    queueProgress.style.width =
+        "100%";
+
+
+    queueCount.textContent =
+        "0";
+
+
+    queuePosition.textContent =
+        "1";
+
+
+    queueTime.textContent =
+        "Ready";
+
+
+    /*
+     * Keep the completed state
+     * visible briefly.
+     */
+
+    setTimeout(
+        () => {
+
+            queueScreen.classList.remove(
+                "active"
+            );
+
+        },
+        500
+    );
+
+}
+
+
+/* =========================================================
+   INJECT BUTTON
+   ========================================================= */
+
+injectButton.addEventListener(
     "click",
     event => {
 
         event.stopPropagation();
 
-        startLaunch();
+        startQueue();
 
     }
 );
@@ -639,174 +468,51 @@ launchButton.addEventListener(
    CANCEL
    ========================================================= */
 
-function cancelLaunch() {
-
-    if (!launchRunning) {
-
-        return;
-
-    }
-
-
-    launchRunning =
-        false;
-
-
-    if (launchFrame) {
-
-        cancelAnimationFrame(
-            launchFrame
-        );
-
-        launchFrame =
-            null;
-
-    }
-
-
-    launchingPage.classList.remove(
-        "active"
-    );
-
-
-    launchProgress.style.width =
-        "0%";
-
-
-    queueAhead.textContent =
-        initialQueueAhead;
-
-
-    queuePosition.textContent =
-        initialQueueAhead + 1;
-
-
-    queueEstimate.textContent =
-        "~" +
-        Math.ceil(
-            launchDuration / 1000
-        ) +
-        " seconds";
-
-
-    /*
-     * Return to Launch page.
-     */
-
-    showPage(
-        "launch"
-    );
-
-}
-
-
-cancelButton.addEventListener(
+cancelQueue.addEventListener(
     "click",
     event => {
 
         event.stopPropagation();
 
-        cancelLaunch();
+
+        if (!queueRunning) {
+
+            return;
+
+        }
+
+
+        queueRunning =
+            false;
+
+
+        if (queueFrame) {
+
+            cancelAnimationFrame(
+                queueFrame
+            );
+
+            queueFrame =
+                null;
+
+        }
+
+
+        queueScreen.classList.remove(
+            "active"
+        );
+
+
+        queueProgress.style.width =
+            "0%";
 
     }
 );
 
 
 /* =========================================================
-   FINISH
+   WINDOW CONTROLS
    ========================================================= */
-
-function finishLaunch() {
-
-    launchRunning =
-        false;
-
-
-    if (launchFrame) {
-
-        cancelAnimationFrame(
-            launchFrame
-        );
-
-        launchFrame =
-            null;
-
-    }
-
-
-    launchProgress.style.width =
-        "100%";
-
-
-    queueAhead.textContent =
-        "0";
-
-
-    queuePosition.textContent =
-        "1";
-
-
-    queueEstimate.textContent =
-        "Ready";
-
-
-    /*
-     * Keep the fullscreen launch page
-     * visible for a tiny moment so the
-     * completed bar doesn't flash away.
-     */
-
-    setTimeout(
-        () => {
-
-            launchingPage.classList.remove(
-                "active"
-            );
-
-
-            /*
-             * Respect close-after-launch
-             * only if it exists in stored
-             * settings from an older version.
-             */
-
-            const settings =
-                getSettings();
-
-
-            if (
-                settings.closeAfter === true
-            ) {
-
-                nativeMessage(
-                    "window.close"
-                );
-
-                return;
-
-            }
-
-
-            showPage(
-                "launch"
-            );
-
-        },
-        450
-    );
-
-}
-
-
-/* =========================================================
-   CLOSE BUTTON
-   ========================================================= */
-
-const closeButton =
-    document.getElementById(
-        "closeButton"
-    );
-
 
 closeButton.addEventListener(
     "click",
@@ -822,15 +528,32 @@ closeButton.addEventListener(
 );
 
 
+minimizeButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        nativeMessage(
+            "window.minimize"
+        );
+
+    }
+);
+
+
 /* =========================================================
-   DRAG FROM ANYWHERE
+   DRAG
    ========================================================= */
 
 /*
- * The cursor stays as the normal arrow.
+ * The WebView owns the mouse input, so
+ * send the native C++ window a message
+ * whenever the user starts dragging on
+ * non-interactive UI.
  *
- * Any non-button area can request the
- * native C++ window drag.
+ * We deliberately DON'T change the cursor
+ * to a hand.
  */
 
 document.addEventListener(
@@ -846,14 +569,9 @@ document.addEventListener(
         }
 
 
-        /*
-         * Don't drag when clicking
-         * interactive controls.
-         */
-
         if (
             event.target.closest(
-                "button, input, select, textarea, a"
+                "button, [data-no-drag]"
             )
         ) {
 
@@ -871,31 +589,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   DISABLE TEXT SELECTION / DRAG
-   ========================================================= */
-
-document.addEventListener(
-    "selectstart",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-
-document.addEventListener(
-    "dragstart",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-
-/* =========================================================
-   RIGHT CLICK
+   DISABLE CONTEXT MENU
    ========================================================= */
 
 document.addEventListener(
@@ -909,9 +603,14 @@ document.addEventListener(
 
 
 /* =========================================================
-   DEFAULT PAGE
+   DISABLE SELECTION
    ========================================================= */
 
-showPage(
-    "home"
+document.addEventListener(
+    "selectstart",
+    event => {
+
+        event.preventDefault();
+
+    }
 );
