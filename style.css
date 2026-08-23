@@ -1,37 +1,258 @@
 * {
     box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
 html,
 body {
     width: 100%;
     height: 100%;
-
     margin: 0;
-    padding: 0;
-
     overflow: hidden;
 }
 
 body {
-    background: #111219;
-
-    color: #e4e3eb;
+    background: #111119;
+    color: #dddde6;
 
     font-family:
         Inter,
+        -apple-system,
+        BlinkMacSystemFont,
         "Segoe UI",
-        Arial,
         sans-serif;
 
-    user-select: none;
-    -webkit-user-select: none;
+    -webkit-font-smoothing: antialiased;
+
+    cursor: default;
 }
 
 
-/* =========================================
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+#intro {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #0f100f;
+
+    animation:
+        introExit .65s 3.7s forwards;
+}
+
+.intro-word {
+    position: relative;
+    z-index: 4;
+
+    font-size: 76px;
+    line-height: 1;
+
+    font-weight: 400;
+    letter-spacing: -6px;
+
+    color: #dedfda;
+
+    animation:
+        wordCollapse 3.7s ease forwards;
+}
+
+.intro-dot,
+.intro-ring,
+.intro-ring-two {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.intro-dot {
+    width: 4px;
+    height: 4px;
+
+    background: #d9dad5;
+
+    animation:
+        dotExpand 3.7s ease forwards;
+}
+
+.intro-ring {
+    width: 13px;
+    height: 13px;
+
+    border: 1px solid rgba(220, 221, 216, .34);
+
+    animation:
+        ringOne 3.7s ease forwards;
+}
+
+.intro-ring-two {
+    width: 20px;
+    height: 20px;
+
+    border: 1px solid rgba(220, 221, 216, .13);
+
+    animation:
+        ringTwo 3.7s ease forwards;
+}
+
+@keyframes wordCollapse {
+
+    0% {
+        opacity: 0;
+        transform: scale(.95);
+    }
+
+    25% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    72% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    82% {
+        opacity: 1;
+        transform: scale(.08);
+    }
+
+    88% {
+        opacity: 0;
+        transform: scale(.01);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes dotExpand {
+
+    0%,
+    78% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+    }
+
+    83% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+
+    90% {
+        opacity: .14;
+        transform:
+            translate(-50%, -50%)
+            scale(35);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(80);
+    }
+}
+
+@keyframes ringOne {
+
+    0%,
+    78% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+    }
+
+    82% {
+        opacity: .55;
+        transform:
+            translate(-50%, -50%)
+            scale(.8);
+    }
+
+    89% {
+        opacity: .18;
+        transform:
+            translate(-50%, -50%)
+            scale(8);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(34);
+    }
+}
+
+@keyframes ringTwo {
+
+    0%,
+    80% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+    }
+
+    85% {
+        opacity: .27;
+        transform:
+            translate(-50%, -50%)
+            scale(.7);
+    }
+
+    92% {
+        opacity: .07;
+        transform:
+            translate(-50%, -50%)
+            scale(13);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(32);
+    }
+}
+
+@keyframes introExit {
+
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+/* =========================================================
    APP
-   ========================================= */
+   ========================================================= */
 
 #app {
     position: relative;
@@ -41,171 +262,156 @@ body {
 
     overflow: hidden;
 
-    background:
-        linear-gradient(
-            180deg,
-            #101116 0%,
-            #111219 100%
-        );
+    opacity: 0;
+
+    animation:
+        appAppear .6s 3.9s ease forwards;
+}
+
+@keyframes appAppear {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 
-/* =========================================
-   TOP BAR
-   ========================================= */
+/* =========================================================
+   WINDOW BAR
+   ========================================================= */
 
-.topbar {
+.window-bar {
     position: absolute;
 
-    top: 0;
     left: 0;
+    right: 0;
+    top: 0;
 
-    width: 100%;
     height: 32px;
-
-    background: #0d0e14;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.018);
 
     z-index: 20;
 
-    -webkit-app-region: drag;
+    background: #101018;
+}
+
+.window-drag-space {
+    position: absolute;
+    inset: 0 74px 0 0;
+
+    cursor: default;
 }
 
 .window-controls {
     position: absolute;
 
+    right: 0;
     top: 0;
-    right: 7px;
 
     height: 32px;
 
     display: flex;
-    align-items: center;
-
-    gap: 2px;
-
-    -webkit-app-region: no-drag;
 }
 
-.window-button {
-    width: 28px;
-    height: 28px;
+.window-control {
+    width: 37px;
+    height: 32px;
 
     padding: 0;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 0;
 
     background: transparent;
 
-    border-radius: 7px;
-
-    color: #85858f;
-
-    font-size: 17px;
-    font-weight: 300;
+    color: #8c8c97;
 
     cursor: pointer;
 
-    transition:
-        background .12s ease,
-        color .12s ease;
+    position: relative;
 }
 
-.window-button:hover {
-    background: rgba(255,255,255,.045);
-    color: #e5e5eb;
+.window-control:hover {
+    background: rgba(255,255,255,.035);
 }
 
-.window-button.close:hover {
-    background: #b33d4c;
-    color: #ffffff;
-}
-
-
-/* =========================================
-   MAIN
-   ========================================= */
-
-.main {
+.window-control.minimize span {
     position: absolute;
 
-    top: 32px;
-    left: 0;
+    width: 11px;
+    height: 1px;
 
-    width: 100%;
-    height: calc(100% - 32px);
+    left: 13px;
+    top: 16px;
 
-    padding:
-        10px
-        10px
-        10px
-        10px;
+    background: currentColor;
+}
 
-    display: flex;
-    flex-direction: column;
+.window-control.close span:first-child,
+.window-control.close span:last-child {
+    position: absolute;
 
-    overflow: hidden;
+    width: 13px;
+    height: 1px;
+
+    left: 12px;
+    top: 16px;
+
+    background: currentColor;
+}
+
+.window-control.close span:first-child {
+    transform: rotate(45deg);
+}
+
+.window-control.close span:last-child {
+    transform: rotate(-45deg);
 }
 
 
-/* =========================================
+/* =========================================================
+   GAME SELECTOR OUTER LAYER
+   ========================================================= */
+
+.game-selector-wrap {
+    position: absolute;
+
+    top: 42px;
+    left: 10px;
+    right: 10px;
+
+    height: 40px;
+
+    padding: 5px;
+
+    border-radius: 15px;
+
+    background: #171722;
+
+    border: 1px solid rgba(255,255,255,.025);
+}
+
+
+/* =========================================================
    GAME SELECTOR
-   ========================================= */
-
-.game-selector-wrapper {
-    width: 100%;
-
-    flex-shrink: 0;
-}
+   ========================================================= */
 
 .game-selector {
     width: 100%;
-    height: 40px;
-
-    padding: 4px;
+    height: 100%;
 
     display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 
-    grid-template-columns:
-        1fr
-        1fr
-        1fr;
-
-    gap: 4px;
-
-    background: #171821;
-
-    border-radius: 13px;
-
-    /*
-     * Important:
-     * No light outer/inner border.
-     */
-
-    border: none;
-
-    box-shadow:
-        0 4px 14px
-        rgba(0,0,0,.12);
+    gap: 3px;
 }
 
-
-/* =========================================
-   GAME BUTTONS
-   ========================================= */
-
-.game-option {
+.game-tab {
     position: relative;
 
-    width: 100%;
-    height: 30px;
-
-    padding: 0 7px;
+    height: 100%;
 
     display: flex;
     align-items: center;
@@ -213,55 +419,44 @@ body {
 
     gap: 6px;
 
-    background: #1d1e27;
+    padding: 0;
 
-    border: none;
+    border: 0;
+    border-radius: 10px;
 
-    border-radius: 9px;
+    background: transparent;
 
-    color: #898894;
+    color: #858591;
 
-    font-size: 13px;
-    font-weight: 400;
+    font: inherit;
+    font-size: 12px;
 
     cursor: pointer;
 
-    /*
-     * The grey rectangles in the reference
-     * are the buttons themselves.
-     */
-
-    box-shadow: none;
-
     transition:
-        background .12s ease,
-        color .12s ease;
+        color .16s ease,
+        background .16s ease;
 }
 
-.game-option:hover {
-    background: #20212b;
-    color: #a09fa9;
+.game-tab:hover {
+    color: #a4a4b0;
 }
 
-.game-option.active {
-    background: #201a35;
-    color: #7d4cff;
+.game-tab.active {
+    color: #8351ff;
+
+    background: #211c31;
 }
-
-
-/* =========================================
-   GAME ICONS
-   ========================================= */
 
 .game-icon {
     width: 15px;
     height: 15px;
 
-    flex-shrink: 0;
-
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
 
     color: currentColor;
 }
@@ -273,149 +468,107 @@ body {
     display: block;
 }
 
-.csgo-icon {
-    width: 14px;
-    height: 17px;
+.cs2-icon img {
+    width: 16px;
+    height: 12px;
+
+    display: block;
+
+    object-fit: contain;
+
+    filter: none;
 }
 
 
-/*
- * Rebuilt CS2 "2".
- *
- * This is intentionally a compact stylised
- * mark rather than the previous broken SVG.
- */
+/* =========================================================
+   PRODUCTS OUTER PANEL
+   ========================================================= */
 
-.cs2-icon {
-    width: 17px;
-    height: 17px;
+.products-panel {
+    position: absolute;
 
-    position: relative;
-
-    color: currentColor;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 16px;
-    font-weight: 700;
-
-    font-style: italic;
-
-    line-height: 17px;
-
-    transform:
-        skewX(-10deg);
-}
-
-
-/* =========================================
-   OPTIONS PANEL
-   ========================================= */
-
-.options-panel {
-    position: relative;
-
-    flex: 1;
-
-    min-height: 0;
-
-    margin-top: 10px;
+    top: 90px;
+    left: 10px;
+    right: 10px;
+    bottom: 47px;
 
     padding: 10px;
 
+    border-radius: 13px;
+
+    background: #15151f;
+
+    border: 1px solid rgba(255,255,255,.025);
+
     overflow: hidden;
-
-    background: #13141c;
-
-    border-radius: 12px;
-
-    border: none;
-
-    box-shadow:
-        0 6px 22px
-        rgba(0,0,0,.10);
 }
 
-.options {
+
+/* =========================================================
+   PRODUCT LIST
+   ========================================================= */
+
+.product-list {
     width: 100%;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
 
-    gap: 8px;
+    gap: 10px;
 }
 
 
-/* =========================================
-   OPTION CARD
-   ========================================= */
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
 
-.option-card {
+.product-card {
     position: relative;
 
     width: 100%;
-    height: 58px;
+    height: 67px;
 
-    padding: 9px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
 
-    background: #181923;
+    padding:
+        10px;
 
-    border-radius: 11px;
+    border-radius: 13px;
 
-    /*
-     * No bright outline by default.
-     */
+    background: #181822;
 
-    border:
-        1px solid
-        rgba(255,255,255,.025);
+    border: 1px solid #242431;
 
     box-shadow:
-        inset 0 1px 0
-        rgba(255,255,255,.008);
+        0 5px 15px rgba(0,0,0,.08);
 
     cursor: pointer;
 
     transition:
-        background .12s ease,
-        border-color .12s ease;
+        border-color .16s ease,
+        background .16s ease;
 }
 
-.option-card:hover {
-    background: #1a1b24;
+.product-card:hover {
+    background: #1a1a25;
 }
 
-
-/*
- * Selected loader.
- *
- * Very subtle purple outline only.
- */
-
-.option-card.selected {
-    background: #191923;
-
-    border-color:
-        rgba(124,77,255,.58);
-
-    box-shadow:
-        0 0 0 1px
-        rgba(124,77,255,.035);
+.product-card.selected {
+    border-color: rgba(132, 80, 255, .62);
 }
 
 
-/* =========================================
-   OPTION LOGO
-   ========================================= */
+/* =========================================================
+   PRODUCT ICON
+   ========================================================= */
 
-.option-logo {
-    width: 40px;
-    height: 40px;
+.product-icon {
+    width: 47px;
+    height: 47px;
 
     flex-shrink: 0;
 
@@ -425,78 +578,89 @@ body {
 
     overflow: hidden;
 
-    background: #101117;
+    border-radius: 11px;
 
-    border-radius: 9px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.025);
+    background: #101017;
 }
 
-.option-logo img {
+.product-icon img {
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
-
     display: block;
+
+    object-fit: cover;
+
+    border-radius: inherit;
 }
 
 
-/* =========================================
-   OPTION INFO
-   ========================================= */
+/* =========================================================
+   PRODUCT INFORMATION
+   ========================================================= */
 
-.option-info {
+.product-info {
     min-width: 0;
-
-    flex: 1;
 
     margin-left: 12px;
 
     display: flex;
     flex-direction: column;
-
     justify-content: center;
 }
 
-.option-name {
-    color: #dedde5;
+.product-name {
+    color: #dddde5;
 
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
 
-    line-height: 18px;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
+    letter-spacing: -.15px;
 }
 
-.option-card.selected .option-name {
-    color: #e8e3ff;
+.product-game {
+    margin-top: 5px;
+
+    color: #676773;
+
+    font-size: 9px;
 }
 
 
-/* =========================================
-   OPTION SIDE
-   ========================================= */
+/* =========================================================
+   PRODUCT RIGHT SIDE
+   ========================================================= */
 
-.option-side {
+.product-meta {
+    margin-left: auto;
+
     width: 92px;
-
-    flex-shrink: 0;
 
     display: flex;
     flex-direction: column;
 
-    gap: 4px;
+    align-items: stretch;
+
+    gap: 5px;
 }
 
 .subscription {
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 4px;
+
+    background: #2b202c;
+
+    color: #a8667e;
+
+    font-size: 9px;
+}
+
+.game-chip {
     height: 19px;
 
     display: flex;
@@ -505,74 +669,66 @@ body {
 
     border-radius: 4px;
 
-    background: #30202a;
+    background: #23232f;
 
-    color: #bd6e7d;
+    color: #7d7d89;
 
-    font-size: 10px;
+    font-size: 9px;
+
+    transition:
+        background .16s ease,
+        color .16s ease;
 }
 
-.game-badge {
-    height: 19px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 4px;
-
-    background: #242430;
-
-    color: #878692;
-
-    font-size: 10px;
+.product-card.selected .game-chip {
+    background: #2a2140;
+    color: #8a58ff;
 }
 
 
-/* =========================================
-   INJECT
-   ========================================= */
+/* =========================================================
+   INJECT BUTTON
+   ========================================================= */
 
 .inject-button {
-    width: 100%;
+    position: absolute;
+
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+
     height: 39px;
 
-    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    margin-top: 8px;
+    gap: 6px;
 
     padding: 0;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 5px;
-
-    background: #7546e8;
-
-    border: none;
-
+    border: 0;
     border-radius: 9px;
 
-    color: #eeeaff;
+    background: #7847e8;
 
-    font-size: 16px;
-    font-weight: 400;
+    color: #eeeafc;
+
+    font: inherit;
+    font-size: 14px;
 
     cursor: pointer;
 
     box-shadow:
-        inset 0 1px 0
-        rgba(255,255,255,.07);
+        0 5px 16px rgba(120,71,232,.16);
 
     transition:
-        background .12s ease,
-        transform .08s ease;
+        background .15s ease,
+        transform .1s ease;
 }
 
 .inject-button:hover {
-    background: #7d4cf0;
+    background: #8250f0;
 }
 
 .inject-button:active {
@@ -580,39 +736,38 @@ body {
 }
 
 .inject-icon {
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    transform: rotate(-7deg);
+    transform: rotate(-8deg);
 }
 
 .inject-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 100%;
+    height: 100%;
 }
 
 
-/* =========================================
-   LOADING SCREEN
-   ========================================= */
+/* =========================================================
+   FULL SCREEN INJECTION PAGE
+   ========================================================= */
 
-.loading-screen {
-    position: absolute;
+.launching-screen {
+    position: fixed;
 
     inset: 0;
 
-    z-index: 100;
+    z-index: 500;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background:
-        rgba(12,13,18,.965);
+    background: rgba(15,15,24,.985);
 
     opacity: 0;
     visibility: hidden;
@@ -620,146 +775,88 @@ body {
     pointer-events: none;
 
     transition:
-        opacity .16s ease,
-        visibility .16s ease;
+        opacity .22s ease,
+        visibility .22s ease;
 }
 
-.loading-screen.visible {
+.launching-screen.active {
     opacity: 1;
     visibility: visible;
 
     pointer-events: auto;
 }
 
-.loading-content {
-    width: calc(100% - 50px);
-
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
+.launching-inner {
+    width: 275px;
 }
 
+.launching-title {
+    color: #e1e0e8;
 
-/* =========================================
-   LOADING TEXT
-   ========================================= */
-
-.loading-title {
-    color: #e7e6ed;
-
-    font-size: 21px;
+    font-size: 22px;
     font-weight: 400;
 
-    line-height: 26px;
+    letter-spacing: -.7px;
 }
 
-.loading-option {
-    margin-top: 5px;
+.launching-option {
+    margin-top: 8px;
 
-    color: #7d4cff;
+    color: #777782;
 
-    font-size: 14px;
+    font-size: 11px;
 }
 
-
-/* =========================================
-   LOADING BAR
-   ========================================= */
-
-.loading-bar {
+.launching-progress {
     width: 100%;
-    height: 5px;
+    height: 3px;
 
-    margin-top: 26px;
+    margin-top: 28px;
 
     overflow: hidden;
 
-    background: #252630;
+    border-radius: 4px;
 
-    border-radius: 999px;
+    background: #292934;
 }
 
-.loading-fill {
+.launching-progress-fill {
     width: 0;
     height: 100%;
 
-    background: #7546e8;
-
     border-radius: inherit;
 
-    transition:
-        width .18s linear;
+    background: #7b4be8;
+
+    transform-origin: left center;
 }
 
+.launching-cancel {
+    margin-top: 17px;
 
-/* =========================================
-   CANCEL
-   ========================================= */
+    padding: 0;
 
-.cancel-button {
-    height: 31px;
+    border: 0;
 
-    margin-top: 18px;
+    background: transparent;
 
-    padding: 0 18px;
+    color: #676772;
 
-    background: #20212a;
-
-    border: none;
-
-    border-radius: 8px;
-
-    color: #92919c;
-
-    font-size: 12px;
+    font: inherit;
+    font-size: 10px;
 
     cursor: pointer;
-
-    transition:
-        background .12s ease,
-        color .12s ease;
 }
 
-.cancel-button:hover {
-    background: #282934;
-    color: #d4d3da;
+.launching-cancel:hover {
+    color: #9999a5;
 }
 
 
-/* =========================================
-   EMPTY
-   ========================================= */
+/* =========================================================
+   NO SELECTION
+   ========================================================= */
 
-.empty-options {
-    width: 100%;
-
-    padding: 25px 10px;
-
-    text-align: center;
-
-    color: #686873;
-
-    font-size: 12px;
-}
-
-
-/* =========================================
-   SMALL WINDOW SAFETY
-   ========================================= */
-
-@media (max-height: 430px) {
-
-    .option-card {
-        height: 53px;
-    }
-
-    .option-logo {
-        width: 36px;
-        height: 36px;
-    }
-
-    .inject-button {
-        height: 36px;
-    }
+::selection {
+    background: transparent;
 }
