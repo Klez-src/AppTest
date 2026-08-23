@@ -1,229 +1,260 @@
+/* =========================================================
+   RESET
+   ========================================================= */
+
 * {
     box-sizing: border-box;
 }
 
+
 html,
 body {
-    width: 315px;
-    height: 480px;
+    width: 100%;
+    height: 100%;
 
     margin: 0;
     padding: 0;
 
     overflow: hidden;
 
-    background: #101017;
+    scrollbar-width: none;
 }
 
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
+
 body {
-    color: #e8e7ed;
+    background: #0d0e15;
+
+    color: #c9c7d5;
 
     font-family:
         Inter,
-        "SF Pro Display",
+        -apple-system,
+        BlinkMacSystemFont,
         "Segoe UI",
-        Arial,
         sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 400;
+
+    letter-spacing: -0.2px;
+
+    -webkit-font-smoothing: antialiased;
 
     user-select: none;
     -webkit-user-select: none;
-
-    -webkit-font-smoothing: antialiased;
 
     cursor: default;
 }
 
 
-/* ============================================================
+/* =========================================================
    APP
-   ============================================================ */
+   ========================================================= */
 
 #app {
-    position: fixed;
+    position: relative;
 
-    inset: 0;
-
-    width: 315px;
-    height: 480px;
+    width: 100%;
+    height: 100%;
 
     overflow: hidden;
 
-    background: #101017;
+    background: #0d0e15;
 }
 
 
-/* ============================================================
+/* =========================================================
    TOP BAR
-   ============================================================ */
+   ========================================================= */
 
 .topbar {
     position: absolute;
 
     top: 0;
     left: 0;
+    right: 0;
 
-    width: 100%;
-    height: 32px;
+    height: 31px;
 
     z-index: 50;
 
-    background: #0e0e15;
+    background: #101119;
+
+    border-bottom:
+        1px solid #171821;
 
     cursor: default;
 }
 
-.drag-region {
-    -webkit-app-region: drag;
+
+.topbar-drag-area {
+    position: absolute;
+
+    inset: 0;
+
+    cursor: default;
 }
 
-.no-drag {
-    -webkit-app-region: no-drag;
-}
 
+/* =========================================================
+   WINDOW CONTROLS
+   ========================================================= */
 
 .window-controls {
     position: absolute;
 
-    top: 0;
-    right: 4px;
+    top: 4px;
+    right: 8px;
 
-    height: 32px;
+    height: 23px;
 
     display: flex;
+
     align-items: center;
 
-    gap: 2px;
+    gap: 1px;
+
+    z-index: 2;
 }
 
 
 .window-button {
-    position: relative;
+    width: 23px;
+    height: 23px;
 
-    width: 32px;
-    height: 32px;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
 
     padding: 0;
 
     border: 0;
 
+    border-radius: 6px;
+
     background: transparent;
 
-    cursor: default;
+    color: #7d7e8b;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 120ms ease,
+        color 120ms ease;
 }
+
 
 .window-button:hover {
-    background: rgba(255,255,255,.035);
+    background: #191a23;
+
+    color: #b0afbb;
 }
 
-.close-button:hover {
-    background: rgba(255,70,90,.08);
-}
 
+.window-button.minimize span {
+    display: block;
 
-.minimize-icon {
-    position: absolute;
-
-    left: 11px;
-    top: 16px;
-
-    width: 11px;
+    width: 9px;
     height: 1px;
 
-    background: #777783;
+    background: currentColor;
 }
 
 
-.close-icon::before,
-.close-icon::after {
-    content: "";
+.window-button.close {
+    font-size: 19px;
 
+    font-weight: 300;
+
+    line-height: 18px;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
     position: absolute;
 
-    left: 15px;
-    top: 10px;
-
-    width: 1px;
-    height: 12px;
-
-    background: #85858e;
-}
-
-.close-icon::before {
-    transform: rotate(45deg);
-}
-
-.close-icon::after {
-    transform: rotate(-45deg);
-}
-
-
-/* ============================================================
-   LOADER
-   ============================================================ */
-
-.loader {
-    position: absolute;
-
-    top: 32px;
+    top: 31px;
     left: 0;
-
-    width: 315px;
-    height: 448px;
-
-    padding:
-        8px
-        6px
-        6px;
+    right: 0;
+    bottom: 0;
 
     display: flex;
+
     flex-direction: column;
+
+    min-height: 0;
+
+    padding:
+        10px 10px 7px;
 
     overflow: hidden;
 }
 
 
-/* ============================================================
-   GAME FILTER OUTER LAYER
-   ============================================================ */
+/* =========================================================
+   TOP GAME SELECTOR
+   ========================================================= */
 
-.game-filter-shell {
-    flex: 0 0 40px;
-
+.game-tabs-shell {
     width: 100%;
+    height: 40px;
 
-    padding: 4px;
+    flex-shrink: 0;
+
+    padding: 3px;
 
     border-radius: 14px;
 
-    background: #171720;
-
-    border: 1px solid rgba(255,255,255,.025);
+    background: #11121a;
 }
 
 
-/* ============================================================
-   GAME FILTERS
-   ============================================================ */
-
-.game-filters {
+.game-tabs {
     width: 100%;
-    height: 30px;
+    height: 34px;
 
     display: grid;
 
     grid-template-columns:
-        1.25fr
+        1.18fr
         1fr
-        .9fr;
+        .92fr;
 
-    gap: 3px;
+    gap: 4px;
+
+    padding: 2px;
+
+    border-radius: 11px;
+
+    background: #14151f;
 }
 
 
-.game-filter {
+/* =========================================================
+   GAME TABS
+   ========================================================= */
+
+.game-tab {
+    position: relative;
+
     height: 30px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -232,444 +263,545 @@ body {
     padding: 0 7px;
 
     border: 0;
+
     border-radius: 9px;
 
-    background: transparent;
+    background: #191a26;
 
-    color: #858590;
+    color: #777888;
 
     font-family: inherit;
-    font-size: 11px;
-    font-weight: 450;
+
+    font-size: 11.5px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.25px;
+
+    white-space: nowrap;
 
     cursor: pointer;
 
     transition:
-        background .14s ease,
-        color .14s ease;
+        background 140ms ease,
+        color 140ms ease,
+        box-shadow 140ms ease;
 }
 
 
-.game-filter:hover {
-    color: #b1b0ba;
+.game-tab:hover {
+    background: #1d1e2a;
+
+    color: #9392a0;
 }
 
 
-.game-filter.active {
-    background: #211934;
+/* =========================================================
+   SELECTED TAB
+   ========================================================= */
 
-    color: #8550ff;
+.game-tab.active {
+    background: #2a2140;
+
+    color: #8752ed;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(135, 82, 237, 0.08);
 }
 
 
-/* ============================================================
-   FILTER ICONS
-   ============================================================ */
+.game-tab.active:hover {
+    background: #2d2343;
 
-.filter-icon {
-    width: 12px;
-    height: 12px;
+    color: #8b57ef;
+}
 
-    flex: 0 0 12px;
 
+/* =========================================================
+   REAL SVG ICONS
+   ========================================================= */
+
+/*
+   These are CSS masks rather than <img> elements.
+
+   That is intentional.
+
+   The supplied SVGs use currentColor, and masking them lets
+   the SVG inherit the tab's current CSS colour.
+
+   Therefore:
+
+       inactive = grey
+       active   = purple
+
+   without needing separate SVG files for each state.
+*/
+
+
+.tab-icon {
     position: relative;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    width: 13px;
+    height: 13px;
+
+    flex: 0 0 13px;
+
+    display: block;
+
+    background-color: currentColor;
+
+    transition:
+        background-color 140ms ease;
+
+    pointer-events: none;
 }
 
 
-/* Lightning */
+/* ---------------------------------------------------------
+   ALL GAMES — supplied lightning SVG
+   --------------------------------------------------------- */
 
 .lightning-icon {
-    border-radius: 50%;
+    width: 14px;
+    height: 14px;
 
-    background: #8250f5;
-}
+    flex-basis: 14px;
 
-.lightning-icon::before {
-    content: "";
+    -webkit-mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxpZ2h0bmluZyBpY29uIj4KICA8bWFzayBpZD0iYm9sdC1ob2xlIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTUzIDE4IEwzMSA1MSBRMjkgNTQgMzMgNTQgTDQ2IDU0IEw0NCA4MCBRNDQgODQgNDcgODEgTDcwIDQ4IFE3MiA0NSA2OCA0NSBMNTUgNDUgTDU2IDIxIFE1NiAxNiA1MyAxOCBaIiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L21hc2s+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDQiIGZpbGw9ImN1cnJlbnRDb2xvciIgbWFzaz0idXJsKCNib2x0LWhvbGUpIi8+Cjwvc3ZnPgo=");
 
-    width: 5px;
-    height: 7px;
+    mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxpZ2h0bmluZyBpY29uIj4KICA8bWFzayBpZD0iYm9sdC1ob2xlIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTUzIDE4IEwzMSA1MSBRMjkgNTQgMzMgNTQgTDQ2IDU0IEw0NCA4MCBRNDQgODQgNDcgODEgTDcwIDQ4IFE3MiA0NSA2OCA0NSBMNTUgNDUgTDU2IDIxIFE1NiAxNiA1MyAxOCBaIiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L21hc2s+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDQiIGZpbGw9ImN1cnJlbnRDb2xvciIgbWFzaz0idXJsKCNib2x0LWhvbGUpIi8+Cjwvc3ZnPgo=");
 
-    background: #171720;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
 
-    clip-path: polygon(
-        55% 0,
-        100% 0,
-        62% 42%,
-        100% 42%,
-        32% 100%,
-        43% 55%,
-        0 55%
-    );
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
 
-/* CS:GO */
+/* ---------------------------------------------------------
+   CS:GO — supplied Counter-Strike soldier SVG
+   --------------------------------------------------------- */
 
 .csgo-icon {
-    background-image: url("./csgo.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    width: 12px;
+    height: 15px;
 
-    opacity: .48;
+    flex-basis: 12px;
+
+    -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDb3VudGVyLVN0cmlrZSBzdHlsZSBzb2xkaWVyIHNpbGhvdWV0dGUiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNIDQyMCAyMTcgTCA0MDAgMjE4IEwgMzk5IDIxNCBMIDM5NSAyMTIgTCAzOTUgMjA2IEwgMzk0IDIwNiBMIDM5MyAyMTUgTCAzOTEgMjEzIEwgMzQzIDIxMyBMIDMzOCAyMTAgTCAzMzggMjA3IEwgMzM2IDIxMyBMIDMyNSAyMTQgTCAzMjQgMjA3IEwgMzI5IDIwNCBMIDMzMSAyMDEgTCAzMjkgMTkwIEwgMzI3IDE4OCBMIDMxNiAxODMgTCAzMDkgMTgzIEwgMzAyIDE4NiBMIDI5OSAxODkgTCAyOTYgMTk2IEwgMjk2IDIwMCBMIDI5OSAyMDggTCAyOTYgMjExIEwgMjkzIDIwOSBMIDI4OCAyMDkgTCAyODIgMjEzIEwgMjc3IDIyMiBMIDI3NSAyMjkgTCAyNzUgMjQzIEwgMjcxIDI0OCBMIDI2NSAyNDggTCAyNjMgMjUyIEwgMjYyIDI2OCBMIDI2NCAyNzEgTCAyNjkgMjcyIEwgMjcxIDI3NSBMIDI2NCAyNzggTCAyNjYgMjk5IEwgMjYzIDMwMSBMIDI2MSAzMDYgTCAyNjEgMzEzIEwgMjY1IDMxNiBMIDI2MSAzMzUgTCAyNjIgMzQ0IEwgMjUxIDM2MiBMIDI1MSAzNjggTCAyNDUgMzgwIEwgMjQ3IDM4OCBMIDI0MSA0MDkgTCAyNDMgNDE0IEwgMjQ1IDQxNSBMIDI1NyA0MTQgTCAyNTYgMzk1IEwgMjU5IDM4OCBMIDI2NiAzODQgTCAyNjcgMzc1IEwgMjcxIDM2NiBMIDI3MCAzNjAgTCAyNzIgMzU1IEwgMjc3IDM1MCBMIDI3NyAzNDggTCAyODIgMzQ0IEwgMjgyIDMzOCBMIDI5MCAzMTkgTCAyOTMgMzE2IEwgMzA2IDMyNyBMIDMxNSAzNDEgTCAzMjEgMzQxIEwgMzI0IDM0NSBMIDMyNCAzNTIgTCAzMjEgMzU2IEwgMzIzIDM3NiBMIDMyNiAzODEgTCAzMjYgMzk2IEwgMzI0IDQwMCBMIDMyMyA0MDggTCAzMjUgNDA5IEwgMzM0IDQwOCBMIDM0MiA0MTEgTCAzNTUgNDExIEwgMzU2IDQxMCBMIDM1NiA0MDcgTCAzNDkgNDA0IEwgMzM5IDM5MyBMIDMzOSAzNzggTCAzNDEgMzc0IEwgMzQwIDM2MiBMIDM0MiAzNTIgTCAzNDIgMzQwIEwgMzQxIDMzNiBMIDMzNiAzMzAgTCAzMjggMzA5IEwgMzE4IDI5NiBMIDMxOCAyODkgTCAzMjAgMjg3IEwgMzI0IDI4OSBMIDMyNyAyODQgTCAzMjkgMjczIEwgMzI5IDI2MyBMIDMyMyAyNTcgTCAzMjMgMjU0IEwgMzI1IDI1MiBMIDMyOCAyNTIgTCAzNDUgMjYxIEwgMzQ5IDI2MSBMIDM1OSAyNTEgTCAzNjAgMjQzIEwgMzY0IDI0MSBMIDM2MiAyMzUgTCAzNjIgMjI5IEwgMzY2IDIyNiBMIDM2OCAyMjIgTCAzOTAgMjIyIEwgMzkyIDIxOSBMIDM5NCAyMjAgTCA0MDAgMjE5IEwgNDE0IDIyMCBMIDQyMCAyMTkgWiBNIDM0MyAyMzQgTCAzNDQgMjMxIEwgMzUwIDIzMSBMIDM1MiAyMzMgLCAzNDcgMjM5IFogTSAzNDUgMjMwIEwgMzQ4IDIyOCBMIDM0NyAyMjcgTCAzNDggMjI1IEwgMzU0IDIyNiBMIDM1NCAyMjkgTCAzNTIgMjMxIFoiLz48L3N2Zz4=");
+
+    mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDb3VudGVyLVN0cmlrZSBzdHlsZSBzb2xkaWVyIHNpbGhvdWV0dGUiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNIDQyMCAyMTcgTCA0MDAgMjE4IEwgMzk5IDIxNCBMIDM5NSAyMTIgTCAzOTUgMjA2IEwgMzk0IDIwNiBMIDM5MyAyMTUgTCAzOTEgMjEzIEwgMzQzIDIxMyBMIDMzOCAyMTAgTCAzMzggMjA3IEwgMzM2IDIxMyBMIDMyNSAyMTQgTCAzMjQgMjA3IEwgMzI5IDIwNCBMIDMzMSAyMDEgTCAzMjkgMTkwIEwgMzI3IDE4OCBMIDMxNiAxODMgTCAzMDkgMTgzIEwgMzAyIDE4NiBMIDI5OSAxODkgTCAyOTYgMTk2IEwgMjk2IDIwMCBMIDI5OSAyMDggTCAyOTYgMjExIEwgMjkzIDIwOSBMIDI4OCAyMDkgTCAyODIgMjEzIEwgMjc3IDIyMiBMIDI3NSAyMjkgTCAyNzUgMjQzIEwgMjcxIDI0OCBMIDI2NSAyNDggTCAyNjMgMjUyIEwgMjYyIDI2OCBMIDI2NCAyNzEgTCAyNjkgMjcyIEwgMjcxIDI3NSBMIDI2NCAyNzggTCAyNjYgMjk5IEwgMjYzIDMwMSBMIDI2MSAzMDYgTCAyNjEgMzEzIEwgMjY1IDMxNiBMIDI2MSAzMzUgTCAyNjIgMzQ0IEwgMjUxIDM2MiBMIDI1MSAzNjggTCAyNDUgMzgwIEwgMjQ3IDM4OCBMIDI0MSA0MDkgTCAyNDMgNDE0IEwgMjQ1IDQxNSBMIDI1NyA0MTQgTCAyNTYgMzk1IEwgMjU5IDM4OCBMIDI2NiAzODQgTCAyNjcgMzc1IEwgMjcxIDM2NiBMIDI3MCAzNjAgTCAyNzIgMzU1IEwgMjc3IDM1MCBMIDI3NyAzNDggTCAyODIgMzQ0IEwgMjgyIDMzOCBMIDI5MCAzMTkgTCAyOTMgMzE2IEwgMzA2IDMyNyBMIDMxNSAzNDEgTCAzMjEgMzQxIEwgMzI0IDM0NSBMIDMyNCAzNTIgTCAzMjEgMzU2IEwgMzIzIDM3NiBMIDMyNiAzODEgTCAzMjYgMzk2IEwgMzI0IDQwMCBMIDMyMyA0MDggTCAzMjUgNDA5IEwgMzM0IDQwOCBMIDM0MiA0MTEgTCAzNTUgNDExIEwgMzU2IDQxMCBMIDM1NiA0MDcgTCAzNDkgNDA0IEwgMzM5IDM5MyBMIDMzOSAzNzggTCAzNDEgMzc0IEwgMzQwIDM2MiBMIDM0MiAzNTIgTCAzNDIgMzQwIEwgMzQxIDMzNiBMIDMzNiAzMzAgTCAzMjggMzA5IEwgMzE4IDI5NiBMIDMxOCAyODkgTCAzMjAgMjg3IEwgMzI0IDI4OSBMIDMyNyAyODQgTCAzMjkgMjczIEwgMzI5IDI2MyBMIDMyMyAyNTcgTCAzMjMgMjU0IEwgMzI1IDI1MiBMIDMyOCAyNTIgTCAzNDUgMjYxIEwgMzQ5IDI2MSBMIDM1OSAyNTEgTCAzNjAgMjQzIEwgMzY0IDI0MSBMIDM2MiAyMzUgTCAzNjIgMjI5IEwgMzY2IDIyNiBMIDM2OCAyMjIgTCAzOTAgMjIyIEwgMzkyIDIxOSBMIDM5NCAyMjAgTCA0MDAgMjE5IEwgNDE0IDIyMCBMIDQyMCAyMTkgWiBNIDM0MyAyMzQgTCAzNDQgMjMxIEwgMzUwIDIyMzEgTCAzNTIgMjMzIEwgMzQ3IDI zOTYgWiBNIDM0NSAyMzAgTCAzNDggMjI4IEwgMzQ3IDIyNyBMIDM0OCAyMjUgTCAzNTQgMjI2IEwgMzU0IDIyOSBMIDM1MiAyMzEiLz48L3N2Zz4=");
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
-.game-filter.active .csgo-icon {
-    opacity: 1;
-}
 
-
-/* CS2 */
+/* ---------------------------------------------------------
+   CS2 — isolated 2 SVG
+   --------------------------------------------------------- */
 
 .cs2-icon {
-    background-image: url("./cs2.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    width: 15px;
+    height: 11px;
 
-    opacity: .48;
+    flex-basis: 15px;
+
+    -webkit-mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjUgMTExIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkNvdW50ZXItU3RyaWtlIDIgaWNvbiI+CiAgPHBhdGggZD0iTSA0NyAwIDQwIDE1IDQwIDE3IDM3IDIyIDM3IDI0IDEzMSAyNCAxMzIgMjcgMTI1IDQyIDQ5IDQyIDM1IDQ3IDI3IDUzIDIxIDYxIDAgMTEwIDEyNyAxMTAgMTMyIDEwMCAxMzMgOTMgMTMyIDkwIDEyOSA4NyAxMjQgODUgNDMgODUgNDIgODQgNTAgNjcgMTM4IDY3IDE0NCA2NCAxNDkgNTkgMTY0IDI0IDE2NCAxNCAxNjEgOCAxNTYgMyAxNTAgMCBaIE0gNTEgNCAxNDcgNCAxNTIgNiAxNTggMTIgMTYwIDE4IDE2MCAyMSAxNTggMjcgMTU1IDMyIDE1NSAzNCAxNTMgMzcgMTUzIDM5IDE1MCA0NCAxNTAgNDYgMTQ3IDUxIDE0NiA1NSAxNDAgNjEgMTM1IDYzIDQ2IDYzIDQ0IDY5IDQxIDc0IDQxIDc2IDM4IDgxIDM4IDgzIDM1IDg4IDM1IDkwIDEyNSA5MCAxMjggOTMgMTI4IDk3IDEyNSAxMDQgMTIzIDEwNiA4IDEwNiA3IDEwNSA5IDEwMiAxMSA5NSAxNCA5MCAxNCA4OCAxNyA4MyAxNyA4MSAyMCA3NiAyMCA3NCAyMyA2OSAyNCA2NSAyOCA1OSAzMyA1NCAzOSA1MCA0OCA0NyAxMjggNDcgMTM5IDIyIDEzOSAyMCA0NSAyMCA0NCAxOSA0NSAxNSA0OCAxMCA0OSA2IFoiIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg==");
+
+    mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjUgMTExIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkNvdW50ZXItU3RyaWtlIDIgaWNvbiI+CiAgPHBhdGggZD0iTSA0NyAwIDQwIDE1IDQwIDE3IDM3IDIyIDM3IDI0IDEzMSAyNCAxMzIgMjcgMTI1IDQyIDQ5IDQyIDM1IDQ3IDI3IDUzIDIxIDYxIDAgMTEwIDEyNyAxMTAgMTMyIDEwMCAxMzMgOTMgMTMyIDkwIDEyOSA4NyAxMjQgODUgNDMgODUgNDIgODQgNTAgNjcgMTM4IDY3IDE0NCA2NCAxNDkgNTkgMTY0IDI0IDE2NCAxNCAxNjEgOCAxNTYgMyAxNTAgMCBaIE0gNTEgNCAxNDcgNCAxNTIgNiAxNTggMTIgMTYwIDE4IDE2MCAyMSAxNTggMjcgMTU1IDMyIDE1NSAzNCAxNTMgMzcgMTUzIDM5IDE1MCA0NCAxNTAgNDYgMTQ3IDUxIDE0NiA1NSAxNDAgNjEgMTM1IDYzIDQ2IDYzIDQ0IDY5IDQxIDc0IDQxIDc2IDM4IDgxIDM4IDgzIDM1IDg4IDM1IDkwIDEyNSA5MCAxMjggOTMgMTI4IDk3IDEyNSAxMDQgMTIzIDEwNiA4IDEwNiA3IDEwNSA5IDEwMiAxMSA5NSAxNCA5MCAxNCA4OCAxNyA4MyAxNyA4MSAyMCA3NiAyMCA3NCAyMyA2OSAyNCA2NSAyOCA1OSAzMyA1NCAzOSA1MCA0OCA0NyAxMjggNDcgMTM5IDIyIDEzOSAyMCA0NSAyMCA0NCAxOSA0NSAxNSA0OCAxMCA0OSA2IFoiIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg==");
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
-.game-filter.active .cs2-icon {
-    opacity: 1;
+
+/* =========================================================
+   TAB LABEL
+   ========================================================= */
+
+.tab-label {
+    display: inline-block;
+
+    transform:
+        translateY(-0.2px);
 }
 
 
-/* ============================================================
-   PRODUCTS OUTER CONTAINER
-   ============================================================ */
+/* =========================================================
+   GAMES PANEL
+   ========================================================= */
 
-.products-shell {
+.games-panel {
     flex: 1;
 
     min-height: 0;
 
-    width: 100%;
-
     margin-top: 8px;
+    margin-bottom: 7px;
 
-    padding: 8px;
-
-    border-radius: 14px;
-
-    background: #12121a;
-
-    border: 1px solid rgba(255,255,255,.035);
+    padding:
+        11px 11px 10px;
 
     overflow: hidden;
+
+    border-radius: 13px;
+
+    background: #14151f;
 }
 
 
-.products {
+.games {
     width: 100%;
     height: 100%;
 
-    display: flex;
-    flex-direction: column;
-
-    gap: 8px;
-
     overflow: hidden;
+
+    scrollbar-width: none;
 }
 
 
-/* ============================================================
-   PRODUCT CARD
-   ============================================================ */
+.games::-webkit-scrollbar {
+    display: none;
+}
 
-.product-card {
+
+/* =========================================================
+   GAME CARD
+   ========================================================= */
+
+.game-card {
     position: relative;
 
     width: 100%;
     height: 67px;
 
-    flex: 0 0 67px;
+    margin-bottom: 7px;
 
-    padding: 8px;
+    padding: 1px;
 
-    display: flex;
-    align-items: center;
+    border-radius: 12px;
 
-    border-radius: 13px;
-
-    border: 1px solid #292934;
-
-    background: #15151e;
-
-    transition:
-        border-color .15s ease,
-        background .15s ease;
-}
-
-
-.product-card:hover {
-    background: #171720;
-}
-
-
-.product-card.selected {
-    border-color: rgba(132,79,255,.55);
-}
-
-
-/* ============================================================
-   LOGO
-   ============================================================ */
-
-.product-logo-wrap {
-    width: 46px;
-    height: 46px;
-
-    flex: 0 0 46px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 11px;
+    background: #272837;
 
     overflow: hidden;
 
-    background: #0e0e15;
+    cursor: pointer;
+
+    outline: none;
+
+    transition:
+        background 140ms ease,
+        box-shadow 140ms ease;
 }
 
 
-.product-logo {
+.game-card.selected {
+    background: #8150df;
+
+    box-shadow:
+        0 0 0 1px
+        rgba(132, 80, 231, 0.20);
+}
+
+
+.game-card.selected .game-card-inner {
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(132, 80, 231, 0.34);
+}
+
+
+.game-card-inner {
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
+    display: flex;
 
-    display: block;
+    align-items: center;
+
+    padding:
+        9px 9px 9px 11px;
+
+    border-radius: 11px;
+
+    background: #1a1b28;
 }
 
 
-.product-logo.primordial {
-    background: #303033;
+/* =========================================================
+   GAME INFO
+   ========================================================= */
 
-    padding: 7px;
-}
+.game-info {
+    flex: 1;
 
-
-.product-logo.gamesense {
-    background: #0d1017;
-
-    padding: 6px;
-}
-
-
-/* ============================================================
-   PRODUCT INFO
-   ============================================================ */
-
-.product-info {
     min-width: 0;
 
-    margin-left: 11px;
+    display: flex;
 
-    align-self: center;
+    align-items: center;
 }
 
 
-.product-name {
-    margin: 0;
+/* =========================================================
+   GAME LOGOS
+   ========================================================= */
 
-    color: #e7e5ec;
+.game-logo {
+    width: 38px;
+    height: 38px;
 
-    font-size: 14px;
-    line-height: 16px;
+    flex: 0 0 38px;
 
-    font-weight: 500;
+    display: flex;
 
-    letter-spacing: -.25px;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 13px;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background: #101119;
+}
+
+
+.game-logo img {
+    width: 38px;
+    height: 38px;
+
+    display: block;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    border-radius: 9px;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    -webkit-user-drag: none;
+}
+
+
+/* =========================================================
+   GAME NAME
+   ========================================================= */
+
+.game-name {
+    color: #d0cedb;
+
+    font-size: 15px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.45px;
 
     white-space: nowrap;
 }
 
 
-.product-meta {
-    display: none;
-}
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
+.game-actions {
+    width: 84px;
 
-/* ============================================================
-   CARD ACTIONS
-   ============================================================ */
-
-.product-actions {
-    margin-left: auto;
-
-    width: 91px;
+    flex-shrink: 0;
 
     display: flex;
-    flex-direction: column;
 
-    align-items: stretch;
+    flex-direction: column;
 
     gap: 4px;
 }
 
 
 .subscription {
-    width: 91px;
+    width: 84px;
     height: 20px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     border-radius: 4px;
 
-    background: #301d2c;
+    background: #302532;
 
-    color: #a66c7f;
+    color: #bd6d7d;
 
-    font-size: 8px;
-    font-weight: 450;
+    font-size: 9px;
 
-    white-space: nowrap;
+    line-height: 1;
 }
 
 
-.game-option {
-    width: 91px;
+.game-version {
+    width: 84px;
     height: 20px;
 
-    border: 0;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
     border-radius: 4px;
 
-    background: #20202c;
+    background: #222331;
 
-    color: #777782;
+    color: #777888;
 
-    font-family: inherit;
     font-size: 9px;
-    font-weight: 450;
 
-    cursor: pointer;
-
-    transition:
-        background .14s ease,
-        color .14s ease;
+    line-height: 1;
 }
 
 
-.game-option:hover {
-    background: #252535;
-    color: #aaa9b4;
-}
-
-
-.game-option.active {
-    background: #252039;
-
-    color: #8a52ff;
-}
-
-
-/* ============================================================
-   INJECT BUTTON
-   ============================================================ */
+/* =========================================================
+   INJECT
+   ========================================================= */
 
 .inject-button {
-    flex: 0 0 38px;
+    position: relative;
 
     width: 100%;
-    height: 38px;
+    height: 39px;
 
-    margin-top: 8px;
-
-    border: 0;
-    border-radius: 9px;
-
-    background: #7946e8;
-
-    color: #eeeafd;
+    flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    gap: 6px;
+    gap: 4px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #774de4;
+
+    color: #e2deeb;
 
     font-family: inherit;
-    font-size: 14px;
-    font-weight: 450;
+
+    font-size: 16px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.45px;
 
     cursor: pointer;
 
     transition:
-        background .12s ease,
-        transform .08s ease;
+        background 140ms ease,
+        transform 100ms ease;
 }
 
 
 .inject-button:hover {
-    background: #8350f1;
+    background: #7b50e9;
 }
 
 
 .inject-button:active {
-    transform: scale(.985);
+    transform: scale(.987);
 }
 
 
-.inject-icon {
+/* =========================================================
+   INJECT MARK
+   ========================================================= */
+
+.inject-mark {
     position: relative;
 
-    width: 15px;
-    height: 13px;
+    width: 19px;
+    height: 12px;
 
-    display: inline-block;
+    display: block;
+
+    opacity: .9;
 }
 
 
-.inject-icon::before {
+.inject-mark::before {
     content: "";
 
     position: absolute;
 
     left: 1px;
-    top: 5px;
+    top: 2px;
 
-    width: 10px;
-    height: 4px;
+    width: 14px;
+    height: 7px;
 
-    border-radius: 1px 5px 5px 1px;
+    border-radius:
+        2px 7px 7px 2px;
 
-    background: #ece8ff;
+    background: #ded9e9;
 
-    transform: skewX(28deg);
+    transform:
+        rotate(27deg);
 }
 
 
-.inject-icon::after {
+.inject-mark::after {
     content: "";
 
     position: absolute;
 
-    right: 0;
-    top: 3px;
+    left: 11px;
+    top: 6px;
 
-    width: 0;
-    height: 0;
+    width: 5px;
+    height: 5px;
 
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    border-left: 6px solid #ece8ff;
+    border-radius: 50%;
+
+    background: #774de4;
 }
 
 
-/* ============================================================
-   LAUNCH SCREEN
-   ============================================================ */
+/* =========================================================
+   QUEUE SCREEN
+   ========================================================= */
 
-.launch-screen {
+.queue-screen {
     position: absolute;
 
     inset: 0;
@@ -682,111 +814,179 @@ body {
     justify-content: center;
 
     background:
-        rgba(14,14,21,.975);
+        rgba(13,14,21,.975);
 
-    backdrop-filter: blur(5px);
+    backdrop-filter:
+        blur(8px);
 
-    overflow: hidden;
+    -webkit-backdrop-filter:
+        blur(8px);
 }
 
 
-.launch-screen.visible {
+.queue-screen.active {
     display: flex;
+
+    animation:
+        queueFadeIn 180ms ease-out both;
 }
 
 
-.launch-content {
-    width: 250px;
+@keyframes queueFadeIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+.queue-content {
+    width: 270px;
 
     text-align: center;
 }
 
 
-.launch-title {
-    color: #e7e5ed;
+.queue-title {
+    color: #d2d0dc;
 
-    font-size: 19px;
-    font-weight: 500;
+    font-size: 20px;
 
-    letter-spacing: -.45px;
+    font-weight: 400;
+
+    letter-spacing: -0.65px;
 }
 
 
-.launch-option {
+.queue-subtitle {
     margin-top: 7px;
 
-    color: #8050ef;
+    color: #686977;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
 
-.launch-progress-track {
+.queue-number {
+    margin-top: 27px;
+
+    color: #777888;
+
+    font-size: 10px;
+}
+
+
+.queue-number > span:first-child {
+    color: #8250e8;
+
+    font-size: 22px;
+}
+
+
+.queue-people {
+    margin-left: 5px;
+
+    color: #696a79;
+
+    font-size: 10px;
+}
+
+
+.queue-progress {
     width: 100%;
     height: 3px;
 
-    margin-top: 28px;
+    margin-top: 18px;
 
     overflow: hidden;
 
     border-radius: 999px;
 
-    background: #282832;
+    background: #282936;
 }
 
 
-.launch-progress {
+.queue-progress-fill {
     width: 0%;
     height: 100%;
 
     border-radius: inherit;
 
-    background: #814bea;
+    background: #774de4;
 
-    transform-origin: left center;
+    will-change: width;
+}
+
+
+.queue-bottom {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 9px;
+
+    color: #565766;
+
+    font-size: 9px;
+}
+
+
+.queue-bottom b {
+    color: #777888;
+
+    font-weight: 400;
 }
 
 
 .cancel-button {
-    margin-top: 20px;
+    margin-top: 24px;
 
-    height: 30px;
-
-    padding: 0 16px;
+    padding:
+        7px 13px;
 
     border: 0;
+
     border-radius: 8px;
 
-    background: #1d1d27;
+    background: transparent;
 
-    color: #85848f;
+    color: #626372;
 
     font-family: inherit;
-    font-size: 10px;
+
+    font-size: 9px;
 
     cursor: pointer;
 }
 
 
 .cancel-button:hover {
-    background: #242430;
-    color: #b1afb9;
+    background: #191a25;
+
+    color: #9a99a7;
 }
 
 
-/* ============================================================
-   NO FOCUS OUTLINES / NO SCROLLBARS
-   ============================================================ */
+/* =========================================================
+   DRAGGING
+   ========================================================= */
 
-button:focus {
-    outline: none;
+[data-drag] {
+    cursor: default !important;
 }
 
-::-webkit-scrollbar {
-    width: 0;
-    height: 0;
+
+[data-no-drag] {
+    cursor: pointer;
 }
 
-* {
-    scrollbar-width: none;
+
+button {
+    -webkit-app-region: no-drag;
 }
