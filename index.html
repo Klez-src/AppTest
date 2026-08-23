@@ -22,7 +22,7 @@
 <div id="app">
 
     <!-- =====================================================
-         CUSTOM TOP BAR
+         TOP BAR
          ===================================================== -->
 
     <div class="topbar">
@@ -72,14 +72,18 @@
 
             <div class="game-tabs">
 
+
+                <!-- ALL GAMES -->
+
                 <button
                     class="game-tab"
                     data-game="all"
                 >
 
-                    <span class="tab-icon all-icon">
-                        +
-                    </span>
+                    <span
+                        class="tab-icon lightning-icon"
+                        aria-hidden="true"
+                    ></span>
 
                     <span class="tab-label">
                         All games
@@ -88,14 +92,17 @@
                 </button>
 
 
+                <!-- CS:GO -->
+
                 <button
                     class="game-tab active"
                     data-game="csgo"
                 >
 
-                    <span class="tab-icon csgo-icon">
-                        ʃ
-                    </span>
+                    <span
+                        class="tab-icon csgo-icon"
+                        aria-hidden="true"
+                    ></span>
 
                     <span class="tab-label">
                         CS:GO
@@ -104,14 +111,17 @@
                 </button>
 
 
+                <!-- CS2 -->
+
                 <button
                     class="game-tab"
                     data-game="cs2"
                 >
 
-                    <span class="tab-icon cs2-icon">
-                        2
-                    </span>
+                    <span
+                        class="tab-icon cs2-icon"
+                        aria-hidden="true"
+                    ></span>
 
                     <span class="tab-label">
                         CS:2
@@ -245,7 +255,10 @@
             class="inject-button"
         >
 
-            <span class="inject-mark"></span>
+            <span
+                class="inject-mark"
+                aria-hidden="true"
+            ></span>
 
             <span>
                 Inject
@@ -257,7 +270,7 @@
 
 
     <!-- =====================================================
-         QUEUE / LOADING SCREEN
+         QUEUE SCREEN
          ===================================================== -->
 
     <div
