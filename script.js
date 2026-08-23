@@ -1,798 +1,675 @@
-/* =========================================================
-   ORRO
-   ========================================================= */
+"use strict";
 
 
-/* =========================================================
-   NATIVE WEBVIEW BRIDGE
-   ========================================================= */
+/* ============================================================
+   ASSET / PRODUCT DATA
+   ============================================================ */
 
-function nativeMessage(message) {
+const PRODUCTS = {
+    primordialCsGo: {
+        id: "primordial-csgo",
+        name: "Primordial",
+        game: "CS:GO",
+        logo: "./primordial.png"
+    },
 
-    if (
-        window.chrome &&
-        window.chrome.webview
-    ) {
-        window.chrome.webview.postMessage(message);
+    gamesenseCsGo: {
+        id: "gamesense-csgo",
+        name: "Gamesense",
+        game: "CS:GO",
+        logo: "./gamesense.png"
+    },
+
+    primordialCs2: {
+        id: "primordial-cs2",
+        name: "Primordial",
+        game: "CS:2",
+        logo: "./primordial.png"
     }
-}
+};
 
-
-/* =========================================================
-   PRODUCT DEFINITIONS
-   ========================================================= */
 
 /*
     IMPORTANT:
 
-    These are the ONLY three products.
+    All games:
+        Primordial CS:GO
+        Gamesense CS:GO
+        Primordial CS:2
 
     CS:GO:
-        Primordial
-        Gamesense
+        Primordial CS:GO
+        Gamesense CS:GO
 
     CS:2:
-        Primordial
-
-    There is intentionally NO Gamesense CS:2.
+        Primordial CS:2
 */
 
-const PRODUCTS = [
+const GAME_LISTS = {
+    all: [
+        PRODUCTS.primordialCsGo,
+        PRODUCTS.gamesenseCsGo,
+        PRODUCTS.primordialCs2
+    ],
 
-    {
-        id: "primordial-csgo",
-        name: "Primordial",
-        game: "csgo",
-        gameLabel: "CS:GO",
-        image: "primordial.png"
-    },
+    csgo: [
+        PRODUCTS.primordialCsGo,
+        PRODUCTS.gamesenseCsGo
+    ],
 
-    {
-        id: "gamesense-csgo",
-        name: "Gamesense",
-        game: "csgo",
-        gameLabel: "CS:GO",
-        image: "gamesense.png"
-    },
-
-    {
-        id: "primordial-cs2",
-        name: "Primordial",
-        game: "cs2",
-        gameLabel: "CS:2",
-        image: "primordial.png"
-    }
-
-];
+    cs2: [
+        PRODUCTS.primordialCs2
+    ]
+};
 
 
-/* =========================================================
+/* ============================================================
    STATE
-   ========================================================= */
+   ============================================================ */
 
 let selectedGame = "all";
 
-let selectedProduct = null;
+let selectedProduct =
+    "primordial-csgo";
+
+let launchTimer = null;
 
 let launchRunning = false;
 
-let launchAnimationFrame = null;
 
-let launchStartTime = 0;
-
-let launchDuration = 11000;
-
-
-/* =========================================================
+/* ============================================================
    ELEMENTS
-   ========================================================= */
+   ============================================================ */
 
-const productList =
-    document.getElementById("productList");
+const products =
+    document.getElementById("products");
 
-const gameTabs =
-    document.querySelectorAll(".game-tab");
+const gameFilters =
+    document.querySelectorAll(".game-filter");
 
 const injectButton =
     document.getElementById("injectButton");
 
-const launchingScreen =
-    document.getElementById("launching-screen");
+const launchScreen =
+    document.getElementById("launchScreen");
 
-const launchingTitle =
-    document.getElementById("launching-title");
+const launchOption =
+    document.getElementById("launchOption");
 
-const launchingOption =
-    document.getElementById("launching-option");
+const launchProgress =
+    document.getElementById("launchProgress");
 
-const launchingProgress =
-    document.getElementById("launching-progress-fill");
-
-const launchingCancel =
-    document.getElementById("launching-cancel");
-
-const closeButton =
-    document.getElementById("closeButton");
+const cancelLaunchButton =
+    document.getElementById("cancelLaunch");
 
 const minimizeButton =
     document.getElementById("minimizeButton");
 
-
-/* =========================================================
-   FILTER PRODUCTS
-   ========================================================= */
-
-function getVisibleProducts() {
-
-    if (selectedGame === "all") {
-
-        return PRODUCTS;
-
-    }
-
-    return PRODUCTS.filter(
-        product =>
-            product.game === selectedGame
-    );
-}
+const closeButton =
+    document.getElementById("closeButton");
 
 
-/* =========================================================
-   RENDER PRODUCTS
-   ========================================================= */
+/* ============================================================
+   NATIVE MESSAGES
+   ============================================================ */
 
-function renderProducts() {
-
-    productList.innerHTML = "";
-
-    const products =
-        getVisibleProducts();
-
-    /*
-        If the previously selected product
-        isn't available in this game tab,
-        clear it.
-    */
-
-    if (
-        selectedProduct &&
-        !products.some(
-            product =>
-                product.id === selectedProduct.id
+function sendNativeMessage(message)
+{
+    try
+    {
+        if (
+            window.chrome &&
+            window.chrome.webview
         )
-    ) {
-        selectedProduct = null;
-    }
-
-
-    products.forEach(
-        product => {
-
-            const card =
-                document.createElement("button");
-
-            card.type = "button";
-
-            card.className =
-                "product-card";
-
-            if (
-                selectedProduct &&
-                selectedProduct.id === product.id
-            ) {
-                card.classList.add(
-                    "selected"
-                );
-            }
-
-
-            /*
-                Entire card is clickable.
-            */
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    selectProduct(product);
-
-                }
+        {
+            window.chrome.webview.postMessage(
+                message
             );
-
-
-            const icon =
-                document.createElement("div");
-
-            icon.className =
-                "product-icon";
-
-
-            const image =
-                document.createElement("img");
-
-            image.src =
-                product.image;
-
-            image.alt =
-                "";
-
-
-            /*
-                Keep both supplied game logos
-                exactly the same physical size.
-            */
-
-            icon.appendChild(image);
-
-
-            const info =
-                document.createElement("div");
-
-            info.className =
-                "product-info";
-
-
-            const name =
-                document.createElement("div");
-
-            name.className =
-                "product-name";
-
-            name.textContent =
-                product.name;
-
-
-            const game =
-                document.createElement("div");
-
-            game.className =
-                "product-game";
-
-            game.textContent =
-                product.gameLabel;
-
-
-            info.appendChild(name);
-            info.appendChild(game);
-
-
-            const meta =
-                document.createElement("div");
-
-            meta.className =
-                "product-meta";
-
-
-            const subscription =
-                document.createElement("div");
-
-            subscription.className =
-                "subscription";
-
-            subscription.textContent =
-                "Not subscribed";
-
-
-            const gameChip =
-                document.createElement("div");
-
-            gameChip.className =
-                "game-chip";
-
-            gameChip.textContent =
-                product.gameLabel;
-
-
-            meta.appendChild(
-                subscription
-            );
-
-            meta.appendChild(
-                gameChip
-            );
-
-
-            card.appendChild(icon);
-            card.appendChild(info);
-            card.appendChild(meta);
-
-
-            productList.appendChild(card);
-
         }
-    );
-
+    }
+    catch
+    {
+        // Normal browser fallback.
+    }
 }
 
 
-/* =========================================================
-   SELECT PRODUCT
-   ========================================================= */
+/* ============================================================
+   GAME FILTERS
+   ============================================================ */
 
-function selectProduct(product) {
-
-    selectedProduct =
-        product;
-
-
-    document
-        .querySelectorAll(".product-card")
-        .forEach(
-            card => {
-
-                card.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
+function setGame(game)
+{
+    selectedGame = game;
 
     /*
-        Match by product ID rather than
-        name/game text.
-
-        This prevents Primordial CS:GO
-        and Primordial CS:2 from being
-        treated as the same selection.
+        Keep the currently selected product when it still exists
+        in the selected game category.
     */
 
-    const cards =
-        document.querySelectorAll(
-            ".product-card"
+    const available =
+        GAME_LISTS[game];
+
+    const stillAvailable =
+        available.some(
+            product =>
+                product.id === selectedProduct
         );
 
-    const visible =
-        getVisibleProducts();
+    if (!stillAvailable)
+    {
+        selectedProduct =
+            available[0].id;
+    }
 
-    visible.forEach(
-        (item, index) => {
+    gameFilters.forEach(button =>
+    {
+        button.classList.toggle(
+            "active",
+            button.dataset.game === game
+        );
+    });
 
-            if (
-                item.id === product.id &&
-                cards[index]
-            ) {
-                cards[index].classList.add(
-                    "selected"
-                );
-            }
-
-        }
-    );
-
+    renderProducts();
 }
 
 
-/* =========================================================
-   GAME TAB SELECTION
-   ========================================================= */
+gameFilters.forEach(button =>
+{
+    button.addEventListener(
+        "click",
+        event =>
+        {
+            event.stopPropagation();
 
-gameTabs.forEach(
-    tab => {
-
-        tab.addEventListener(
-            "click",
-            () => {
-
-                selectedGame =
-                    tab.dataset.game;
-
-
-                gameTabs.forEach(
-                    other => {
-
-                        other.classList.toggle(
-                            "active",
-                            other === tab
-                        );
-
-                    }
-                );
+            setGame(
+                button.dataset.game
+            );
+        }
+    );
+});
 
 
-                /*
-                    Re-render from the actual
-                    product mapping.
+/* ============================================================
+   PRODUCT RENDERING
+   ============================================================ */
 
-                    CS:2 therefore gives:
+function renderProducts()
+{
+    products.innerHTML = "";
 
-                    Primordial CS:2
+    const list =
+        GAME_LISTS[selectedGame];
 
-                    and NOTHING else.
-                */
+    list.forEach(product =>
+    {
+        const card =
+            document.createElement("article");
 
-                renderProducts();
+        card.className =
+            "product-card";
 
-            }
-        );
-
-    }
-);
-
-
-/* =========================================================
-   INJECT BUTTON
-   ========================================================= */
-
-injectButton.addEventListener(
-    "click",
-    () => {
+        card.dataset.product =
+            product.id;
 
         if (
-            launchRunning
-        ) {
-            return;
+            product.id ===
+            selectedProduct
+        )
+        {
+            card.classList.add(
+                "selected"
+            );
         }
+
+
+        const logoWrap =
+            document.createElement("div");
+
+        logoWrap.className =
+            "product-logo-wrap";
+
+
+        const logo =
+            document.createElement("img");
+
+        logo.className =
+            "product-logo";
+
+        logo.classList.add(
+            product.name
+                .toLowerCase()
+        );
+
+        logo.src =
+            product.logo;
+
+        logo.alt =
+            product.name;
+
+
+        logoWrap.appendChild(
+            logo
+        );
+
+
+        const info =
+            document.createElement("div");
+
+        info.className =
+            "product-info";
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "product-name";
+
+        name.textContent =
+            product.name;
 
 
         /*
-            Nothing is selected:
-            don't start a fake launch.
+            Deliberately no game text here.
+
+            The previous version duplicated CS:GO/CS:2 under
+            the product name. The game belongs only on the
+            right-side option button.
         */
 
+        info.appendChild(
+            name
+        );
+
+
+        const actions =
+            document.createElement("div");
+
+        actions.className =
+            "product-actions";
+
+
+        const subscription =
+            document.createElement("div");
+
+        subscription.className =
+            "subscription";
+
+        subscription.textContent =
+            "Not subscribed";
+
+
+        const option =
+            document.createElement("button");
+
+        option.className =
+            "game-option";
+
+        option.textContent =
+            product.game;
+
+        option.dataset.product =
+            product.id;
+
         if (
-            !selectedProduct
-        ) {
-
-            /*
-                Select the first visible
-                product so the UI has a
-                deterministic choice.
-            */
-
-            const visible =
-                getVisibleProducts();
-
-            if (
-                visible.length === 0
-            ) {
-                return;
-            }
-
-            selectProduct(
-                visible[0]
+            product.id ===
+            selectedProduct
+        )
+        {
+            option.classList.add(
+                "active"
             );
-
         }
 
 
-        startInjection();
+        option.addEventListener(
+            "click",
+            event =>
+            {
+                event.stopPropagation();
 
+                selectProduct(
+                    product.id
+                );
+            }
+        );
+
+
+        actions.appendChild(
+            subscription
+        );
+
+        actions.appendChild(
+            option
+        );
+
+
+        card.appendChild(
+            logoWrap
+        );
+
+        card.appendChild(
+            info
+        );
+
+        card.appendChild(
+            actions
+        );
+
+
+        card.addEventListener(
+            "click",
+            event =>
+            {
+                event.stopPropagation();
+
+                selectProduct(
+                    product.id
+                );
+            }
+        );
+
+
+        products.appendChild(
+            card
+        );
+    });
+}
+
+
+/* ============================================================
+   PRODUCT SELECTION
+   ============================================================ */
+
+function selectProduct(productId)
+{
+    selectedProduct =
+        productId;
+
+    document
+        .querySelectorAll(
+            ".product-card"
+        )
+        .forEach(card =>
+        {
+            const selected =
+                card.dataset.product ===
+                productId;
+
+            card.classList.toggle(
+                "selected",
+                selected
+            );
+
+            const option =
+                card.querySelector(
+                    ".game-option"
+                );
+
+            if (option)
+            {
+                option.classList.toggle(
+                    "active",
+                    selected
+                );
+            }
+        });
+}
+
+
+/* ============================================================
+   INJECT
+   ============================================================ */
+
+function getSelectedProduct()
+{
+    for (
+        const key of Object.keys(PRODUCTS)
+    )
+    {
+        if (
+            PRODUCTS[key].id ===
+            selectedProduct
+        )
+        {
+            return PRODUCTS[key];
+        }
     }
-);
+
+    return PRODUCTS.primordialCsGo;
+}
 
 
-/* =========================================================
-   START INJECTION
-   ========================================================= */
-
-function startInjection() {
-
-    if (
-        launchRunning ||
-        !selectedProduct
-    ) {
+function startLaunch()
+{
+    if (launchRunning)
         return;
-    }
-
 
     launchRunning = true;
 
+    const product =
+        getSelectedProduct();
+
+    launchOption.textContent =
+        product.name +
+        " " +
+        product.game;
+
+    launchProgress.style.width =
+        "0%";
+
+    launchScreen.classList.add(
+        "visible"
+    );
+
 
     /*
-        Around 11 seconds.
+        Roughly 11 seconds.
 
-        Small variation keeps it from
-        finishing at exactly the same
-        millisecond every time.
+        Slightly varied every run so it doesn't look like a
+        fixed scripted duration.
     */
 
-    launchDuration =
-        10800 +
-        Math.random() * 600;
+    const duration =
+        10300 +
+        Math.random() * 1400;
 
-
-    launchStartTime =
+    const startTime =
         performance.now();
 
 
-    launchingTitle.textContent =
-        "Injecting";
-
-
-    launchingOption.textContent =
-        selectedProduct.name +
-        " · " +
-        selectedProduct.gameLabel;
-
-
-    launchingProgress.style.width =
-        "0%";
-
-
-    launchingScreen.classList.add(
-        "active"
-    );
-
-
-    /*
-        Use requestAnimationFrame rather
-        than chunky setTimeout stages.
-
-        This makes the bar continuous
-        without making it look artificially
-        perfectly linear.
-    */
-
-    launchAnimationFrame =
+    launchTimer =
         requestAnimationFrame(
-            updateInjection
-        );
+            function tick(now)
+            {
+                if (!launchRunning)
+                    return;
 
+                const elapsed =
+                    now -
+                    startTime;
+
+                const linear =
+                    Math.min(
+                        elapsed / duration,
+                        1
+                    );
+
+
+                /*
+                    Deliberately not perfectly linear.
+
+                    Small changes in velocity make the bar feel
+                    more like an actual process rather than a
+                    CSS animation.
+                */
+
+                let progress;
+
+                if (linear < .12)
+                {
+                    progress =
+                        linear * .72;
+                }
+                else if (linear < .82)
+                {
+                    progress =
+                        .0864 +
+                        (
+                            linear -
+                            .12
+                        ) * 1.03;
+                }
+                else
+                {
+                    progress =
+                        .8085 +
+                        (
+                            linear -
+                            .82
+                        ) * .94;
+                }
+
+
+                progress =
+                    Math.min(
+                        progress,
+                        1
+                    );
+
+
+                launchProgress.style.width =
+                    `${progress * 100}%`;
+
+
+                if (
+                    linear >= 1
+                )
+                {
+                    launchProgress.style.width =
+                        "100%";
+
+                    setTimeout(
+                        finishLaunch,
+                        250
+                    );
+
+                    return;
+                }
+
+
+                launchTimer =
+                    requestAnimationFrame(
+                        tick
+                    );
+            }
+        );
 }
 
 
-/* =========================================================
-   REALISTIC PROGRESS
-   ========================================================= */
-
-function updateInjection(
-    now
-) {
-
-    if (
-        !launchRunning
-    ) {
-        return;
-    }
-
-
-    const elapsed =
-        now -
-        launchStartTime;
-
-
-    let progress =
-        elapsed /
-        launchDuration;
-
-
-    if (
-        progress >= 1
-    ) {
-
-        launchingProgress.style.width =
-            "100%";
-
-
-        finishInjection();
-
-        return;
-
-    }
-
-
-    /*
-        Slightly irregular but restrained
-        progression.
-
-        It never jumps backwards.
-        It doesn't use visible percentages.
-    */
-
-    const eased =
-        1 -
-        Math.pow(
-            1 - progress,
-            1.45
-        );
-
-
-    launchingProgress.style.width =
-        (eased * 100).toFixed(3) +
-        "%";
-
-
-    launchAnimationFrame =
-        requestAnimationFrame(
-            updateInjection
-        );
-
-}
-
-
-/* =========================================================
-   FINISH
-   ========================================================= */
-
-function finishInjection() {
-
+function finishLaunch()
+{
     launchRunning =
         false;
 
+    launchTimer =
+        null;
 
-    if (
-        launchAnimationFrame !== null
-    ) {
-
-        cancelAnimationFrame(
-            launchAnimationFrame
-        );
-
-        launchAnimationFrame =
-            null;
-
-    }
-
-
-    launchingProgress.style.width =
-        "100%";
-
-
-    /*
-        Keep the screen visible very briefly
-        instead of snapping away immediately.
-    */
-
-    setTimeout(
-        () => {
-
-            launchingScreen.classList.remove(
-                "active"
-            );
-
-
-            launchingProgress.style.width =
-                "0%";
-
-        },
-        350
+    launchScreen.classList.remove(
+        "visible"
     );
-
 }
 
 
-/* =========================================================
-   CANCEL
-   ========================================================= */
-
-launchingCancel.addEventListener(
-    "click",
-    () => {
-
-        cancelInjection();
-
-    }
-);
-
-
-function cancelInjection() {
-
-    if (
-        !launchRunning
-    ) {
-        return;
-    }
-
-
+function cancelLaunch()
+{
     launchRunning =
         false;
 
-
-    if (
-        launchAnimationFrame !== null
-    ) {
-
+    if (launchTimer)
+    {
         cancelAnimationFrame(
-            launchAnimationFrame
+            launchTimer
         );
-
-        launchAnimationFrame =
-            null;
-
     }
 
+    launchTimer =
+        null;
 
-    launchingScreen.classList.remove(
-        "active"
-    );
-
-
-    launchingProgress.style.width =
+    launchProgress.style.width =
         "0%";
 
+    launchScreen.classList.remove(
+        "visible"
+    );
 }
 
 
-/* =========================================================
-   CLOSE
-   ========================================================= */
-
-closeButton.addEventListener(
+injectButton.addEventListener(
     "click",
-    event => {
-
+    event =>
+    {
         event.stopPropagation();
 
-        nativeMessage(
-            "window.close"
-        );
-
+        startLaunch();
     }
 );
 
 
-/* =========================================================
-   MINIMIZE
-   ========================================================= */
+cancelLaunchButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        cancelLaunch();
+    }
+);
+
+
+/* ============================================================
+   WINDOW CONTROLS
+   ============================================================ */
 
 minimizeButton.addEventListener(
     "click",
-    event => {
-
+    event =>
+    {
         event.stopPropagation();
 
-        nativeMessage(
+        sendNativeMessage(
             "window.minimize"
         );
-
     }
 );
 
 
-/* =========================================================
-   WINDOW DRAGGING
-   ========================================================= */
+closeButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
 
-/*
-    Only the actual top bar is sent to C++ here.
-
-    This avoids the cursor becoming a hand and
-    prevents buttons/cards from accidentally
-    starting a drag.
-*/
-
-const windowDragSpace =
-    document.querySelector(
-        ".window-drag-space"
-    );
-
-
-windowDragSpace.addEventListener(
-    "pointerdown",
-    event => {
-
-        if (
-            event.button !== 0
-        ) {
-            return;
-        }
-
-
-        nativeMessage(
-            "window.drag"
+        sendNativeMessage(
+            "window.close"
         );
-
     }
 );
 
 
-/* =========================================================
-   PREVENT TEXT DRAGGING
-   ========================================================= */
-
-document.addEventListener(
-    "dragstart",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-
-/* =========================================================
-   INITIAL RENDER
-   ========================================================= */
+/* ============================================================
+   STARTUP
+   ============================================================ */
 
 renderProducts();
+
+
+/*
+    Make the initial state exactly:
+
+        All games
+        Primordial CS:GO selected
+*/
+
+setGame("all");
