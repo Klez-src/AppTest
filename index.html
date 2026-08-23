@@ -2,87 +2,63 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1"
     >
 
-    <title></title>
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500&display=swap"
-        rel="stylesheet"
-    >
+    <title>orro</title>
 
     <link
         rel="stylesheet"
-        href="style.css?v=6"
+        href="style.css"
     >
-
 </head>
-
 
 <body>
 
 <div id="app">
 
-
     <!-- =====================================================
-         TOP BAR
+         CUSTOM TOP BAR
          ===================================================== -->
 
-    <header
-        class="topbar"
-        data-drag
-    >
-
-        <div class="topbar-drag-area"></div>
-
+    <div class="topbar">
 
         <div
-            class="window-controls"
-            data-no-drag
-        >
+            class="topbar-drag-area"
+            data-drag
+        ></div>
+
+        <div class="window-controls">
 
             <button
                 id="minimizeButton"
                 class="window-button minimize"
                 aria-label="Minimize"
+                data-no-drag
             >
                 <span></span>
             </button>
-
 
             <button
                 id="closeButton"
                 class="window-button close"
                 aria-label="Close"
+                data-no-drag
             >
                 ×
             </button>
 
         </div>
 
-    </header>
-
+    </div>
 
 
     <!-- =====================================================
-         MAIN
+         MAIN CONTENT
          ===================================================== -->
 
     <main class="content">
@@ -92,22 +68,17 @@
              GAME SELECTOR
              ================================================= -->
 
-        <nav
-            class="game-tabs-shell"
-            data-no-drag
-        >
+        <div class="game-tabs-shell">
 
             <div class="game-tabs">
-
 
                 <button
                     class="game-tab"
                     data-game="all"
-                    type="button"
                 >
 
                     <span class="tab-icon all-icon">
-                        ●
+                        +
                     </span>
 
                     <span class="tab-label">
@@ -117,11 +88,9 @@
                 </button>
 
 
-
                 <button
                     class="game-tab active"
                     data-game="csgo"
-                    type="button"
                 >
 
                     <span class="tab-icon csgo-icon">
@@ -135,11 +104,9 @@
                 </button>
 
 
-
                 <button
                     class="game-tab"
                     data-game="cs2"
-                    type="button"
                 >
 
                     <span class="tab-icon cs2-icon">
@@ -152,41 +119,44 @@
 
                 </button>
 
-
             </div>
 
-        </nav>
-
+        </div>
 
 
         <!-- =================================================
-             GAME PANEL
+             GAMES PANEL
              ================================================= -->
 
-        <section
-            id="gamesPanel"
-            class="games-panel"
-        >
+        <section class="games-panel">
 
-            <div
-                id="games"
-                class="games"
-            >
+            <div class="games">
 
 
-                <!-- PRIMORDIAL -->
+                <!-- =========================================
+                     PRIMORDIAL
+                     ========================================= -->
 
-                <article
+                <div
                     class="game-card"
                     data-games="csgo"
-                    data-game-name="primordial"
                     tabindex="0"
                 >
 
                     <div class="game-card-inner">
 
-
                         <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="primordial.png"
+                                    alt="Primordial"
+                                    draggable="false"
+                                >
+
+                            </div>
+
 
                             <div class="game-name">
                                 Primordial
@@ -207,26 +177,35 @@
 
                         </div>
 
-
                     </div>
 
-                </article>
+                </div>
 
 
+                <!-- =========================================
+                     GAMESENSE
+                     ========================================= -->
 
-                <!-- GAMESENSE -->
-
-                <article
+                <div
                     class="game-card"
                     data-games="csgo"
-                    data-game-name="gamesense"
                     tabindex="0"
                 >
 
                     <div class="game-card-inner">
 
-
                         <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="gamesense.png"
+                                    alt="Gamesense"
+                                    draggable="false"
+                                >
+
+                            </div>
+
 
                             <div class="game-name">
                                 Gamesense
@@ -247,54 +226,14 @@
 
                         </div>
 
-
                     </div>
 
-                </article>
-
-
-
-                <!-- CS2 PLACEHOLDER -->
-
-                <article
-                    class="game-card hidden-game"
-                    data-games="cs2"
-                    data-game-name="primordial-cs2"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-name">
-                                Primordial
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS:2
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </article>
+                </div>
 
 
             </div>
 
         </section>
-
 
 
         <!-- =================================================
@@ -304,25 +243,21 @@
         <button
             id="injectButton"
             class="inject-button"
-            data-no-drag
-            type="button"
         >
 
             <span class="inject-mark"></span>
 
-            <span class="inject-label">
+            <span>
                 Inject
             </span>
 
         </button>
 
-
     </main>
 
 
-
     <!-- =====================================================
-         QUEUE SCREEN
+         QUEUE / LOADING SCREEN
          ===================================================== -->
 
     <div
@@ -332,14 +267,13 @@
 
         <div class="queue-content">
 
-
             <div class="queue-title">
-                You're in the queue.
+                orro
             </div>
 
 
             <div class="queue-subtitle">
-                Waiting for your session.
+                You're in the queue
             </div>
 
 
@@ -368,16 +302,13 @@
 
             <div class="queue-bottom">
 
-                <span id="queueTime">
-                    ~29 seconds
+                <span>
+                    Position
+                    <b id="queuePosition">3</b>
                 </span>
 
-
-                <span>
-                    position
-                    <b id="queuePosition">
-                        3
-                    </b>
+                <span id="queueTime">
+                    ~29 seconds
                 </span>
 
             </div>
@@ -386,22 +317,18 @@
             <button
                 id="cancelQueue"
                 class="cancel-button"
-                type="button"
             >
                 Cancel
             </button>
-
 
         </div>
 
     </div>
 
-
 </div>
 
 
-<script src="script.js?v=6"></script>
+<script src="script.js"></script>
 
 </body>
-
 </html>
