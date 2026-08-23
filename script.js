@@ -3,114 +3,127 @@
    ========================================================= */
 
 function sendWindowMessage(message) {
+
     try {
+
         if (
             window.chrome &&
             window.chrome.webview
         ) {
-            window.chrome.webview.postMessage(message);
+            window.chrome.webview.postMessage(
+                message
+            );
         }
+
     } catch (_) {
-        // Running outside WebView2.
+        // Normal browser fallback.
     }
 }
 
 
 function closeWindow() {
-    sendWindowMessage("window.close");
+    sendWindowMessage(
+        "window.close"
+    );
 }
 
 
 function minimizeWindow() {
-    sendWindowMessage("window.minimize");
+    sendWindowMessage(
+        "window.minimize"
+    );
 }
 
 
+
 /* =========================================================
-   GAME DATA
+   GAME / OPTION DATA
    ========================================================= */
 
-const games = {
+/*
+    All available options:
 
-    all: [
-        {
-            id: "primordial",
-            name: "Primordial",
-            logo: "primordial.png",
-            game: "CS:GO"
-        },
+    Primordial CS:2
+    Primordial CS:GO
+    Gamesense CS:GO
 
-        {
-            id: "primordial-2",
-            name: "Primordial",
-            logo: "primordial.png",
-            game: "CS:GO"
-        },
+    Filtering:
 
-        {
-            id: "gamesense",
-            name: "Gamesense",
-            logo: "gamesense.png",
-            game: "CS:GO"
-        }
-    ],
+    ALL
+      ├─ Primordial — CS:2
+      ├─ Primordial — CS:GO
+      └─ Gamesense — CS:GO
+
+    CS:GO
+      ├─ Primordial — CS:GO
+      └─ Gamesense — CS:GO
+
+    CS:2
+      └─ Primordial — CS:2
+*/
 
 
-    csgo: [
-        {
-            id: "primordial",
-            name: "Primordial",
-            logo: "primordial.png",
-            game: "CS:GO"
-        },
+const allOptions = [
 
-        {
-            id: "primordial-2",
-            name: "Primordial",
-            logo: "primordial.png",
-            game: "CS:GO"
-        },
+    {
+        id: "primordial-cs2",
 
-        {
-            id: "gamesense",
-            name: "Gamesense",
-            logo: "gamesense.png",
-            game: "CS:GO"
-        }
-    ],
+        name: "Primordial",
+
+        logo: "primordial.png",
+
+        game: "CS:2"
+    },
 
 
-    cs2: [
-        {
-            id: "primordial-cs2",
-            name: "Primordial",
-            logo: "primordial.png",
-            game: "CS:2"
-        },
+    {
+        id: "primordial-csgo",
 
-        {
-            id: "gamesense-cs2",
-            name: "Gamesense",
-            logo: "gamesense.png",
-            game: "CS:2"
-        }
-    ]
-};
+        name: "Primordial",
+
+        logo: "primordial.png",
+
+        game: "CS:GO"
+    },
+
+
+    {
+        id: "gamesense-csgo",
+
+        name: "Gamesense",
+
+        logo: "gamesense.png",
+
+        game: "CS:GO"
+    }
+
+];
+
 
 
 /* =========================================================
    STATE
    ========================================================= */
 
-let selectedGame = "csgo";
+let selectedGame =
+    "csgo";
 
-let selectedOption = null;
 
-let injectionTimer = null;
+let selectedOption =
+    "primordial-csgo";
 
-let injectionStart = 0;
 
-let injectionCancelled = false;
+let injectionTimer =
+    null;
+
+
+let injectionStart =
+    0;
+
+
+let injectionCancelled =
+    false;
+
 
 
 /* =========================================================
@@ -118,74 +131,166 @@ let injectionCancelled = false;
    ========================================================= */
 
 const optionsElement =
-    document.getElementById("options");
+    document.getElementById(
+        "options"
+    );
+
 
 const loadingScreen =
-    document.getElementById("loadingScreen");
+    document.getElementById(
+        "loadingScreen"
+    );
+
 
 const loadingOption =
-    document.getElementById("loadingOption");
+    document.getElementById(
+        "loadingOption"
+    );
+
 
 const loadingFill =
-    document.getElementById("loadingFill");
+    document.getElementById(
+        "loadingFill"
+    );
+
 
 
 /* =========================================================
-   INITIALISE
+   START
    ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        selectGame("csgo");
+        selectGame(
+            "csgo"
+        );
 
     }
 );
+
+
+
+/* =========================================================
+   GAME FILTERING
+   ========================================================= */
+
+function getOptionsForGame(
+    game
+) {
+
+    if (game === "all") {
+
+        return [
+            ...allOptions
+        ];
+
+    }
+
+
+    return allOptions.filter(
+        option =>
+            option.game ===
+            (
+                game === "cs2"
+                    ? "CS:2"
+                    : "CS:GO"
+            )
+    );
+}
+
 
 
 /* =========================================================
    SELECT GAME
    ========================================================= */
 
-function selectGame(game) {
+function selectGame(
+    game
+) {
 
-    if (!games[game]) {
-        return;
-    }
+    selectedGame =
+        game;
 
-    selectedGame = game;
+
+    /*
+     * Selected game pill.
+     */
 
     document
-        .querySelectorAll(".game-option")
-        .forEach(button => {
+        .querySelectorAll(
+            ".game-option"
+        )
+        .forEach(
+            button => {
 
-            button.classList.toggle(
-                "active",
-                button.dataset.game === game
-            );
+                button.classList.toggle(
+                    "active",
+                    button.dataset.game ===
+                    game
+                );
 
-        });
+            }
+        );
+
+
+    const available =
+        getOptionsForGame(
+            game
+        );
+
+
+    /*
+     * If our previous selection
+     * isn't available in this game,
+     * automatically choose the first
+     * appropriate option.
+     */
+
+    const stillAvailable =
+        available.some(
+            option =>
+                option.id ===
+                selectedOption
+        );
+
+
+    if (!stillAvailable) {
+
+        selectedOption =
+            available.length
+                ? available[0].id
+                : null;
+
+    }
 
 
     renderOptions(
-        games[game]
+        available
     );
 }
+
 
 
 /* =========================================================
    RENDER OPTIONS
    ========================================================= */
 
-function renderOptions(options) {
+function renderOptions(
+    options
+) {
 
-    optionsElement.innerHTML = "";
+    optionsElement.innerHTML =
+        "";
+
 
     if (!options.length) {
 
         const empty =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         empty.className =
             "empty-options";
@@ -197,45 +302,32 @@ function renderOptions(options) {
             empty
         );
 
-        selectedOption = null;
-
         return;
     }
-
-
-    /*
-     * Preserve the currently selected option
-     * where possible.
-     */
-
-    const existing =
-        options.find(
-            option =>
-                option.id === selectedOption
-        );
-
-
-    selectedOption =
-        existing
-            ? existing.id
-            : options[0].id;
 
 
     options.forEach(
         option => {
 
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             card.className =
                 "option-card";
 
+
             if (
-                option.id === selectedOption
+                option.id ===
+                selectedOption
             ) {
+
                 card.classList.add(
                     "selected"
                 );
+
             }
 
 
@@ -255,19 +347,24 @@ function renderOptions(options) {
             );
 
 
-            /*
-             * Logo
-             */
+
+            /* -----------------------------
+               LOGO
+               ----------------------------- */
 
             const logo =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             logo.className =
                 "option-logo";
 
 
             const image =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
             image.src =
                 option.logo;
@@ -281,19 +378,24 @@ function renderOptions(options) {
             );
 
 
-            /*
-             * Name
-             */
+
+            /* -----------------------------
+               NAME
+               ----------------------------- */
 
             const info =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             info.className =
                 "option-info";
 
 
             const name =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             name.className =
                 "option-name";
@@ -307,19 +409,24 @@ function renderOptions(options) {
             );
 
 
-            /*
-             * Right side
-             */
+
+            /* -----------------------------
+               RIGHT SIDE
+               ----------------------------- */
 
             const side =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             side.className =
                 "option-side";
 
 
             const subscription =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             subscription.className =
                 "subscription";
@@ -329,7 +436,9 @@ function renderOptions(options) {
 
 
             const gameBadge =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             gameBadge.className =
                 "game-badge";
@@ -347,9 +456,10 @@ function renderOptions(options) {
             );
 
 
-            /*
-             * Assemble
-             */
+
+            /* -----------------------------
+               BUILD
+               ----------------------------- */
 
             card.appendChild(
                 logo
@@ -373,18 +483,26 @@ function renderOptions(options) {
 }
 
 
+
 /* =========================================================
    SELECT OPTION
    ========================================================= */
 
-function selectOption(id) {
+function selectOption(
+    id
+) {
 
     const available =
-        games[selectedGame] || [];
+        getOptionsForGame(
+            selectedGame
+        );
+
 
     const option =
         available.find(
-            item => item.id === id
+            item =>
+                item.id ===
+                id
         );
 
 
@@ -398,20 +516,26 @@ function selectOption(id) {
 
 
     document
-        .querySelectorAll(".option-card")
-        .forEach(card => {
+        .querySelectorAll(
+            ".option-card"
+        )
+        .forEach(
+            card => {
 
-            card.classList.toggle(
-                "selected",
-                card.dataset.option === id
-            );
+                card.classList.toggle(
+                    "selected",
+                    card.dataset.option ===
+                    id
+                );
 
-        });
+            }
+        );
 }
 
 
+
 /* =========================================================
-   INJECTION
+   BEGIN INJECTION
    ========================================================= */
 
 function beginInjection() {
@@ -422,11 +546,11 @@ function beginInjection() {
 
 
     const option =
-        games[selectedGame]
-            ?.find(
-                item =>
-                    item.id === selectedOption
-            );
+        allOptions.find(
+            item =>
+                item.id ===
+                selectedOption
+        );
 
 
     if (!option) {
@@ -434,12 +558,10 @@ function beginInjection() {
     }
 
 
-    /*
-     * Fullscreen loading screen.
-     */
-
     loadingOption.textContent =
-        option.name;
+        option.name +
+        " " +
+        option.game;
 
 
     loadingFill.style.width =
@@ -460,12 +582,9 @@ function beginInjection() {
 
 
     /*
-     * Approximately 11 seconds.
-     *
-     * The progress is intentionally uneven.
-     * It advances in small realistic chunks rather
-     * than behaving like one perfectly linear CSS
-     * animation.
+     * Roughly 11 seconds.
+     * Progress deliberately has small
+     * irregular pauses/steps.
      */
 
     const duration =
@@ -473,36 +592,61 @@ function beginInjection() {
 
 
     const stages = [
-        { time: 0,    progress: 0 },
-        { time: 420,  progress: 5 },
-        { time: 930,  progress: 11 },
-        { time: 1420, progress: 17 },
-        { time: 2070, progress: 23 },
-        { time: 2630, progress: 29 },
-        { time: 3310, progress: 35 },
-        { time: 3970, progress: 42 },
-        { time: 4520, progress: 47 },
-        { time: 5180, progress: 54 },
-        { time: 5730, progress: 59 },
-        { time: 6390, progress: 64 },
-        { time: 7010, progress: 69 },
-        { time: 7580, progress: 73 },
-        { time: 8170, progress: 78 },
-        { time: 8720, progress: 82 },
-        { time: 9260, progress: 87 },
-        { time: 9780, progress: 91 },
-        { time: 10240, progress: 94 },
-        { time: 10680, progress: 97 },
-        { time: 11000, progress: 100 }
+
+        [0, 0],
+
+        [410, 5],
+
+        [870, 10],
+
+        [1370, 16],
+
+        [1950, 22],
+
+        [2490, 27],
+
+        [3180, 34],
+
+        [3750, 40],
+
+        [4390, 46],
+
+        [5030, 52],
+
+        [5630, 58],
+
+        [6260, 63],
+
+        [6900, 68],
+
+        [7470, 73],
+
+        [8110, 78],
+
+        [8660, 82],
+
+        [9240, 87],
+
+        [9740, 91],
+
+        [10280, 95],
+
+        [10720, 98],
+
+        [11000, 100]
+
     ];
 
 
-    let stageIndex = 0;
+    let stageIndex =
+        0;
 
 
-    function updateStage() {
+    function update() {
 
-        if (injectionCancelled) {
+        if (
+            injectionCancelled
+        ) {
             return;
         }
 
@@ -516,12 +660,13 @@ function beginInjection() {
             stageIndex <
             stages.length &&
             elapsed >=
-                stages[stageIndex].time
+            stages[stageIndex][0]
         ) {
 
             loadingFill.style.width =
-                stages[stageIndex].progress +
+                stages[stageIndex][1] +
                 "%";
+
 
             stageIndex++;
 
@@ -529,21 +674,13 @@ function beginInjection() {
 
 
         if (
-            elapsed >= duration
+            elapsed >=
+            duration
         ) {
-
-            clearInterval(
-                injectionTimer
-            );
 
             injectionTimer =
                 null;
 
-
-            /*
-             * Leave the bar completed very
-             * briefly before returning.
-             */
 
             setTimeout(
                 () => {
@@ -551,12 +688,15 @@ function beginInjection() {
                     if (
                         !injectionCancelled
                     ) {
+
                         finishInjection();
+
                     }
 
                 },
                 180
             );
+
 
             return;
         }
@@ -564,16 +704,17 @@ function beginInjection() {
 
         injectionTimer =
             requestAnimationFrame(
-                updateStage
+                update
             );
     }
 
 
     injectionTimer =
         requestAnimationFrame(
-            updateStage
+            update
         );
 }
+
 
 
 /* =========================================================
@@ -586,7 +727,9 @@ function cancelInjection() {
         true;
 
 
-    if (injectionTimer !== null) {
+    if (
+        injectionTimer !== null
+    ) {
 
         cancelAnimationFrame(
             injectionTimer
@@ -607,6 +750,7 @@ function cancelInjection() {
 }
 
 
+
 /* =========================================================
    FINISH
    ========================================================= */
@@ -620,14 +764,8 @@ function finishInjection() {
 
     loadingFill.style.width =
         "0%";
-
-
-    /*
-     * Keep the loader UI where it was.
-     * Actual injection can be connected here
-     * later without changing the interface.
-     */
 }
+
 
 
 /* =========================================================
@@ -642,7 +780,9 @@ document.addEventListener(
             event.target.tagName ===
             "IMG"
         ) {
+
             event.preventDefault();
+
         }
 
     }
