@@ -3,13 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Loader</title>
+    <title>orro</title>
 
     <link
         rel="stylesheet"
@@ -17,279 +16,144 @@
     >
 </head>
 
-
 <body>
 
-<div id="app">
+    <!-- =====================================================
+         INTRO — KEEPING THE EXISTING ORRO INTRO
+         ===================================================== -->
+
+    <div id="intro">
+        <div class="intro-word">orro</div>
+        <div class="intro-dot"></div>
+        <div class="intro-ring"></div>
+        <div class="intro-ring-two"></div>
+    </div>
 
 
-    <!-- =========================================
-         TOP BAR
-         ========================================= -->
+    <!-- =====================================================
+         APPLICATION
+         ===================================================== -->
 
-    <header class="topbar">
-
-        <div class="window-controls">
-
-            <button
-                class="window-button minimize"
-                onclick="minimizeWindow()"
-                aria-label="Minimize"
-            >
-                −
-            </button>
-
-            <button
-                class="window-button close"
-                onclick="closeWindow()"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
-        </div>
-
-    </header>
+    <div id="app">
 
 
+        <!-- =================================================
+             TOP WINDOW BAR
+             ================================================= -->
 
-    <!-- =========================================
-         MAIN
-         ========================================= -->
+        <header class="window-bar">
 
-    <main class="main">
+            <div class="window-drag-space"></div>
+
+            <div class="window-controls">
+
+                <button
+                    id="minimizeButton"
+                    class="window-control minimize"
+                    type="button"
+                    aria-label="Minimize"
+                >
+                    <span></span>
+                </button>
+
+                <button
+                    id="closeButton"
+                    class="window-control close"
+                    type="button"
+                    aria-label="Close"
+                >
+                    <span></span>
+                    <span></span>
+                </button>
+
+            </div>
+
+        </header>
 
 
-        <!-- =====================================
+        <!-- =================================================
              GAME SELECTOR
-             ===================================== -->
+             ================================================= -->
 
-        <div class="game-selector-wrapper">
+        <div class="game-selector-wrap">
 
             <div class="game-selector">
 
-
                 <button
-                    class="game-option"
+                    type="button"
+                    class="game-tab active"
                     data-game="all"
-                    onclick="selectGame('all')"
                 >
 
                     <span class="game-icon all-icon">
 
                         <svg
-                            viewBox="0 0 100 100"
+                            viewBox="0 0 24 24"
                             aria-hidden="true"
                         >
-
                             <circle
-                                cx="50"
-                                cy="50"
-                                r="44"
+                                cx="12"
+                                cy="12"
+                                r="9"
                                 fill="currentColor"
                             />
 
                             <path
-                                d="
-                                    M53 18
-                                    L31 51
-                                    Q29 54 33 54
-                                    L46 54
-                                    L44 80
-                                    Q44 84 47 81
-                                    L70 48
-                                    Q72 45 68 45
-                                    L55 45
-                                    L56 21
-                                    Q56 16 53 18
-                                    Z
-                                "
-                                fill="#111219"
-                                stroke="#111219"
-                                stroke-width="4"
-                                stroke-linejoin="round"
-                                stroke-linecap="round"
+                                d="M13.4 5.8 8.7 12h3.1l-1.2 6.2 4.7-6.2h-3.1z"
+                                fill="#15151d"
                             />
-
                         </svg>
 
                     </span>
 
-                    <span>
-                        All games
-                    </span>
+                    <span>All games</span>
 
                 </button>
 
 
-
                 <button
-                    class="game-option active"
+                    type="button"
+                    class="game-tab"
                     data-game="csgo"
-                    onclick="selectGame('csgo')"
                 >
 
                     <span class="game-icon csgo-icon">
 
+                        <!-- User-provided recolourable CS:GO SVG -->
                         <svg
                             viewBox="235 175 195 245"
                             aria-hidden="true"
                         >
-
                             <path
                                 fill="currentColor"
                                 fill-rule="evenodd"
-                                d="
-                                    M420 217
-                                    L400 218
-                                    L399 214
-                                    L395 212
-                                    L395 206
-                                    L394 206
-                                    L393 215
-                                    L391 213
-                                    L343 213
-                                    L338 210
-                                    L338 207
-                                    L336 213
-                                    L325 214
-                                    L324 207
-                                    L329 204
-                                    L331 201
-                                    L329 190
-                                    L327 188
-                                    L316 183
-                                    L309 183
-                                    L302 186
-                                    L299 189
-                                    L296 196
-                                    L296 200
-                                    L299 208
-                                    L296 211
-                                    L293 209
-                                    L288 209
-                                    L282 213
-                                    L277 222
-                                    L275 229
-                                    L275 243
-                                    L271 248
-                                    L265 248
-                                    L263 252
-                                    L262 268
-                                    L264 271
-                                    L269 272
-                                    L271 275
-                                    L264 278
-                                    L266 299
-                                    L263 301
-                                    L261 306
-                                    L261 313
-                                    L265 316
-                                    L261 335
-                                    L262 344
-                                    L251 362
-                                    L251 368
-                                    L245 380
-                                    L247 388
-                                    L241 409
-                                    L243 414
-                                    L245 415
-                                    L257 414
-                                    L256 395
-                                    L259 388
-                                    L266 384
-                                    L267 375
-                                    L271 366
-                                    L270 360
-                                    L272 355
-                                    L277 350
-                                    L277 348
-                                    L282 344
-                                    L282 338
-                                    L290 319
-                                    L293 316
-                                    L306 327
-                                    L315 341
-                                    L321 341
-                                    L324 345
-                                    L324 352
-                                    L321 356
-                                    L323 376
-                                    L326 381
-                                    L326 396
-                                    L324 400
-                                    L323 408
-                                    L325 409
-                                    L334 408
-                                    L342 411
-                                    L355 411
-                                    L356 410
-                                    L356 407
-                                    L349 404
-                                    L339 393
-                                    L339 378
-                                    L341 374
-                                    L340 362
-                                    L342 352
-                                    L342 340
-                                    L341 336
-                                    L336 330
-                                    L328 309
-                                    L318 296
-                                    L318 289
-                                    L320 287
-                                    L324 289
-                                    L327 284
-                                    L329 273
-                                    L329 263
-                                    L323 257
-                                    L323 254
-                                    L325 252
-                                    L328 252
-                                    L345 261
-                                    L349 261
-                                    L359 251
-                                    L360 243
-                                    L364 241
-                                    L362 235
-                                    L362 229
-                                    L366 226
-                                    L368 222
-                                    L390 222
-                                    L392 219
-                                    L394 220
-                                    L400 219
-                                    L414 220
-                                    L420 219
-                                    Z
-                                "
+                                d="M420 217 400 218 399 214 395 212 395 206 394 206 393 215 391 213 343 213 338 210 338 207 336 213 325 214 324 207 329 204 331 201 329 190 327 188 316 183 309 183 302 186 299 189 296 196 296 200 299 208 296 211 293 209 288 209 282 213 277 222 275 229 275 243 271 248 265 248 263 252 262 268 264 271 269 272 271 275 264 278 266 299 263 301 261 306 261 313 265 316 261 335 262 344 251 362 251 368 245 380 247 388 241 409 243 414 245 415 257 414 256 395 259 388 266 384 267 375 271 366 270 360 272 355 277 350 277 348 282 344 282 338 290 319 293 316 306 327 315 341 321 341 324 345 324 352 321 356 323 376 326 381 326 396 324 400 323 408 325 409 334 408 342 411 355 411 356 410 356 407 349 404 339 393 339 378 341 374 340 362 342 352 342 340 341 336 336 330 328 309 318 296 318 289 320 287 324 289 327 284 329 273 329 263 323 257 323 254 325 252 328 252 345 261 349 261 359 251 360 243 364 241 362 235 362 229 366 226 368 222 390 222 392 219 394 220 400 219 414 220 420 219Z"
                             />
-
                         </svg>
 
                     </span>
 
-                    <span>
-                        CS:GO
-                    </span>
+                    <span>CS:GO</span>
 
                 </button>
 
 
-
                 <button
-                    class="game-option"
+                    type="button"
+                    class="game-tab"
                     data-game="cs2"
-                    onclick="selectGame('cs2')"
                 >
 
                     <span class="game-icon cs2-icon">
-                        2
+
+                        <img
+                            src="cs2-icon.svg"
+                            alt=""
+                        >
+
                     </span>
 
-                    <span>
-                        CS:2
-                    </span>
+                    <span>CS:2</span>
 
                 </button>
 
@@ -298,30 +162,36 @@
         </div>
 
 
+        <!-- =================================================
+             MAIN PRODUCTS PANEL
+             ================================================= -->
 
-        <!-- =====================================
-             OPTIONS
-             ===================================== -->
+        <main class="products-panel">
 
-        <section class="options-panel">
 
             <div
-                id="options"
-                class="options"
-            ></div>
-
-        </section>
+                id="productList"
+                class="product-list"
+            >
 
 
+                <!-- PRODUCTS ARE INSERTED BY SCRIPT.JS -->
 
-        <!-- =====================================
-             INJECT
-             ===================================== -->
+
+            </div>
+
+
+        </main>
+
+
+        <!-- =================================================
+             INJECT BUTTON
+             ================================================= -->
 
         <button
             id="injectButton"
             class="inject-button"
-            onclick="beginInjection()"
+            type="button"
         >
 
             <span class="inject-icon">
@@ -330,83 +200,356 @@
                     viewBox="0 0 24 24"
                     aria-hidden="true"
                 >
-
                     <path
-                        d="
-                            M3 5
-                            L20 10
-                            L14 14
-                            L11 20
-                            L3 5
-                            Z
-                        "
+                        d="M4 7.5 15.5 12 4 16.5V13l6-1-6-1z"
                         fill="currentColor"
                     />
-
+                    <circle
+                        cx="17.5"
+                        cy="12"
+                        r="2.5"
+                        fill="currentColor"
+                    />
                 </svg>
 
             </span>
 
-            <span>
-                Inject
-            </span>
+            <span>Inject</span>
 
         </button>
 
-    </main>
 
+        <!-- =================================================
+             FULL SCREEN INJECTION PAGE
+             ================================================= -->
 
+        <div
+            id="launching-screen"
+            class="launching-screen"
+        >
 
-    <!-- =========================================
-         FULLSCREEN LOADING SCREEN
-         ========================================= -->
-
-    <div
-        id="loadingScreen"
-        class="loading-screen"
-    >
-
-        <div class="loading-content">
-
-            <div
-                id="loadingTitle"
-                class="loading-title"
-            >
-                Injecting
-            </div>
-
-            <div
-                id="loadingOption"
-                class="loading-option"
-            >
-                Primordial
-            </div>
-
-            <div class="loading-bar">
+            <div class="launching-inner">
 
                 <div
-                    id="loadingFill"
-                    class="loading-fill"
-                ></div>
+                    id="launching-title"
+                    class="launching-title"
+                >
+                    Injecting
+                </div>
+
+
+                <div
+                    id="launching-option"
+                    class="launching-option"
+                >
+                    —
+                </div>
+
+
+                <div class="launching-progress">
+
+                    <div
+                        id="launching-progress-fill"
+                        class="launching-progress-fill"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    id="launching-cancel"
+                    class="launching-cancel"
+                    type="button"
+                >
+                    Cancel
+                </button>
 
             </div>
-
-            <button
-                id="cancelButton"
-                class="cancel-button"
-                onclick="cancelInjection()"
-            >
-                Cancel
-            </button>
 
         </div>
 
     </div>
 
-</div>
 
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
+
+</html><!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>orro</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         INTRO — KEEPING THE EXISTING ORRO INTRO
+         ===================================================== -->
+
+    <div id="intro">
+        <div class="intro-word">orro</div>
+        <div class="intro-dot"></div>
+        <div class="intro-ring"></div>
+        <div class="intro-ring-two"></div>
+    </div>
+
+
+    <!-- =====================================================
+         APPLICATION
+         ===================================================== -->
+
+    <div id="app">
+
+
+        <!-- =================================================
+             TOP WINDOW BAR
+             ================================================= -->
+
+        <header class="window-bar">
+
+            <div class="window-drag-space"></div>
+
+            <div class="window-controls">
+
+                <button
+                    id="minimizeButton"
+                    class="window-control minimize"
+                    type="button"
+                    aria-label="Minimize"
+                >
+                    <span></span>
+                </button>
+
+                <button
+                    id="closeButton"
+                    class="window-control close"
+                    type="button"
+                    aria-label="Close"
+                >
+                    <span></span>
+                    <span></span>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             GAME SELECTOR
+             ================================================= -->
+
+        <div class="game-selector-wrap">
+
+            <div class="game-selector">
+
+                <button
+                    type="button"
+                    class="game-tab active"
+                    data-game="all"
+                >
+
+                    <span class="game-icon all-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                                fill="currentColor"
+                            />
+
+                            <path
+                                d="M13.4 5.8 8.7 12h3.1l-1.2 6.2 4.7-6.2h-3.1z"
+                                fill="#15151d"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>All games</span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="game-tab"
+                    data-game="csgo"
+                >
+
+                    <span class="game-icon csgo-icon">
+
+                        <!-- User-provided recolourable CS:GO SVG -->
+                        <svg
+                            viewBox="235 175 195 245"
+                            aria-hidden="true"
+                        >
+                            <path
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                                d="M420 217 400 218 399 214 395 212 395 206 394 206 393 215 391 213 343 213 338 210 338 207 336 213 325 214 324 207 329 204 331 201 329 190 327 188 316 183 309 183 302 186 299 189 296 196 296 200 299 208 296 211 293 209 288 209 282 213 277 222 275 229 275 243 271 248 265 248 263 252 262 268 264 271 269 272 271 275 264 278 266 299 263 301 261 306 261 313 265 316 261 335 262 344 251 362 251 368 245 380 247 388 241 409 243 414 245 415 257 414 256 395 259 388 266 384 267 375 271 366 270 360 272 355 277 350 277 348 282 344 282 338 290 319 293 316 306 327 315 341 321 341 324 345 324 352 321 356 323 376 326 381 326 396 324 400 323 408 325 409 334 408 342 411 355 411 356 410 356 407 349 404 339 393 339 378 341 374 340 362 342 352 342 340 341 336 336 330 328 309 318 296 318 289 320 287 324 289 327 284 329 273 329 263 323 257 323 254 325 252 328 252 345 261 349 261 359 251 360 243 364 241 362 235 362 229 366 226 368 222 390 222 392 219 394 220 400 219 414 220 420 219Z"
+                            />
+                        </svg>
+
+                    </span>
+
+                    <span>CS:GO</span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="game-tab"
+                    data-game="cs2"
+                >
+
+                    <span class="game-icon cs2-icon">
+
+                        <img
+                            src="cs2-icon.svg"
+                            alt=""
+                        >
+
+                    </span>
+
+                    <span>CS:2</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MAIN PRODUCTS PANEL
+             ================================================= -->
+
+        <main class="products-panel">
+
+
+            <div
+                id="productList"
+                class="product-list"
+            >
+
+
+                <!-- PRODUCTS ARE INSERTED BY SCRIPT.JS -->
+
+
+            </div>
+
+
+        </main>
+
+
+        <!-- =================================================
+             INJECT BUTTON
+             ================================================= -->
+
+        <button
+            id="injectButton"
+            class="inject-button"
+            type="button"
+        >
+
+            <span class="inject-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M4 7.5 15.5 12 4 16.5V13l6-1-6-1z"
+                        fill="currentColor"
+                    />
+                    <circle
+                        cx="17.5"
+                        cy="12"
+                        r="2.5"
+                        fill="currentColor"
+                    />
+                </svg>
+
+            </span>
+
+            <span>Inject</span>
+
+        </button>
+
+
+        <!-- =================================================
+             FULL SCREEN INJECTION PAGE
+             ================================================= -->
+
+        <div
+            id="launching-screen"
+            class="launching-screen"
+        >
+
+            <div class="launching-inner">
+
+                <div
+                    id="launching-title"
+                    class="launching-title"
+                >
+                    Injecting
+                </div>
+
+
+                <div
+                    id="launching-option"
+                    class="launching-option"
+                >
+                    —
+                </div>
+
+
+                <div class="launching-progress">
+
+                    <div
+                        id="launching-progress-fill"
+                        class="launching-progress-fill"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    id="launching-cancel"
+                    class="launching-cancel"
+                    type="button"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
 </html>
