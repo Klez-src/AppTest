@@ -6,25 +6,25 @@
     box-sizing: border-box;
 }
 
-
 html,
 body {
-
     width: 100%;
     height: 100%;
-
     margin: 0;
     padding: 0;
 
     overflow: hidden;
 
+    scrollbar-width: none;
 }
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
 
 body {
-
     background: #0d0e15;
-
     color: #c9c7d5;
 
     font-family:
@@ -40,14 +40,12 @@ body {
     letter-spacing: -0.2px;
 
     -webkit-font-smoothing: antialiased;
-
     text-rendering: geometricPrecision;
 
     user-select: none;
     -webkit-user-select: none;
 
     cursor: default;
-
 }
 
 
@@ -56,7 +54,6 @@ body {
    ========================================================= */
 
 #app {
-
     position: relative;
 
     width: 100%;
@@ -65,7 +62,6 @@ body {
     overflow: hidden;
 
     background: #0d0e15;
-
 }
 
 
@@ -74,42 +70,37 @@ body {
    ========================================================= */
 
 /*
-    Actual visible top-bar layer.
+   Short, clean window bar.
 
-    No logo.
-    No name.
-    Just the clean dark strip behind
-    the minimise and close buttons.
+   It intentionally does NOT contain branding.
+   The entire area can be dragged.
 */
 
 .topbar {
-
     position: absolute;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 38px;
+    height: 31px;
 
     z-index: 50;
 
     background: #101119;
 
-    border-bottom:
-        1px solid #181923;
+    border-bottom: 1px solid #171821;
 
     cursor: default;
-
 }
 
 
 .topbar-drag-area {
-
     position: absolute;
 
     inset: 0;
 
+    cursor: default;
 }
 
 
@@ -118,37 +109,33 @@ body {
    ========================================================= */
 
 .window-controls {
-
     position: absolute;
 
-    top: 8px;
-    right: 9px;
+    top: 4px;
+    right: 8px;
 
-    height: 22px;
+    height: 23px;
 
     display: flex;
-
     align-items: center;
 
     gap: 1px;
 
+    z-index: 2;
 }
 
 
 .window-button {
-
-    width: 22px;
-    height: 22px;
+    width: 23px;
+    height: 23px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     padding: 0;
 
     border: 0;
-
     border-radius: 6px;
 
     background: transparent;
@@ -162,39 +149,30 @@ body {
     transition:
         background 120ms ease,
         color 120ms ease;
-
 }
 
 
 .window-button:hover {
-
     background: #191a23;
-
     color: #b0afbb;
-
 }
 
 
 .window-button.minimize span {
-
     display: block;
 
     width: 9px;
     height: 1px;
 
     background: currentColor;
-
 }
 
 
 .window-button.close {
-
     font-size: 19px;
-
     font-weight: 300;
 
     line-height: 18px;
-
 }
 
 
@@ -203,32 +181,35 @@ body {
    ========================================================= */
 
 .content {
-
     position: absolute;
 
-    top: 38px;
+    top: 31px;
     left: 0;
     right: 0;
     bottom: 0;
 
     display: flex;
-
     flex-direction: column;
 
     min-height: 0;
 
-    padding:
-        3px 10px 7px;
+    /*
+       This creates the proper breathing room between
+       the top bar and the selector.
+    */
 
+    padding:
+        10px 10px 7px;
+
+    overflow: hidden;
 }
 
 
 /* =========================================================
-   TOP SELECTOR SHELL
+   GAME SELECTOR OUTER LAYER
    ========================================================= */
 
 .game-tabs-shell {
-
     width: 100%;
     height: 40px;
 
@@ -239,16 +220,14 @@ body {
     border-radius: 14px;
 
     background: #11121a;
-
 }
 
 
 /* =========================================================
-   TOP SELECTOR INNER
+   GAME SELECTOR INNER LAYER
    ========================================================= */
 
 .game-tabs {
-
     width: 100%;
     height: 34px;
 
@@ -266,7 +245,6 @@ body {
     border-radius: 11px;
 
     background: #14151f;
-
 }
 
 
@@ -275,13 +253,11 @@ body {
    ========================================================= */
 
 .game-tab {
-
     position: relative;
 
     height: 30px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -290,7 +266,6 @@ body {
     padding: 0 7px;
 
     border: 0;
-
     border-radius: 9px;
 
     background: #191a26;
@@ -300,7 +275,6 @@ body {
     font-family: inherit;
 
     font-size: 11.5px;
-
     font-weight: 400;
 
     line-height: 1;
@@ -315,48 +289,32 @@ body {
         background 140ms ease,
         color 140ms ease,
         box-shadow 140ms ease;
-
 }
 
 
 .game-tab:hover {
-
     background: #1d1e2a;
-
     color: #9392a0;
-
 }
 
 
 /* =========================================================
-   ACTIVE TAB
+   ACTIVE GAME TAB
    ========================================================= */
 
-/*
-    Purple surface + purple text.
-
-    No red/brown background.
-*/
-
 .game-tab.active {
-
     background: #292039;
-
     color: #8752ed;
 
     box-shadow:
         inset 0 0 0 1px
-        rgba(132, 79, 235, .08);
-
+        rgba(132, 79, 235, 0.08);
 }
 
 
 .game-tab.active:hover {
-
     background: #2d2340;
-
     color: #8d58f0;
-
 }
 
 
@@ -365,7 +323,6 @@ body {
    ========================================================= */
 
 .tab-icon {
-
     width: 12px;
     height: 12px;
 
@@ -379,12 +336,10 @@ body {
     color: #777888;
 
     line-height: 1;
-
 }
 
 
 .all-icon {
-
     width: 13px;
     height: 13px;
 
@@ -395,58 +350,46 @@ body {
     color: #191a26;
 
     font-size: 7px;
-
 }
 
 
 .csgo-icon {
-
     font-size: 14px;
-
     font-weight: 400;
 
     transform:
         translateY(-1px)
         skew(-9deg);
-
 }
 
 
 .game-tab.active .csgo-icon {
-
     color: #8752ed;
-
 }
 
 
 .cs2-icon {
-
     font-size: 13px;
-
     font-weight: 500;
 
     letter-spacing: -1.2px;
 
     transform: skew(-13deg);
-
 }
 
 
 .tab-label {
-
     display: inline-block;
 
     transform: translateY(-0.2px);
-
 }
 
 
 /* =========================================================
-   MAIN GAME PANEL
+   GAME PANEL
    ========================================================= */
 
 .games-panel {
-
     flex: 1;
 
     min-height: 0;
@@ -462,21 +405,21 @@ body {
     border-radius: 13px;
 
     background: #14151f;
-
 }
 
 
-/* =========================================================
-   GAMES
-   ========================================================= */
-
 .games {
-
     width: 100%;
     height: 100%;
 
     overflow: hidden;
 
+    scrollbar-width: none;
+}
+
+
+.games::-webkit-scrollbar {
+    display: none;
 }
 
 
@@ -485,7 +428,6 @@ body {
    ========================================================= */
 
 .game-card {
-
     position: relative;
 
     width: 100%;
@@ -496,10 +438,6 @@ body {
     padding: 1px;
 
     border-radius: 12px;
-
-    /*
-       Normal card border.
-    */
 
     background: #272837;
 
@@ -512,41 +450,26 @@ body {
     transition:
         background 140ms ease,
         box-shadow 140ms ease;
-
 }
 
 
 /* =========================================================
-   SELECTED GAME CARD
+   SELECTED GAME
    ========================================================= */
 
-/*
-    Very subtle selection indicator.
-
-    The card does NOT turn purple.
-    The inside remains exactly the same.
-
-    Only a thin purple outline tells you
-    which game is selected.
-*/
-
 .game-card.selected {
-
-    background: #8450e7;
+    background: #8150df;
 
     box-shadow:
         0 0 0 1px
-        rgba(132, 80, 231, .20);
-
+        rgba(132, 80, 231, 0.20);
 }
 
 
 .game-card.selected .game-card-inner {
-
     box-shadow:
         inset 0 0 0 1px
-        rgba(132, 80, 231, .34);
-
+        rgba(132, 80, 231, 0.34);
 }
 
 
@@ -555,7 +478,6 @@ body {
    ========================================================= */
 
 .game-card-inner {
-
     width: 100%;
     height: 100%;
 
@@ -569,7 +491,6 @@ body {
     border-radius: 11px;
 
     background: #1a1b28;
-
 }
 
 
@@ -578,24 +499,19 @@ body {
    ========================================================= */
 
 .game-info {
-
     flex: 1;
 
     min-width: 0;
 
     display: flex;
-
     align-items: center;
-
 }
 
 
 .game-name {
-
     color: #d0cedb;
 
     font-size: 15px;
-
     font-weight: 400;
 
     line-height: 1;
@@ -603,35 +519,26 @@ body {
     letter-spacing: -0.45px;
 
     white-space: nowrap;
-
 }
 
 
 /* =========================================================
-   ACTIONS
+   GAME ACTIONS
    ========================================================= */
 
 .game-actions {
-
     width: 84px;
 
     flex-shrink: 0;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 4px;
-
 }
 
 
-/* =========================================================
-   SUBSCRIPTION
-   ========================================================= */
-
 .subscription {
-
     width: 84px;
     height: 20px;
 
@@ -647,22 +554,13 @@ body {
     color: #bd6d7d;
 
     font-size: 9px;
-
     font-weight: 400;
 
     line-height: 1;
-
-    letter-spacing: -0.1px;
-
 }
 
 
-/* =========================================================
-   VERSION
-   ========================================================= */
-
 .game-version {
-
     width: 84px;
     height: 20px;
 
@@ -678,24 +576,14 @@ body {
     color: #777888;
 
     font-size: 9px;
-
     font-weight: 400;
 
     line-height: 1;
-
-    letter-spacing: -0.15px;
-
 }
 
 
-/* =========================================================
-   HIDDEN GAME
-   ========================================================= */
-
 .hidden-game {
-
     display: none;
-
 }
 
 
@@ -704,7 +592,6 @@ body {
    ========================================================= */
 
 .inject-button {
-
     position: relative;
 
     width: 100%;
@@ -722,7 +609,6 @@ body {
     padding: 0;
 
     border: 0;
-
     border-radius: 9px;
 
     background: #774de4;
@@ -732,7 +618,6 @@ body {
     font-family: inherit;
 
     font-size: 16px;
-
     font-weight: 400;
 
     line-height: 1;
@@ -750,30 +635,20 @@ body {
     transition:
         background 140ms ease,
         transform 100ms ease;
-
 }
 
 
 .inject-button:hover {
-
     background: #7b50e9;
-
 }
 
 
 .inject-button:active {
-
     transform: scale(.987);
-
 }
 
 
-/* =========================================================
-   INJECT ICON
-   ========================================================= */
-
 .inject-mark {
-
     position: relative;
 
     width: 19px;
@@ -782,12 +657,10 @@ body {
     display: block;
 
     opacity: .9;
-
 }
 
 
 .inject-mark::before {
-
     content: "";
 
     position: absolute;
@@ -804,12 +677,10 @@ body {
     background: #ded9e9;
 
     transform: rotate(27deg);
-
 }
 
 
 .inject-mark::after {
-
     content: "";
 
     position: absolute;
@@ -823,7 +694,6 @@ body {
     border-radius: 50%;
 
     background: #774de4;
-
 }
 
 
@@ -832,7 +702,6 @@ body {
    ========================================================= */
 
 .queue-screen {
-
     position: absolute;
 
     inset: 0;
@@ -852,17 +721,14 @@ body {
 
     -webkit-backdrop-filter:
         blur(8px);
-
 }
 
 
 .queue-screen.active {
-
     display: flex;
 
     animation:
         queueFadeIn 180ms ease-out both;
-
 }
 
 
@@ -880,71 +746,57 @@ body {
 
 
 .queue-content {
-
     width: 270px;
 
     text-align: center;
-
 }
 
 
 .queue-title {
-
     color: #d2d0dc;
 
     font-size: 20px;
-
     font-weight: 400;
 
     letter-spacing: -0.65px;
-
 }
 
 
 .queue-subtitle {
-
     margin-top: 7px;
 
     color: #686977;
 
     font-size: 10px;
-
 }
 
 
 .queue-number {
-
     margin-top: 27px;
 
     color: #777888;
 
     font-size: 10px;
-
 }
 
 
 .queue-number > span:first-child {
-
     color: #8250e8;
 
     font-size: 22px;
-
 }
 
 
 .queue-people {
-
     margin-left: 5px;
 
     color: #696a79;
 
     font-size: 10px;
-
 }
 
 
 .queue-progress {
-
     width: 100%;
     height: 3px;
 
@@ -955,14 +807,11 @@ body {
     border-radius: 999px;
 
     background: #282936;
-
 }
 
 
 .queue-progress-fill {
-
     width: 0%;
-
     height: 100%;
 
     border-radius: inherit;
@@ -970,12 +819,10 @@ body {
     background: #774de4;
 
     will-change: width;
-
 }
 
 
 .queue-bottom {
-
     display: flex;
 
     align-items: center;
@@ -986,28 +833,22 @@ body {
     color: #565766;
 
     font-size: 9px;
-
 }
 
 
 .queue-bottom b {
-
     color: #777888;
-
     font-weight: 400;
-
 }
 
 
 .cancel-button {
-
     margin-top: 24px;
 
     padding:
         7px 13px;
 
     border: 0;
-
     border-radius: 8px;
 
     background: transparent;
@@ -1019,64 +860,37 @@ body {
     font-size: 9px;
 
     cursor: pointer;
-
 }
 
 
 .cancel-button:hover {
-
     background: #191a25;
-
     color: #9a99a7;
-
 }
 
 
 /* =========================================================
-   NO SCROLLBARS
+   DRAGGING
    ========================================================= */
 
-html,
-body,
-#app,
-.content,
-.games-panel,
-.games {
+/*
+   Keep the cursor normal.
 
-    scrollbar-width: none;
-
-}
-
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-#app::-webkit-scrollbar,
-.content::-webkit-scrollbar,
-.games-panel::-webkit-scrollbar,
-.games::-webkit-scrollbar {
-
-    display: none;
-
-    width: 0;
-    height: 0;
-
-}
-
-
-/* =========================================================
-   DRAG
-   ========================================================= */
+   The JS sends window.drag directly to the C++
+   host, so the WebView does not need to use a
+   special "grab" cursor.
+*/
 
 [data-drag] {
-
-    cursor: default;
-
+    cursor: default !important;
 }
 
 
-[data-no-drag],
-button {
-
+[data-no-drag] {
     cursor: pointer;
+}
 
+
+button {
+    -webkit-app-region: no-drag;
 }
