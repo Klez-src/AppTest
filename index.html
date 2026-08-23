@@ -1,555 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=315, height=480, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
-    <title>orro</title>
+    <title>Loader</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-    <!-- =====================================================
-         INTRO — KEEPING THE EXISTING ORRO INTRO
-         ===================================================== -->
-
-    <div id="intro">
-        <div class="intro-word">orro</div>
-        <div class="intro-dot"></div>
-        <div class="intro-ring"></div>
-        <div class="intro-ring-two"></div>
-    </div>
-
+<div id="app">
 
     <!-- =====================================================
-         APPLICATION
+         NATIVE-STYLE TOP BAR
          ===================================================== -->
 
-    <div id="app">
+    <header class="topbar drag-region">
 
+        <div class="window-controls no-drag">
 
-        <!-- =================================================
-             TOP WINDOW BAR
-             ================================================= -->
+            <button
+                id="minimizeButton"
+                class="window-button"
+                aria-label="Minimize"
+            >
+                <span class="minimize-icon"></span>
+            </button>
 
-        <header class="window-bar">
-
-            <div class="window-drag-space"></div>
-
-            <div class="window-controls">
-
-                <button
-                    id="minimizeButton"
-                    class="window-control minimize"
-                    type="button"
-                    aria-label="Minimize"
-                >
-                    <span></span>
-                </button>
-
-                <button
-                    id="closeButton"
-                    class="window-control close"
-                    type="button"
-                    aria-label="Close"
-                >
-                    <span></span>
-                    <span></span>
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             GAME SELECTOR
-             ================================================= -->
-
-        <div class="game-selector-wrap">
-
-            <div class="game-selector">
-
-                <button
-                    type="button"
-                    class="game-tab active"
-                    data-game="all"
-                >
-
-                    <span class="game-icon all-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="12"
-                                cy="12"
-                                r="9"
-                                fill="currentColor"
-                            />
-
-                            <path
-                                d="M13.4 5.8 8.7 12h3.1l-1.2 6.2 4.7-6.2h-3.1z"
-                                fill="#15151d"
-                            />
-                        </svg>
-
-                    </span>
-
-                    <span>All games</span>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="game-tab"
-                    data-game="csgo"
-                >
-
-                    <span class="game-icon csgo-icon">
-
-                        <!-- User-provided recolourable CS:GO SVG -->
-                        <svg
-                            viewBox="235 175 195 245"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill="currentColor"
-                                fill-rule="evenodd"
-                                d="M420 217 400 218 399 214 395 212 395 206 394 206 393 215 391 213 343 213 338 210 338 207 336 213 325 214 324 207 329 204 331 201 329 190 327 188 316 183 309 183 302 186 299 189 296 196 296 200 299 208 296 211 293 209 288 209 282 213 277 222 275 229 275 243 271 248 265 248 263 252 262 268 264 271 269 272 271 275 264 278 266 299 263 301 261 306 261 313 265 316 261 335 262 344 251 362 251 368 245 380 247 388 241 409 243 414 245 415 257 414 256 395 259 388 266 384 267 375 271 366 270 360 272 355 277 350 277 348 282 344 282 338 290 319 293 316 306 327 315 341 321 341 324 345 324 352 321 356 323 376 326 381 326 396 324 400 323 408 325 409 334 408 342 411 355 411 356 410 356 407 349 404 339 393 339 378 341 374 340 362 342 352 342 340 341 336 336 330 328 309 318 296 318 289 320 287 324 289 327 284 329 273 329 263 323 257 323 254 325 252 328 252 345 261 349 261 359 251 360 243 364 241 362 235 362 229 366 226 368 222 390 222 392 219 394 220 400 219 414 220 420 219Z"
-                            />
-                        </svg>
-
-                    </span>
-
-                    <span>CS:GO</span>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="game-tab"
-                    data-game="cs2"
-                >
-
-                    <span class="game-icon cs2-icon">
-
-                        <img
-                            src="cs2-icon.svg"
-                            alt=""
-                        >
-
-                    </span>
-
-                    <span>CS:2</span>
-
-                </button>
-
-            </div>
+            <button
+                id="closeButton"
+                class="window-button close-button"
+                aria-label="Close"
+            >
+                <span class="close-icon"></span>
+            </button>
 
         </div>
 
-
-        <!-- =================================================
-             MAIN PRODUCTS PANEL
-             ================================================= -->
-
-        <main class="products-panel">
+    </header>
 
 
-            <div
-                id="productList"
-                class="product-list"
-            >
+    <!-- =====================================================
+         MAIN LOADER
+         ===================================================== -->
+
+    <main class="loader">
+
+        <!-- GAME FILTERS -->
+
+        <section class="game-filter-shell">
+
+            <div class="game-filters">
+
+                <button
+                    class="game-filter active"
+                    data-game="all"
+                >
+                    <span class="filter-icon lightning-icon"> </span>
+                    <span>All games</span>
+                </button>
 
 
-                <!-- PRODUCTS ARE INSERTED BY SCRIPT.JS -->
+                <button
+                    class="game-filter"
+                    data-game="csgo"
+                >
+                    <span class="filter-icon csgo-icon"></span>
+                    <span>CS:GO</span>
+                </button>
 
+
+                <button
+                    class="game-filter"
+                    data-game="cs2"
+                >
+                    <span class="filter-icon cs2-icon"></span>
+                    <span>CS:2</span>
+                </button>
 
             </div>
 
-
-        </main>
+        </section>
 
 
         <!-- =================================================
-             INJECT BUTTON
+             PRODUCT AREA
+             ================================================= -->
+
+        <section class="products-shell">
+
+            <div
+                id="products"
+                class="products"
+            ></div>
+
+        </section>
+
+
+        <!-- =================================================
+             INJECT
              ================================================= -->
 
         <button
             id="injectButton"
             class="inject-button"
-            type="button"
         >
 
             <span class="inject-icon">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
-                    <path
-                        d="M4 7.5 15.5 12 4 16.5V13l6-1-6-1z"
-                        fill="currentColor"
-                    />
-                    <circle
-                        cx="17.5"
-                        cy="12"
-                        r="2.5"
-                        fill="currentColor"
-                    />
-                </svg>
-
+                <span></span>
             </span>
 
             <span>Inject</span>
 
         </button>
 
-
-        <!-- =================================================
-             FULL SCREEN INJECTION PAGE
-             ================================================= -->
-
-        <div
-            id="launching-screen"
-            class="launching-screen"
-        >
-
-            <div class="launching-inner">
-
-                <div
-                    id="launching-title"
-                    class="launching-title"
-                >
-                    Injecting
-                </div>
-
-
-                <div
-                    id="launching-option"
-                    class="launching-option"
-                >
-                    —
-                </div>
-
-
-                <div class="launching-progress">
-
-                    <div
-                        id="launching-progress-fill"
-                        class="launching-progress-fill"
-                    ></div>
-
-                </div>
-
-
-                <button
-                    id="launching-cancel"
-                    class="launching-cancel"
-                    type="button"
-                >
-                    Cancel
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <script src="script.js"></script>
-
-</body>
-
-</html><!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>orro</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-</head>
-
-<body>
-
-    <!-- =====================================================
-         INTRO — KEEPING THE EXISTING ORRO INTRO
-         ===================================================== -->
-
-    <div id="intro">
-        <div class="intro-word">orro</div>
-        <div class="intro-dot"></div>
-        <div class="intro-ring"></div>
-        <div class="intro-ring-two"></div>
-    </div>
+    </main>
 
 
     <!-- =====================================================
-         APPLICATION
+         LAUNCH SCREEN
          ===================================================== -->
 
-    <div id="app">
+    <div
+        id="launchScreen"
+        class="launch-screen"
+    >
 
-
-        <!-- =================================================
-             TOP WINDOW BAR
-             ================================================= -->
-
-        <header class="window-bar">
-
-            <div class="window-drag-space"></div>
-
-            <div class="window-controls">
-
-                <button
-                    id="minimizeButton"
-                    class="window-control minimize"
-                    type="button"
-                    aria-label="Minimize"
-                >
-                    <span></span>
-                </button>
-
-                <button
-                    id="closeButton"
-                    class="window-control close"
-                    type="button"
-                    aria-label="Close"
-                >
-                    <span></span>
-                    <span></span>
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             GAME SELECTOR
-             ================================================= -->
-
-        <div class="game-selector-wrap">
-
-            <div class="game-selector">
-
-                <button
-                    type="button"
-                    class="game-tab active"
-                    data-game="all"
-                >
-
-                    <span class="game-icon all-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="12"
-                                cy="12"
-                                r="9"
-                                fill="currentColor"
-                            />
-
-                            <path
-                                d="M13.4 5.8 8.7 12h3.1l-1.2 6.2 4.7-6.2h-3.1z"
-                                fill="#15151d"
-                            />
-                        </svg>
-
-                    </span>
-
-                    <span>All games</span>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="game-tab"
-                    data-game="csgo"
-                >
-
-                    <span class="game-icon csgo-icon">
-
-                        <!-- User-provided recolourable CS:GO SVG -->
-                        <svg
-                            viewBox="235 175 195 245"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill="currentColor"
-                                fill-rule="evenodd"
-                                d="M420 217 400 218 399 214 395 212 395 206 394 206 393 215 391 213 343 213 338 210 338 207 336 213 325 214 324 207 329 204 331 201 329 190 327 188 316 183 309 183 302 186 299 189 296 196 296 200 299 208 296 211 293 209 288 209 282 213 277 222 275 229 275 243 271 248 265 248 263 252 262 268 264 271 269 272 271 275 264 278 266 299 263 301 261 306 261 313 265 316 261 335 262 344 251 362 251 368 245 380 247 388 241 409 243 414 245 415 257 414 256 395 259 388 266 384 267 375 271 366 270 360 272 355 277 350 277 348 282 344 282 338 290 319 293 316 306 327 315 341 321 341 324 345 324 352 321 356 323 376 326 381 326 396 324 400 323 408 325 409 334 408 342 411 355 411 356 410 356 407 349 404 339 393 339 378 341 374 340 362 342 352 342 340 341 336 336 330 328 309 318 296 318 289 320 287 324 289 327 284 329 273 329 263 323 257 323 254 325 252 328 252 345 261 349 261 359 251 360 243 364 241 362 235 362 229 366 226 368 222 390 222 392 219 394 220 400 219 414 220 420 219Z"
-                            />
-                        </svg>
-
-                    </span>
-
-                    <span>CS:GO</span>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="game-tab"
-                    data-game="cs2"
-                >
-
-                    <span class="game-icon cs2-icon">
-
-                        <img
-                            src="cs2-icon.svg"
-                            alt=""
-                        >
-
-                    </span>
-
-                    <span>CS:2</span>
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             MAIN PRODUCTS PANEL
-             ================================================= -->
-
-        <main class="products-panel">
-
+        <div class="launch-content">
 
             <div
-                id="productList"
-                class="product-list"
+                id="launchTitle"
+                class="launch-title"
             >
+                Injecting
+            </div>
 
+            <div
+                id="launchOption"
+                class="launch-option"
+            >
+                Primordial CS:GO
+            </div>
 
-                <!-- PRODUCTS ARE INSERTED BY SCRIPT.JS -->
+            <div class="launch-progress-track">
 
+                <div
+                    id="launchProgress"
+                    class="launch-progress"
+                ></div>
 
             </div>
 
-
-        </main>
-
-
-        <!-- =================================================
-             INJECT BUTTON
-             ================================================= -->
-
-        <button
-            id="injectButton"
-            class="inject-button"
-            type="button"
-        >
-
-            <span class="inject-icon">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
-                    <path
-                        d="M4 7.5 15.5 12 4 16.5V13l6-1-6-1z"
-                        fill="currentColor"
-                    />
-                    <circle
-                        cx="17.5"
-                        cy="12"
-                        r="2.5"
-                        fill="currentColor"
-                    />
-                </svg>
-
-            </span>
-
-            <span>Inject</span>
-
-        </button>
-
-
-        <!-- =================================================
-             FULL SCREEN INJECTION PAGE
-             ================================================= -->
-
-        <div
-            id="launching-screen"
-            class="launching-screen"
-        >
-
-            <div class="launching-inner">
-
-                <div
-                    id="launching-title"
-                    class="launching-title"
-                >
-                    Injecting
-                </div>
-
-
-                <div
-                    id="launching-option"
-                    class="launching-option"
-                >
-                    —
-                </div>
-
-
-                <div class="launching-progress">
-
-                    <div
-                        id="launching-progress-fill"
-                        class="launching-progress-fill"
-                    ></div>
-
-                </div>
-
-
-                <button
-                    id="launching-cancel"
-                    class="launching-cancel"
-                    type="button"
-                >
-                    Cancel
-                </button>
-
-            </div>
+            <button
+                id="cancelLaunch"
+                class="cancel-button"
+            >
+                Cancel
+            </button>
 
         </div>
 
     </div>
 
+</div>
 
-    <script src="script.js"></script>
+
+<script src="./script.js"></script>
 
 </body>
-
 </html>
