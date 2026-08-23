@@ -10,6 +10,7 @@ html,
 body {
     width: 100%;
     height: 100%;
+
     margin: 0;
     padding: 0;
 
@@ -23,18 +24,21 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+
 body {
     background: #0d0e15;
+
     color: #c9c7d5;
 
     font-family:
-        "Inter",
+        Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
 
     font-size: 12px;
+
     font-weight: 400;
 
     letter-spacing: -0.2px;
@@ -69,13 +73,6 @@ body {
    TOP BAR
    ========================================================= */
 
-/*
-   Short, clean window bar.
-
-   It intentionally does NOT contain branding.
-   The entire area can be dragged.
-*/
-
 .topbar {
     position: absolute;
 
@@ -89,7 +86,8 @@ body {
 
     background: #101119;
 
-    border-bottom: 1px solid #171821;
+    border-bottom:
+        1px solid #171821;
 
     cursor: default;
 }
@@ -130,6 +128,7 @@ body {
     height: 23px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -154,6 +153,7 @@ body {
 
 .window-button:hover {
     background: #191a23;
+
     color: #b0afbb;
 }
 
@@ -170,6 +170,7 @@ body {
 
 .window-button.close {
     font-size: 19px;
+
     font-weight: 300;
 
     line-height: 18px;
@@ -189,14 +190,10 @@ body {
     bottom: 0;
 
     display: flex;
+
     flex-direction: column;
 
     min-height: 0;
-
-    /*
-       This creates the proper breathing room between
-       the top bar and the selector.
-    */
 
     padding:
         10px 10px 7px;
@@ -206,7 +203,7 @@ body {
 
 
 /* =========================================================
-   GAME SELECTOR OUTER LAYER
+   TOP GAME SELECTOR
    ========================================================= */
 
 .game-tabs-shell {
@@ -222,10 +219,6 @@ body {
     background: #11121a;
 }
 
-
-/* =========================================================
-   GAME SELECTOR INNER LAYER
-   ========================================================= */
 
 .game-tabs {
     width: 100%;
@@ -249,7 +242,7 @@ body {
 
 
 /* =========================================================
-   GAME TAB
+   GAME TABS
    ========================================================= */
 
 .game-tab {
@@ -258,6 +251,7 @@ body {
     height: 30px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -266,6 +260,7 @@ body {
     padding: 0 7px;
 
     border: 0;
+
     border-radius: 9px;
 
     background: #191a26;
@@ -275,6 +270,7 @@ body {
     font-family: inherit;
 
     font-size: 11.5px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -294,16 +290,14 @@ body {
 
 .game-tab:hover {
     background: #1d1e2a;
+
     color: #9392a0;
 }
 
 
-/* =========================================================
-   ACTIVE GAME TAB
-   ========================================================= */
-
 .game-tab.active {
     background: #292039;
+
     color: #8752ed;
 
     box-shadow:
@@ -314,6 +308,7 @@ body {
 
 .game-tab.active:hover {
     background: #2d2340;
+
     color: #8d58f0;
 }
 
@@ -349,12 +344,15 @@ body {
 
     color: #191a26;
 
-    font-size: 7px;
+    font-size: 8px;
+
+    font-weight: 700;
 }
 
 
 .csgo-icon {
     font-size: 14px;
+
     font-weight: 400;
 
     transform:
@@ -370,7 +368,8 @@ body {
 
 .cs2-icon {
     font-size: 13px;
-    font-weight: 500;
+
+    font-weight: 600;
 
     letter-spacing: -1.2px;
 
@@ -381,12 +380,13 @@ body {
 .tab-label {
     display: inline-block;
 
-    transform: translateY(-0.2px);
+    transform:
+        translateY(-0.2px);
 }
 
 
 /* =========================================================
-   GAME PANEL
+   MAIN GAMES PANEL
    ========================================================= */
 
 .games-panel {
@@ -454,7 +454,7 @@ body {
 
 
 /* =========================================================
-   SELECTED GAME
+   SELECTED CARD
    ========================================================= */
 
 .game-card.selected {
@@ -504,14 +504,77 @@ body {
     min-width: 0;
 
     display: flex;
+
     align-items: center;
 }
 
+
+/* =========================================================
+   GAME LOGO
+   ========================================================= */
+
+/*
+   Both uploaded logos use EXACTLY the same container.
+
+   38x38
+   Same corner radius
+   Same background
+   Same position
+   Same image fitting
+
+   This keeps Primordial and Gamesense perfectly aligned.
+*/
+
+.game-logo {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 13px;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background: #101119;
+}
+
+
+.game-logo img {
+    width: 38px;
+    height: 38px;
+
+    display: block;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    border-radius: 9px;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    -webkit-user-drag: none;
+}
+
+
+/* =========================================================
+   GAME NAME
+   ========================================================= */
 
 .game-name {
     color: #d0cedb;
 
     font-size: 15px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -532,6 +595,7 @@ body {
     flex-shrink: 0;
 
     display: flex;
+
     flex-direction: column;
 
     gap: 4px;
@@ -554,6 +618,7 @@ body {
     color: #bd6d7d;
 
     font-size: 9px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -576,6 +641,7 @@ body {
     color: #777888;
 
     font-size: 9px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -588,7 +654,7 @@ body {
 
 
 /* =========================================================
-   INJECT
+   INJECT BUTTON
    ========================================================= */
 
 .inject-button {
@@ -609,6 +675,7 @@ body {
     padding: 0;
 
     border: 0;
+
     border-radius: 9px;
 
     background: #774de4;
@@ -618,6 +685,7 @@ body {
     font-family: inherit;
 
     font-size: 16px;
+
     font-weight: 400;
 
     line-height: 1;
@@ -629,6 +697,7 @@ body {
     box-shadow:
         inset 0 1px 0
         rgba(255,255,255,.035),
+
         0 5px 15px
         rgba(72,45,154,.12);
 
@@ -647,6 +716,10 @@ body {
     transform: scale(.987);
 }
 
+
+/* =========================================================
+   INJECT ICON
+   ========================================================= */
 
 .inject-mark {
     position: relative;
@@ -676,7 +749,8 @@ body {
 
     background: #ded9e9;
 
-    transform: rotate(27deg);
+    transform:
+        rotate(27deg);
 }
 
 
@@ -756,6 +830,7 @@ body {
     color: #d2d0dc;
 
     font-size: 20px;
+
     font-weight: 400;
 
     letter-spacing: -0.65px;
@@ -838,6 +913,7 @@ body {
 
 .queue-bottom b {
     color: #777888;
+
     font-weight: 400;
 }
 
@@ -849,6 +925,7 @@ body {
         7px 13px;
 
     border: 0;
+
     border-radius: 8px;
 
     background: transparent;
@@ -865,6 +942,7 @@ body {
 
 .cancel-button:hover {
     background: #191a25;
+
     color: #9a99a7;
 }
 
@@ -872,14 +950,6 @@ body {
 /* =========================================================
    DRAGGING
    ========================================================= */
-
-/*
-   Keep the cursor normal.
-
-   The JS sends window.drag directly to the C++
-   host, so the WebView does not need to use a
-   special "grab" cursor.
-*/
 
 [data-drag] {
     cursor: default !important;
