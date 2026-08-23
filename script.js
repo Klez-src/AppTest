@@ -5,20 +5,26 @@
    ELEMENTS
    ============================================================ */
 
-const optionsElement =
-    document.getElementById("options");
+const mainUI =
+    document.getElementById("main-ui");
+
+const loadingScreen =
+    document.getElementById("loading-screen");
+
+const loadingTitle =
+    document.getElementById("loading-title");
+
+const loadingOption =
+    document.getElementById("loading-option");
+
+const loadingFill =
+    document.getElementById("loading-fill");
+
+const optionsList =
+    document.getElementById("options-list");
 
 const injectButton =
     document.getElementById("injectButton");
-
-const loadingScreen =
-    document.getElementById("loadingScreen");
-
-const loadingOption =
-    document.getElementById("loadingOption");
-
-const loadingBar =
-    document.getElementById("loadingBar");
 
 const cancelButton =
     document.getElementById("cancelButton");
@@ -34,66 +40,64 @@ const gameTabs =
 
 
 /* ============================================================
-   OPTIONS
+   ASSETS
    ============================================================ */
 
-/*
-    IMPORTANT:
+const ASSETS = {
+    primordial: "./primordial.png",
+    gamesense: "./gamesense.png"
+};
 
-    All games:
-        Primordial CS:GO
-        GameSense CS:GO
-        Primordial CS2
 
-    CS:GO:
-        Primordial CS:GO
-        GameSense CS:GO
-
-    CS2:
-        Primordial CS2
-*/
+/* ============================================================
+   GAME / OPTION DATA
+   ============================================================ */
 
 const OPTIONS = {
 
-    primordialCsgo: {
+    primordialCSGO: {
         id: "primordial-csgo",
         name: "Primordial",
         game: "CS:GO",
-        image: "./primordial.png"
+        logo: ASSETS.primordial
     },
 
-    gamesenseCsgo: {
+    gamesenseCSGO: {
         id: "gamesense-csgo",
         name: "Gamesense",
         game: "CS:GO",
-        image: "./gamesense.png"
+        logo: ASSETS.gamesense
     },
 
-    primordialCs2: {
+    primordialCS2: {
         id: "primordial-cs2",
         name: "Primordial",
-        game: "CS2",
-        image: "./primordial.png"
+        game: "CS:2",
+        logo: ASSETS.primordial
     }
 
 };
 
 
+/* ============================================================
+   TAB -> AVAILABLE OPTIONS
+   ============================================================ */
+
 const GAME_OPTIONS = {
 
     all: [
-        OPTIONS.primordialCsgo,
-        OPTIONS.gamesenseCsgo,
-        OPTIONS.primordialCs2
+        OPTIONS.primordialCSGO,
+        OPTIONS.gamesenseCSGO,
+        OPTIONS.primordialCS2
     ],
 
     csgo: [
-        OPTIONS.primordialCsgo,
-        OPTIONS.gamesenseCsgo
+        OPTIONS.primordialCSGO,
+        OPTIONS.gamesenseCSGO
     ],
 
     cs2: [
-        OPTIONS.primordialCs2
+        OPTIONS.primordialCS2
     ]
 
 };
@@ -106,19 +110,17 @@ const GAME_OPTIONS = {
 let currentGame = "all";
 
 let selectedOption =
-    OPTIONS.primordialCsgo;
-
-let launchTimer = null;
-
-let launchStartTime = 0;
-
-let launchDuration = 11000;
+    OPTIONS.primordialCSGO;
 
 let launchRunning = false;
 
+let animationFrame = null;
+
+let launchStart = 0;
+
 
 /* ============================================================
-   NATIVE WINDOW MESSAGES
+   WEBVIEW NATIVE MESSAGES
    ============================================================ */
 
 function sendNativeMessage(message)
@@ -140,6 +142,495 @@ function sendNativeMessage(message)
         // Normal browser fallback.
     }
 }
+
+
+/* ============================================================
+   GAME SELECTOR
+   ============================================================ */
+
+function updateGameTabs()
+{
+    gameTabs.forEach(tab =>
+    {
+        tab.classList.toggle(
+            "active",
+            tab.dataset.game === currentGame
+        );
+    });
+}
+
+
+function setGame(game)
+{
+    if (!GAME_OPTIONS[game])
+        return;
+
+    currentGame = game;
+
+    const available =
+        GAME_OPTIONS[currentGame];
+
+    /*
+       If the previous selection isn't available
+       for this game, select the first valid option.
+    */
+
+    if (
+        !available.some(
+            option =>
+                option.id === selectedOption.id
+        )
+    )
+    {
+        selectedOption =
+            available[0];
+    }
+
+    updateGameTabs();
+
+    renderOptions();
+}
+
+
+gameTabs.forEach(tab =>
+{
+    tab.addEventListener(
+        "click",
+        event =>
+        {
+            event.stopPropagation();
+
+            setGame(
+                tab.dataset.game
+            );
+        }
+    );
+});
+
+
+/* ============================================================
+   OPTION CARDS
+   ============================================================ */
+
+function renderOptions()
+{
+    optionsList.innerHTML = "";
+
+    const available =
+        GAME_OPTIONS[currentGame];
+
+    available.forEach(option =>
+    {
+        const card =
+            document.createElement("button");
+
+        card.type = "button";
+
+        card.className =
+            "option-card";
+
+        card.dataset.option =
+            option.id;
+
+        if (
+            option.id ===
+            selectedOption.id
+        )
+        {
+            card.classList.add(
+                "selected"
+            );
+        }
+
+
+        const logoWrap =
+            document.createElement("span");
+
+        logoWrap.className =
+            "option-logo-wrap";
+
+
+        const logo =
+            document.createElement("img");
+
+        logo.className =
+            "option-logo";
+
+        logo.src =
+            option.logo;
+
+        logo.alt =
+            "";
+
+
+        logoWrap.appendChild(
+            logo
+        );
+
+
+        const info =
+            document.createElement("span");
+
+        info.className =
+            "option-info";
+
+
+        const name =
+            document.createElement("span");
+
+        name.className =
+            "option-name";
+
+        name.textContent =
+            option.name;
+
+
+        /*
+           Important:
+           There is intentionally NO second
+           game label underneath the product name.
+        */
+
+        info.appendChild(
+            name
+        );
+
+
+        const actions =
+            document.createElement("span");
+
+        actions.className =
+            "option-actions";
+
+
+        const subscription =
+            document.createElement("span");
+
+        subscription.className =
+            "subscription";
+
+        subscription.textContent =
+            "Not subscribed";
+
+
+        const gamePill =
+            document.createElement("span");
+
+        gamePill.className =
+            "game-pill";
+
+        gamePill.textContent =
+            option.game;
+
+
+        actions.appendChild(
+            subscription
+        );
+
+        actions.appendChild(
+            gamePill
+        );
+
+
+        card.appendChild(
+            logoWrap
+        );
+
+        card.appendChild(
+            info
+        );
+
+        card.appendChild(
+            actions
+        );
+
+
+        card.addEventListener(
+            "click",
+            event =>
+            {
+                event.stopPropagation();
+
+                selectedOption =
+                    option;
+
+                renderOptions();
+            }
+        );
+
+
+        optionsList.appendChild(
+            card
+        );
+    });
+}
+
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+
+function showLoadingScreen()
+{
+    loadingTitle.textContent =
+        "Injecting";
+
+    loadingOption.textContent =
+        selectedOption.name +
+        " — " +
+        selectedOption.game;
+
+    loadingFill.style.width =
+        "0%";
+
+    loadingScreen.classList.add(
+        "visible"
+    );
+
+    loadingScreen.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+}
+
+
+function hideLoadingScreen()
+{
+    if (animationFrame !== null)
+    {
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+        animationFrame = null;
+    }
+
+    loadingScreen.classList.remove(
+        "visible"
+    );
+
+    loadingScreen.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    loadingFill.style.width =
+        "0%";
+
+    launchRunning =
+        false;
+}
+
+
+/* ============================================================
+   REALISTIC ~11 SECOND PROGRESS
+   ============================================================ */
+
+/*
+   This deliberately isn't a perfectly linear 0 -> 100
+   animation.
+
+   The progress has several natural-looking slowdowns,
+   while the total duration remains about 11 seconds.
+*/
+
+function calculateProgress(elapsed)
+{
+    const duration =
+        11000;
+
+    const t =
+        Math.min(
+            1,
+            elapsed / duration
+        );
+
+
+    /*
+       Piecewise progress.
+
+       Early:
+       fairly quick.
+
+       Middle:
+       slows down.
+
+       Late:
+       noticeably slower before finishing.
+    */
+
+    if (t < .10)
+    {
+        return (
+            t / .10
+        ) * 15;
+    }
+
+    if (t < .28)
+    {
+        return (
+            15 +
+            ((t - .10) / .18) * 22
+        );
+    }
+
+    if (t < .48)
+    {
+        return (
+            37 +
+            ((t - .28) / .20) * 18
+        );
+    }
+
+    if (t < .66)
+    {
+        return (
+            55 +
+            ((t - .48) / .18) * 13
+        );
+    }
+
+    if (t < .80)
+    {
+        return (
+            68 +
+            ((t - .66) / .14) * 9
+        );
+    }
+
+    if (t < .91)
+    {
+        return (
+            77 +
+            ((t - .80) / .11) * 8
+        );
+    }
+
+    if (t < .975)
+    {
+        return (
+            85 +
+            ((t - .91) / .065) * 11
+        );
+    }
+
+    return (
+        96 +
+        ((t - .975) / .025) * 4
+    );
+}
+
+
+function animateLaunch(timestamp)
+{
+    if (!launchRunning)
+        return;
+
+
+    if (!launchStart)
+    {
+        launchStart =
+            timestamp;
+    }
+
+
+    const elapsed =
+        timestamp -
+        launchStart;
+
+
+    const progress =
+        calculateProgress(
+            elapsed
+        );
+
+
+    loadingFill.style.width =
+        progress.toFixed(2) + "%";
+
+
+    if (elapsed >= 11000)
+    {
+        loadingFill.style.width =
+            "100%";
+
+        setTimeout(
+            () =>
+            {
+                if (!launchRunning)
+                    return;
+
+                hideLoadingScreen();
+            },
+            220
+        );
+
+        return;
+    }
+
+
+    animationFrame =
+        requestAnimationFrame(
+            animateLaunch
+        );
+}
+
+
+function startLaunch()
+{
+    if (launchRunning)
+        return;
+
+
+    launchRunning =
+        true;
+
+    launchStart =
+        0;
+
+    showLoadingScreen();
+
+
+    animationFrame =
+        requestAnimationFrame(
+            animateLaunch
+        );
+}
+
+
+function cancelLaunch()
+{
+    if (!launchRunning)
+        return;
+
+    hideLoadingScreen();
+}
+
+
+/* ============================================================
+   INJECT
+   ============================================================ */
+
+injectButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        startLaunch();
+    }
+);
+
+
+cancelButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        cancelLaunch();
+    }
+);
 
 
 /* ============================================================
@@ -173,32 +664,45 @@ closeButton.addEventListener(
 
 
 /* ============================================================
-   DRAGGING
+   WINDOW DRAGGING
    ============================================================ */
+
+/*
+   The window itself is borderless.
+
+   Any ordinary empty part of the UI can therefore drag
+   the native window.
+
+   Buttons / images / controls are deliberately excluded.
+
+   Cursor stays as the normal arrow — no "hand" cursor.
+*/
 
 document.addEventListener(
     "mousedown",
     event =>
     {
-        if (event.button !== 0)
+        if (
+            event.button !== 0
+        )
+        {
             return;
+        }
+
 
         const target =
             event.target;
 
-        /*
-            Do not start a native drag when the user
-            is interacting with an actual control.
-        */
 
         if (
             target.closest(
-                "button, input, textarea, select, a"
+                "button, img, input, textarea, select"
             )
         )
         {
             return;
         }
+
 
         sendNativeMessage(
             "window.drag"
@@ -208,413 +712,7 @@ document.addEventListener(
 
 
 /* ============================================================
-   RENDER OPTIONS
+   INITIALISE
    ============================================================ */
 
-function renderOptions()
-{
-    optionsElement.innerHTML = "";
-
-    const available =
-        GAME_OPTIONS[currentGame];
-
-    /*
-        If the currently selected option is not valid
-        for the newly selected game, automatically pick
-        the first valid option.
-    */
-
-    const stillAvailable =
-        available.some(
-            option =>
-                option.id === selectedOption.id
-        );
-
-    if (!stillAvailable)
-    {
-        selectedOption =
-            available[0];
-    }
-
-
-    available.forEach(
-        option =>
-        {
-            const card =
-                document.createElement(
-                    "button"
-                );
-
-            card.type = "button";
-
-            card.className =
-                "option-card";
-
-            card.dataset.option =
-                option.id;
-
-            if (
-                option.id ===
-                selectedOption.id
-            )
-            {
-                card.classList.add(
-                    "selected"
-                );
-            }
-
-
-            const logo =
-                document.createElement(
-                    "div"
-                );
-
-            logo.className =
-                "option-logo";
-
-
-            const image =
-                document.createElement(
-                    "img"
-                );
-
-            image.src =
-                option.image;
-
-            image.alt =
-                "";
-
-
-            const name =
-                document.createElement(
-                    "div"
-                );
-
-            name.className =
-                "option-name";
-
-
-            const title =
-                document.createElement(
-                    "div"
-                );
-
-            title.className =
-                "option-title";
-
-            title.textContent =
-                option.name;
-
-
-            const actions =
-                document.createElement(
-                    "div"
-                );
-
-            actions.className =
-                "option-actions";
-
-
-            const subscription =
-                document.createElement(
-                    "div"
-                );
-
-            subscription.className =
-                "subscription";
-
-            subscription.textContent =
-                "Not subscribed";
-
-
-            const gameBadge =
-                document.createElement(
-                    "div"
-                );
-
-            gameBadge.className =
-                "game-badge";
-
-            gameBadge.textContent =
-                option.game;
-
-
-            logo.appendChild(image);
-
-            name.appendChild(title);
-
-            actions.appendChild(
-                subscription
-            );
-
-            actions.appendChild(
-                gameBadge
-            );
-
-            card.appendChild(logo);
-
-            card.appendChild(name);
-
-            card.appendChild(actions);
-
-
-            card.addEventListener(
-                "click",
-                event =>
-                {
-                    event.stopPropagation();
-
-                    selectedOption =
-                        option;
-
-                    renderOptions();
-                }
-            );
-
-
-            optionsElement.appendChild(
-                card
-            );
-        }
-    );
-}
-
-
-/* ============================================================
-   GAME TABS
-   ============================================================ */
-
-gameTabs.forEach(
-    tab =>
-    {
-        tab.addEventListener(
-            "click",
-            event =>
-            {
-                event.stopPropagation();
-
-                currentGame =
-                    tab.dataset.game;
-
-                gameTabs.forEach(
-                    other =>
-                    {
-                        other.classList.toggle(
-                            "active",
-                            other === tab
-                        );
-                    }
-                );
-
-                renderOptions();
-            }
-        );
-    }
-);
-
-
-/* ============================================================
-   LOADING
-   ============================================================ */
-
-function showLoading()
-{
-    loadingOption.textContent =
-        selectedOption.name +
-        " " +
-        selectedOption.game;
-
-    loadingBar.style.width =
-        "0%";
-
-    loadingScreen.classList.add(
-        "visible"
-    );
-
-    loadingScreen.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-}
-
-
-function hideLoading()
-{
-    if (launchTimer)
-    {
-        cancelAnimationFrame(
-            launchTimer
-        );
-
-        launchTimer = null;
-    }
-
-    launchRunning = false;
-
-    loadingBar.style.width =
-        "0%";
-
-    loadingScreen.classList.remove(
-        "visible"
-    );
-
-    loadingScreen.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-}
-
-
-/*
-    Uses a real elapsed-time calculation instead of
-    stepping the bar by a fixed percentage.
-
-    A small amount of easing/variation is applied so
-    it doesn't look like a perfectly mechanical
-    0,1,2,3... animation.
-*/
-
-function getProgress(elapsed)
-{
-    const raw =
-        Math.min(
-            1,
-            elapsed / launchDuration
-        );
-
-    /*
-        Slightly slower at the beginning,
-        a little quicker through the middle,
-        then naturally settles near the end.
-    */
-
-    const eased =
-        1 -
-        Math.pow(
-            1 - raw,
-            1.18
-        );
-
-    return eased * 100;
-}
-
-
-function launchFrame(now)
-{
-    if (!launchRunning)
-        return;
-
-
-    const elapsed =
-        now - launchStartTime;
-
-
-    const progress =
-        getProgress(elapsed);
-
-
-    loadingBar.style.width =
-        `${progress}%`;
-
-
-    if (
-        elapsed >=
-        launchDuration
-    )
-    {
-        loadingBar.style.width =
-            "100%";
-
-        setTimeout(
-            () =>
-            {
-                if (launchRunning)
-                {
-                    hideLoading();
-                }
-            },
-            180
-        );
-
-        return;
-    }
-
-
-    launchTimer =
-        requestAnimationFrame(
-            launchFrame
-        );
-}
-
-
-function startLaunch()
-{
-    if (launchRunning)
-        return;
-
-
-    launchRunning = true;
-
-
-    /*
-        Roughly eleven seconds, but not mathematically
-        identical every time.
-
-        Range:
-            10.6s - 11.5s
-    */
-
-    launchDuration =
-        10600 +
-        Math.random() * 900;
-
-
-    showLoading();
-
-
-    launchStartTime =
-        performance.now();
-
-
-    launchTimer =
-        requestAnimationFrame(
-            launchFrame
-        );
-}
-
-
-/* ============================================================
-   CANCEL
-   ============================================================ */
-
-cancelButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
-
-        hideLoading();
-    }
-);
-
-
-/* ============================================================
-   INJECT
-   ============================================================ */
-
-injectButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
-
-        startLaunch();
-    }
-);
-
-
-/* ============================================================
-   INITIAL STATE
-   ============================================================ */
-
-renderOptions();
+setGame("all");
