@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
-        content="width=315, height=480, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1"
     >
 
-    <title>Loader</title>
+    <title>orro</title>
 
-    <link rel="stylesheet" href="./style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
@@ -17,87 +22,226 @@
 <div id="app">
 
     <!-- =====================================================
-         NATIVE-STYLE TOP BAR
+         TOP BAR
          ===================================================== -->
 
-    <header class="topbar drag-region">
+    <div class="topbar">
 
-        <div class="window-controls no-drag">
+        <div
+            class="topbar-drag-area"
+            data-drag
+        ></div>
+
+        <div class="window-controls">
 
             <button
                 id="minimizeButton"
-                class="window-button"
+                class="window-button minimize"
                 aria-label="Minimize"
+                data-no-drag
             >
-                <span class="minimize-icon"></span>
+                <span></span>
             </button>
 
             <button
                 id="closeButton"
-                class="window-button close-button"
+                class="window-button close"
                 aria-label="Close"
+                data-no-drag
             >
-                <span class="close-icon"></span>
+                ×
             </button>
 
         </div>
 
-    </header>
+    </div>
 
 
     <!-- =====================================================
-         MAIN LOADER
+         MAIN CONTENT
          ===================================================== -->
 
-    <main class="loader">
+    <main class="content">
 
-        <!-- GAME FILTERS -->
 
-        <section class="game-filter-shell">
+        <!-- =================================================
+             GAME SELECTOR
+             ================================================= -->
 
-            <div class="game-filters">
+        <div class="game-tabs-shell">
+
+            <div class="game-tabs">
+
+
+                <!-- ALL GAMES -->
 
                 <button
-                    class="game-filter active"
+                    class="game-tab"
                     data-game="all"
                 >
-                    <span class="filter-icon lightning-icon"> </span>
-                    <span>All games</span>
+
+                    <span
+                        class="tab-icon lightning-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        All games
+                    </span>
+
                 </button>
 
 
+                <!-- CS:GO -->
+
                 <button
-                    class="game-filter"
+                    class="game-tab active"
                     data-game="csgo"
                 >
-                    <span class="filter-icon csgo-icon"></span>
-                    <span>CS:GO</span>
+
+                    <span
+                        class="tab-icon csgo-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        CS:GO
+                    </span>
+
                 </button>
 
 
+                <!-- CS2 -->
+
                 <button
-                    class="game-filter"
+                    class="game-tab"
                     data-game="cs2"
                 >
-                    <span class="filter-icon cs2-icon"></span>
-                    <span>CS:2</span>
+
+                    <span
+                        class="tab-icon cs2-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        CS:2
+                    </span>
+
                 </button>
 
             </div>
 
-        </section>
+        </div>
 
 
         <!-- =================================================
-             PRODUCT AREA
+             GAMES PANEL
              ================================================= -->
 
-        <section class="products-shell">
+        <section class="games-panel">
 
-            <div
-                id="products"
-                class="products"
-            ></div>
+            <div class="games">
+
+
+                <!-- =========================================
+                     PRIMORDIAL
+                     ========================================= -->
+
+                <div
+                    class="game-card"
+                    data-games="csgo"
+                    tabindex="0"
+                >
+
+                    <div class="game-card-inner">
+
+                        <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="primordial.png"
+                                    alt="Primordial"
+                                    draggable="false"
+                                >
+
+                            </div>
+
+
+                            <div class="game-name">
+                                Primordial
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     GAMESENSE
+                     ========================================= -->
+
+                <div
+                    class="game-card"
+                    data-games="csgo"
+                    tabindex="0"
+                >
+
+                    <div class="game-card-inner">
+
+                        <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="gamesense.png"
+                                    alt="Gamesense"
+                                    draggable="false"
+                                >
+
+                            </div>
+
+
+                            <div class="game-name">
+                                Gamesense
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
 
         </section>
 
@@ -111,11 +255,14 @@
             class="inject-button"
         >
 
-            <span class="inject-icon">
-                <span></span>
-            </span>
+            <span
+                class="inject-mark"
+                aria-hidden="true"
+            ></span>
 
-            <span>Inject</span>
+            <span>
+                Inject
+            </span>
 
         </button>
 
@@ -123,41 +270,65 @@
 
 
     <!-- =====================================================
-         LAUNCH SCREEN
+         QUEUE SCREEN
          ===================================================== -->
 
     <div
-        id="launchScreen"
-        class="launch-screen"
+        id="queueScreen"
+        class="queue-screen"
     >
 
-        <div class="launch-content">
+        <div class="queue-content">
 
-            <div
-                id="launchTitle"
-                class="launch-title"
-            >
-                Injecting
+            <div class="queue-title">
+                orro
             </div>
 
-            <div
-                id="launchOption"
-                class="launch-option"
-            >
-                Primordial CS:GO
+
+            <div class="queue-subtitle">
+                You're in the queue
             </div>
 
-            <div class="launch-progress-track">
+
+            <div class="queue-number">
+
+                <span id="queueCount">
+                    2
+                </span>
+
+                <span class="queue-people">
+                    people ahead
+                </span>
+
+            </div>
+
+
+            <div class="queue-progress">
 
                 <div
-                    id="launchProgress"
-                    class="launch-progress"
+                    id="queueProgress"
+                    class="queue-progress-fill"
                 ></div>
 
             </div>
 
+
+            <div class="queue-bottom">
+
+                <span>
+                    Position
+                    <b id="queuePosition">3</b>
+                </span>
+
+                <span id="queueTime">
+                    ~29 seconds
+                </span>
+
+            </div>
+
+
             <button
-                id="cancelLaunch"
+                id="cancelQueue"
                 class="cancel-button"
             >
                 Cancel
@@ -170,7 +341,7 @@
 </div>
 
 
-<script src="./script.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
