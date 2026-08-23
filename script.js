@@ -1,622 +1,649 @@
 /* =========================================================
-   ORRO UI
+   WINDOW CONTROLS
    ========================================================= */
 
-(() => {
-
-    "use strict";
-
-
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
-
-    const topbar =
-        document.querySelector(".topbar");
-
-
-    const topbarDragArea =
-        document.querySelector(".topbar-drag-area");
+function sendWindowMessage(message) {
+    try {
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(message);
+        }
+    } catch (_) {
+        // Running outside WebView2.
+    }
+}
 
 
-    const gameTabs =
-        document.querySelectorAll(".game-tab");
+function closeWindow() {
+    sendWindowMessage("window.close");
+}
 
 
-    const gameCards =
-        document.querySelectorAll(".game-card");
+function minimizeWindow() {
+    sendWindowMessage("window.minimize");
+}
 
 
-    const minimizeButton =
-        document.getElementById("minimizeButton");
+/* =========================================================
+   GAME DATA
+   ========================================================= */
+
+const games = {
+
+    all: [
+        {
+            id: "primordial",
+            name: "Primordial",
+            logo: "primordial.png",
+            game: "CS:GO"
+        },
+
+        {
+            id: "primordial-2",
+            name: "Primordial",
+            logo: "primordial.png",
+            game: "CS:GO"
+        },
+
+        {
+            id: "gamesense",
+            name: "Gamesense",
+            logo: "gamesense.png",
+            game: "CS:GO"
+        }
+    ],
 
 
-    const closeButton =
-        document.getElementById("closeButton");
+    csgo: [
+        {
+            id: "primordial",
+            name: "Primordial",
+            logo: "primordial.png",
+            game: "CS:GO"
+        },
+
+        {
+            id: "primordial-2",
+            name: "Primordial",
+            logo: "primordial.png",
+            game: "CS:GO"
+        },
+
+        {
+            id: "gamesense",
+            name: "Gamesense",
+            logo: "gamesense.png",
+            game: "CS:GO"
+        }
+    ],
 
 
-    const injectButton =
-        document.getElementById("injectButton");
+    cs2: [
+        {
+            id: "primordial-cs2",
+            name: "Primordial",
+            logo: "primordial.png",
+            game: "CS:2"
+        },
+
+        {
+            id: "gamesense-cs2",
+            name: "Gamesense",
+            logo: "gamesense.png",
+            game: "CS:2"
+        }
+    ]
+};
 
 
-    const queueScreen =
-        document.getElementById("queueScreen");
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let selectedGame = "csgo";
+
+let selectedOption = null;
+
+let injectionTimer = null;
+
+let injectionStart = 0;
+
+let injectionCancelled = false;
 
 
-    const cancelQueue =
-        document.getElementById("cancelQueue");
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const optionsElement =
+    document.getElementById("options");
+
+const loadingScreen =
+    document.getElementById("loadingScreen");
+
+const loadingOption =
+    document.getElementById("loadingOption");
+
+const loadingFill =
+    document.getElementById("loadingFill");
 
 
-    const queueCount =
-        document.getElementById("queueCount");
+/* =========================================================
+   INITIALISE
+   ========================================================= */
 
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const queuePosition =
-        document.getElementById("queuePosition");
-
-
-    const queueTime =
-        document.getElementById("queueTime");
-
-
-    const queueProgress =
-        document.getElementById("queueProgress");
-
-
-    /* =====================================================
-       WEBVIEW BRIDGE
-       ===================================================== */
-
-    function sendWindowMessage(message) {
-
-        try {
-
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
-
-                window.chrome.webview.postMessage(
-                    message
-                );
-
-                return true;
-            }
-
-        } catch (_) {}
-
-        return false;
+        selectGame("csgo");
 
     }
+);
 
 
-    /* =====================================================
-       WINDOW CONTROLS
-       ===================================================== */
+/* =========================================================
+   SELECT GAME
+   ========================================================= */
 
-    minimizeButton?.addEventListener(
-        "click",
-        event => {
+function selectGame(game) {
 
-            event.stopPropagation();
+    if (!games[game]) {
+        return;
+    }
 
-            sendWindowMessage(
-                "window.minimize"
+    selectedGame = game;
+
+    document
+        .querySelectorAll(".game-option")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.game === game
             );
 
-        }
+        });
+
+
+    renderOptions(
+        games[game]
     );
+}
 
 
-    closeButton?.addEventListener(
-        "click",
-        event => {
+/* =========================================================
+   RENDER OPTIONS
+   ========================================================= */
 
-            event.stopPropagation();
+function renderOptions(options) {
 
-            sendWindowMessage(
-                "window.close"
-            );
+    optionsElement.innerHTML = "";
 
-        }
-    );
+    if (!options.length) {
 
+        const empty =
+            document.createElement("div");
 
-    /* =====================================================
-       WINDOW DRAG
-       ===================================================== */
+        empty.className =
+            "empty-options";
+
+        empty.textContent =
+            "No options available.";
+
+        optionsElement.appendChild(
+            empty
+        );
+
+        selectedOption = null;
+
+        return;
+    }
+
 
     /*
-       IMPORTANT:
+     * Preserve the currently selected option
+     * where possible.
+     */
 
-       The previous rewrite had the visual top bar,
-       but it no longer actually told the C++ host
-       that the user was trying to drag the window.
-
-       The C++ already understands:
-
-           window.drag
-
-       so all we need to do is send that message when
-       the user presses the top bar.
-
-       Buttons are deliberately excluded.
-       The cursor stays completely normal.
-    */
-
-    function beginWindowDrag(event) {
-
-        if (
-            event.button !== 0
-        ) {
-
-            return;
-
-        }
-
-
-        const target =
-            event.target;
-
-
-        /*
-           Never drag when clicking the window controls.
-        */
-
-        if (
-            target.closest &&
-            target.closest(".window-controls")
-        ) {
-
-            return;
-
-        }
-
-
-        event.preventDefault();
-
-
-        sendWindowMessage(
-            "window.drag"
-        );
-
-    }
-
-
-    topbar?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
-
-
-    topbarDragArea?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
-
-
-    /* =====================================================
-       GAME TAB SELECTION
-       ===================================================== */
-
-    function setActiveTab(tab) {
-
-        gameTabs.forEach(
-            currentTab => {
-
-                currentTab.classList.toggle(
-                    "active",
-                    currentTab === tab
-                );
-
-            }
-        );
-
-    }
-
-
-    function updateGames(game) {
-
-        gameCards.forEach(
-            card => {
-
-                const supportedGames =
-                    (card.dataset.games || "")
-                        .split(",")
-                        .map(
-                            value =>
-                                value.trim()
-                        );
-
-
-                if (
-                    game === "all" ||
-                    supportedGames.includes(game)
-                ) {
-
-                    card.classList.remove(
-                        "hidden-game"
-                    );
-
-                } else {
-
-                    card.classList.add(
-                        "hidden-game"
-                    );
-
-                }
-
-            }
+    const existing =
+        options.find(
+            option =>
+                option.id === selectedOption
         );
 
 
-        /*
-           Don't leave a selection on a card that
-           is no longer visible.
-        */
+    selectedOption =
+        existing
+            ? existing.id
+            : options[0].id;
 
-        gameCards.forEach(
-            card => {
 
-                if (
-                    card.classList.contains(
-                        "hidden-game"
-                    )
-                ) {
+    options.forEach(
+        option => {
 
-                    card.classList.remove(
-                        "selected"
-                    );
+            const card =
+                document.createElement("div");
 
-                }
-
-            }
-        );
-
-    }
-
-
-    gameTabs.forEach(
-        tab => {
-
-            tab.addEventListener(
-                "click",
-                () => {
-
-                    const game =
-                        tab.dataset.game;
-
-
-                    setActiveTab(tab);
-
-                    updateGames(game);
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       GAME CARD SELECTION
-       ===================================================== */
-
-    function selectCard(card) {
-
-        gameCards.forEach(
-            currentCard => {
-
-                currentCard.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-        card.classList.add(
-            "selected"
-        );
-
-    }
-
-
-    gameCards.forEach(
-        card => {
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    if (
-                        card.classList.contains(
-                            "hidden-game"
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-                    selectCard(card);
-
-                }
-            );
-
-
-            card.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key === "Enter" ||
-                        event.key === " "
-                    ) {
-
-                        event.preventDefault();
-
-                        selectCard(card);
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       QUEUE
-       ===================================================== */
-
-    let queueTimer = null;
-
-    let queueAnimation = null;
-
-    let queueDuration = 0;
-
-    let queueStarted = 0;
-
-
-    function randomQueueTime() {
-
-        /*
-           Around 29 seconds, but not identical every
-           launch.
-
-           Range:
-               27–31 seconds
-        */
-
-        return (
-            27000 +
-            Math.floor(
-                Math.random() * 5000
-            )
-        );
-
-    }
-
-
-    function stopQueueTimers() {
-
-        if (
-            queueTimer !== null
-        ) {
-
-            clearTimeout(
-                queueTimer
-            );
-
-            queueTimer = null;
-
-        }
-
-
-        if (
-            queueAnimation !== null
-        ) {
-
-            cancelAnimationFrame(
-                queueAnimation
-            );
-
-            queueAnimation = null;
-
-        }
-
-    }
-
-
-    function finishQueue() {
-
-        stopQueueTimers();
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "100%";
-
-        }
-
-    }
-
-
-    function startQueue() {
-
-        if (!queueScreen) {
-            return;
-        }
-
-
-        const peopleAhead =
-            Math.floor(
-                Math.random() * 4
-            ) + 1;
-
-
-        const position =
-            peopleAhead + 1;
-
-
-        queueDuration =
-            randomQueueTime();
-
-
-        queueStarted =
-            performance.now();
-
-
-        if (queueCount) {
-
-            queueCount.textContent =
-                peopleAhead;
-
-        }
-
-
-        if (queuePosition) {
-
-            queuePosition.textContent =
-                position;
-
-        }
-
-
-        if (queueTime) {
-
-            queueTime.textContent =
-                "~" +
-                Math.round(
-                    queueDuration / 1000
-                ) +
-                " seconds";
-
-        }
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "0%";
-
-        }
-
-
-        queueScreen.classList.add(
-            "active"
-        );
-
-
-        stopQueueTimers();
-
-
-        function tick(now) {
-
-            const elapsed =
-                now - queueStarted;
-
-
-            const progress =
-                Math.min(
-                    elapsed / queueDuration,
-                    1
-                );
-
-
-            if (queueProgress) {
-
-                queueProgress.style.width =
-                    (progress * 100) +
-                    "%";
-
-            }
-
+            card.className =
+                "option-card";
 
             if (
-                progress < 1
+                option.id === selectedOption
             ) {
-
-                queueAnimation =
-                    requestAnimationFrame(
-                        tick
-                    );
-
+                card.classList.add(
+                    "selected"
+                );
             }
 
+
+            card.dataset.option =
+                option.id;
+
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    selectOption(
+                        option.id
+                    );
+
+                }
+            );
+
+
+            /*
+             * Logo
+             */
+
+            const logo =
+                document.createElement("div");
+
+            logo.className =
+                "option-logo";
+
+
+            const image =
+                document.createElement("img");
+
+            image.src =
+                option.logo;
+
+            image.alt =
+                "";
+
+
+            logo.appendChild(
+                image
+            );
+
+
+            /*
+             * Name
+             */
+
+            const info =
+                document.createElement("div");
+
+            info.className =
+                "option-info";
+
+
+            const name =
+                document.createElement("div");
+
+            name.className =
+                "option-name";
+
+            name.textContent =
+                option.name;
+
+
+            info.appendChild(
+                name
+            );
+
+
+            /*
+             * Right side
+             */
+
+            const side =
+                document.createElement("div");
+
+            side.className =
+                "option-side";
+
+
+            const subscription =
+                document.createElement("div");
+
+            subscription.className =
+                "subscription";
+
+            subscription.textContent =
+                "Not subscribed";
+
+
+            const gameBadge =
+                document.createElement("div");
+
+            gameBadge.className =
+                "game-badge";
+
+            gameBadge.textContent =
+                option.game;
+
+
+            side.appendChild(
+                subscription
+            );
+
+            side.appendChild(
+                gameBadge
+            );
+
+
+            /*
+             * Assemble
+             */
+
+            card.appendChild(
+                logo
+            );
+
+            card.appendChild(
+                info
+            );
+
+            card.appendChild(
+                side
+            );
+
+
+            optionsElement.appendChild(
+                card
+            );
+
+        }
+    );
+}
+
+
+/* =========================================================
+   SELECT OPTION
+   ========================================================= */
+
+function selectOption(id) {
+
+    const available =
+        games[selectedGame] || [];
+
+    const option =
+        available.find(
+            item => item.id === id
+        );
+
+
+    if (!option) {
+        return;
+    }
+
+
+    selectedOption =
+        id;
+
+
+    document
+        .querySelectorAll(".option-card")
+        .forEach(card => {
+
+            card.classList.toggle(
+                "selected",
+                card.dataset.option === id
+            );
+
+        });
+}
+
+
+/* =========================================================
+   INJECTION
+   ========================================================= */
+
+function beginInjection() {
+
+    if (!selectedOption) {
+        return;
+    }
+
+
+    const option =
+        games[selectedGame]
+            ?.find(
+                item =>
+                    item.id === selectedOption
+            );
+
+
+    if (!option) {
+        return;
+    }
+
+
+    /*
+     * Fullscreen loading screen.
+     */
+
+    loadingOption.textContent =
+        option.name;
+
+
+    loadingFill.style.width =
+        "0%";
+
+
+    loadingScreen.classList.add(
+        "visible"
+    );
+
+
+    injectionCancelled =
+        false;
+
+
+    injectionStart =
+        performance.now();
+
+
+    /*
+     * Approximately 11 seconds.
+     *
+     * The progress is intentionally uneven.
+     * It advances in small realistic chunks rather
+     * than behaving like one perfectly linear CSS
+     * animation.
+     */
+
+    const duration =
+        11000;
+
+
+    const stages = [
+        { time: 0,    progress: 0 },
+        { time: 420,  progress: 5 },
+        { time: 930,  progress: 11 },
+        { time: 1420, progress: 17 },
+        { time: 2070, progress: 23 },
+        { time: 2630, progress: 29 },
+        { time: 3310, progress: 35 },
+        { time: 3970, progress: 42 },
+        { time: 4520, progress: 47 },
+        { time: 5180, progress: 54 },
+        { time: 5730, progress: 59 },
+        { time: 6390, progress: 64 },
+        { time: 7010, progress: 69 },
+        { time: 7580, progress: 73 },
+        { time: 8170, progress: 78 },
+        { time: 8720, progress: 82 },
+        { time: 9260, progress: 87 },
+        { time: 9780, progress: 91 },
+        { time: 10240, progress: 94 },
+        { time: 10680, progress: 97 },
+        { time: 11000, progress: 100 }
+    ];
+
+
+    let stageIndex = 0;
+
+
+    function updateStage() {
+
+        if (injectionCancelled) {
+            return;
         }
 
 
-        queueAnimation =
+        const elapsed =
+            performance.now() -
+            injectionStart;
+
+
+        while (
+            stageIndex <
+            stages.length &&
+            elapsed >=
+                stages[stageIndex].time
+        ) {
+
+            loadingFill.style.width =
+                stages[stageIndex].progress +
+                "%";
+
+            stageIndex++;
+
+        }
+
+
+        if (
+            elapsed >= duration
+        ) {
+
+            clearInterval(
+                injectionTimer
+            );
+
+            injectionTimer =
+                null;
+
+
+            /*
+             * Leave the bar completed very
+             * briefly before returning.
+             */
+
+            setTimeout(
+                () => {
+
+                    if (
+                        !injectionCancelled
+                    ) {
+                        finishInjection();
+                    }
+
+                },
+                180
+            );
+
+            return;
+        }
+
+
+        injectionTimer =
             requestAnimationFrame(
-                tick
+                updateStage
             );
-
-
-        queueTimer =
-            window.setTimeout(
-                finishQueue,
-                queueDuration
-            );
-
     }
 
 
-    function cancelQueueLaunch() {
+    injectionTimer =
+        requestAnimationFrame(
+            updateStage
+        );
+}
 
-        stopQueueTimers();
+
+/* =========================================================
+   CANCEL
+   ========================================================= */
+
+function cancelInjection() {
+
+    injectionCancelled =
+        true;
 
 
-        queueScreen.classList.remove(
-            "active"
+    if (injectionTimer !== null) {
+
+        cancelAnimationFrame(
+            injectionTimer
         );
 
+        injectionTimer =
+            null;
+    }
 
-        if (queueProgress) {
 
-            queueProgress.style.width =
-                "0%";
+    loadingFill.style.width =
+        "0%";
 
+
+    loadingScreen.classList.remove(
+        "visible"
+    );
+}
+
+
+/* =========================================================
+   FINISH
+   ========================================================= */
+
+function finishInjection() {
+
+    loadingScreen.classList.remove(
+        "visible"
+    );
+
+
+    loadingFill.style.width =
+        "0%";
+
+
+    /*
+     * Keep the loader UI where it was.
+     * Actual injection can be connected here
+     * later without changing the interface.
+     */
+}
+
+
+/* =========================================================
+   PREVENT IMAGE DRAGGING
+   ========================================================= */
+
+document.addEventListener(
+    "dragstart",
+    event => {
+
+        if (
+            event.target.tagName ===
+            "IMG"
+        ) {
+            event.preventDefault();
         }
 
     }
-
-
-    injectButton?.addEventListener(
-        "click",
-        startQueue
-    );
-
-
-    cancelQueue?.addEventListener(
-        "click",
-        cancelQueueLaunch
-    );
-
-
-    /* =====================================================
-       INITIAL STATE
-       ===================================================== */
-
-    const defaultTab =
-        document.querySelector(
-            '.game-tab[data-game="csgo"]'
-        );
-
-
-    if (defaultTab) {
-
-        setActiveTab(
-            defaultTab
-        );
-
-        updateGames(
-            "csgo"
-        );
-
-    }
-
-})();
+);
