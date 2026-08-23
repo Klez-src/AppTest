@@ -1,28 +1,32 @@
 * {
     box-sizing: border-box;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
 }
 
 html,
 body {
-    width: 100%;
-    height: 100%;
+    width: 315px;
+    height: 480px;
+
     margin: 0;
+    padding: 0;
+
     overflow: hidden;
+
+    background: #101017;
 }
 
 body {
-    background: #111119;
-    color: #dddde6;
+    color: #e8e7ed;
 
     font-family:
         Inter,
-        -apple-system,
-        BlinkMacSystemFont,
+        "SF Pro Display",
         "Segoe UI",
+        Arial,
         sans-serif;
+
+    user-select: none;
+    -webkit-user-select: none;
 
     -webkit-font-smoothing: antialiased;
 
@@ -30,294 +34,72 @@ body {
 }
 
 
-/* =========================================================
-   INTRO
-   ========================================================= */
-
-#intro {
-    position: fixed;
-    inset: 0;
-
-    z-index: 1000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #0f100f;
-
-    animation:
-        introExit .65s 3.7s forwards;
-}
-
-.intro-word {
-    position: relative;
-    z-index: 4;
-
-    font-size: 76px;
-    line-height: 1;
-
-    font-weight: 400;
-    letter-spacing: -6px;
-
-    color: #dedfda;
-
-    animation:
-        wordCollapse 3.7s ease forwards;
-}
-
-.intro-dot,
-.intro-ring,
-.intro-ring-two {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0);
-
-    border-radius: 50%;
-
-    pointer-events: none;
-}
-
-.intro-dot {
-    width: 4px;
-    height: 4px;
-
-    background: #d9dad5;
-
-    animation:
-        dotExpand 3.7s ease forwards;
-}
-
-.intro-ring {
-    width: 13px;
-    height: 13px;
-
-    border: 1px solid rgba(220, 221, 216, .34);
-
-    animation:
-        ringOne 3.7s ease forwards;
-}
-
-.intro-ring-two {
-    width: 20px;
-    height: 20px;
-
-    border: 1px solid rgba(220, 221, 216, .13);
-
-    animation:
-        ringTwo 3.7s ease forwards;
-}
-
-@keyframes wordCollapse {
-
-    0% {
-        opacity: 0;
-        transform: scale(.95);
-    }
-
-    25% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    72% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    82% {
-        opacity: 1;
-        transform: scale(.08);
-    }
-
-    88% {
-        opacity: 0;
-        transform: scale(.01);
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes dotExpand {
-
-    0%,
-    78% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    83% {
-        opacity: 1;
-        transform:
-            translate(-50%, -50%)
-            scale(1);
-    }
-
-    90% {
-        opacity: .14;
-        transform:
-            translate(-50%, -50%)
-            scale(35);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(80);
-    }
-}
-
-@keyframes ringOne {
-
-    0%,
-    78% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    82% {
-        opacity: .55;
-        transform:
-            translate(-50%, -50%)
-            scale(.8);
-    }
-
-    89% {
-        opacity: .18;
-        transform:
-            translate(-50%, -50%)
-            scale(8);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(34);
-    }
-}
-
-@keyframes ringTwo {
-
-    0%,
-    80% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(0);
-    }
-
-    85% {
-        opacity: .27;
-        transform:
-            translate(-50%, -50%)
-            scale(.7);
-    }
-
-    92% {
-        opacity: .07;
-        transform:
-            translate(-50%, -50%)
-            scale(13);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(32);
-    }
-}
-
-@keyframes introExit {
-
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-
-/* =========================================================
+/* ============================================================
    APP
-   ========================================================= */
+   ============================================================ */
 
 #app {
-    position: relative;
+    position: fixed;
 
-    width: 100%;
-    height: 100%;
+    inset: 0;
+
+    width: 315px;
+    height: 480px;
 
     overflow: hidden;
 
-    opacity: 0;
-
-    animation:
-        appAppear .6s 3.9s ease forwards;
-}
-
-@keyframes appAppear {
-
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    background: #101017;
 }
 
 
-/* =========================================================
-   WINDOW BAR
-   ========================================================= */
+/* ============================================================
+   TOP BAR
+   ============================================================ */
 
-.window-bar {
+.topbar {
     position: absolute;
 
-    left: 0;
-    right: 0;
     top: 0;
+    left: 0;
 
+    width: 100%;
     height: 32px;
 
-    z-index: 20;
+    z-index: 50;
 
-    background: #101018;
-}
-
-.window-drag-space {
-    position: absolute;
-    inset: 0 74px 0 0;
+    background: #0e0e15;
 
     cursor: default;
 }
 
+.drag-region {
+    -webkit-app-region: drag;
+}
+
+.no-drag {
+    -webkit-app-region: no-drag;
+}
+
+
 .window-controls {
     position: absolute;
 
-    right: 0;
     top: 0;
+    right: 4px;
 
     height: 32px;
 
     display: flex;
+    align-items: center;
+
+    gap: 2px;
 }
 
-.window-control {
-    width: 37px;
+
+.window-button {
+    position: relative;
+
+    width: 32px;
     height: 32px;
 
     padding: 0;
@@ -326,92 +108,120 @@ body {
 
     background: transparent;
 
-    color: #8c8c97;
-
-    cursor: pointer;
-
-    position: relative;
+    cursor: default;
 }
 
-.window-control:hover {
+.window-button:hover {
     background: rgba(255,255,255,.035);
 }
 
-.window-control.minimize span {
+.close-button:hover {
+    background: rgba(255,70,90,.08);
+}
+
+
+.minimize-icon {
     position: absolute;
+
+    left: 11px;
+    top: 16px;
 
     width: 11px;
     height: 1px;
 
-    left: 13px;
-    top: 16px;
-
-    background: currentColor;
+    background: #777783;
 }
 
-.window-control.close span:first-child,
-.window-control.close span:last-child {
+
+.close-icon::before,
+.close-icon::after {
+    content: "";
+
     position: absolute;
 
-    width: 13px;
-    height: 1px;
+    left: 15px;
+    top: 10px;
 
-    left: 12px;
-    top: 16px;
+    width: 1px;
+    height: 12px;
 
-    background: currentColor;
+    background: #85858e;
 }
 
-.window-control.close span:first-child {
+.close-icon::before {
     transform: rotate(45deg);
 }
 
-.window-control.close span:last-child {
+.close-icon::after {
     transform: rotate(-45deg);
 }
 
 
-/* =========================================================
-   GAME SELECTOR OUTER LAYER
-   ========================================================= */
+/* ============================================================
+   LOADER
+   ============================================================ */
 
-.game-selector-wrap {
+.loader {
     position: absolute;
 
-    top: 42px;
-    left: 10px;
-    right: 10px;
+    top: 32px;
+    left: 0;
 
-    height: 40px;
+    width: 315px;
+    height: 448px;
 
-    padding: 5px;
+    padding:
+        8px
+        6px
+        6px;
 
-    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
 
-    background: #171722;
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   GAME FILTER OUTER LAYER
+   ============================================================ */
+
+.game-filter-shell {
+    flex: 0 0 40px;
+
+    width: 100%;
+
+    padding: 4px;
+
+    border-radius: 14px;
+
+    background: #171720;
 
     border: 1px solid rgba(255,255,255,.025);
 }
 
 
-/* =========================================================
-   GAME SELECTOR
-   ========================================================= */
+/* ============================================================
+   GAME FILTERS
+   ============================================================ */
 
-.game-selector {
+.game-filters {
     width: 100%;
-    height: 100%;
+    height: 30px;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+
+    grid-template-columns:
+        1.25fr
+        1fr
+        .9fr;
 
     gap: 3px;
 }
 
-.game-tab {
-    position: relative;
 
-    height: 100%;
+.game-filter {
+    height: 30px;
 
     display: flex;
     align-items: center;
@@ -419,109 +229,158 @@ body {
 
     gap: 6px;
 
-    padding: 0;
+    padding: 0 7px;
 
     border: 0;
-    border-radius: 10px;
+    border-radius: 9px;
 
     background: transparent;
 
-    color: #858591;
+    color: #858590;
 
-    font: inherit;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 450;
 
     cursor: pointer;
 
     transition:
-        color .16s ease,
-        background .16s ease;
+        background .14s ease,
+        color .14s ease;
 }
 
-.game-tab:hover {
-    color: #a4a4b0;
+
+.game-filter:hover {
+    color: #b1b0ba;
 }
 
-.game-tab.active {
-    color: #8351ff;
 
-    background: #211c31;
+.game-filter.active {
+    background: #211934;
+
+    color: #8550ff;
 }
 
-.game-icon {
-    width: 15px;
-    height: 15px;
+
+/* ============================================================
+   FILTER ICONS
+   ============================================================ */
+
+.filter-icon {
+    width: 12px;
+    height: 12px;
+
+    flex: 0 0 12px;
+
+    position: relative;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    flex-shrink: 0;
-
-    color: currentColor;
 }
 
-.game-icon svg {
+
+/* Lightning */
+
+.lightning-icon {
+    border-radius: 50%;
+
+    background: #8250f5;
+}
+
+.lightning-icon::before {
+    content: "";
+
+    width: 5px;
+    height: 7px;
+
+    background: #171720;
+
+    clip-path: polygon(
+        55% 0,
+        100% 0,
+        62% 42%,
+        100% 42%,
+        32% 100%,
+        43% 55%,
+        0 55%
+    );
+}
+
+
+/* CS:GO */
+
+.csgo-icon {
+    background-image: url("./csgo.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    opacity: .48;
+}
+
+.game-filter.active .csgo-icon {
+    opacity: 1;
+}
+
+
+/* CS2 */
+
+.cs2-icon {
+    background-image: url("./cs2.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    opacity: .48;
+}
+
+.game-filter.active .cs2-icon {
+    opacity: 1;
+}
+
+
+/* ============================================================
+   PRODUCTS OUTER CONTAINER
+   ============================================================ */
+
+.products-shell {
+    flex: 1;
+
+    min-height: 0;
+
     width: 100%;
-    height: 100%;
 
-    display: block;
-}
+    margin-top: 8px;
 
-.cs2-icon img {
-    width: 16px;
-    height: 12px;
+    padding: 8px;
 
-    display: block;
+    border-radius: 14px;
 
-    object-fit: contain;
+    background: #12121a;
 
-    filter: none;
-}
-
-
-/* =========================================================
-   PRODUCTS OUTER PANEL
-   ========================================================= */
-
-.products-panel {
-    position: absolute;
-
-    top: 90px;
-    left: 10px;
-    right: 10px;
-    bottom: 47px;
-
-    padding: 10px;
-
-    border-radius: 13px;
-
-    background: #15151f;
-
-    border: 1px solid rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.035);
 
     overflow: hidden;
 }
 
 
-/* =========================================================
-   PRODUCT LIST
-   ========================================================= */
-
-.product-list {
+.products {
     width: 100%;
     height: 100%;
 
     display: flex;
     flex-direction: column;
 
-    gap: 10px;
+    gap: 8px;
+
+    overflow: hidden;
 }
 
 
-/* =========================================================
+/* ============================================================
    PRODUCT CARD
-   ========================================================= */
+   ============================================================ */
 
 .product-card {
     position: relative;
@@ -529,122 +388,135 @@ body {
     width: 100%;
     height: 67px;
 
-    flex-shrink: 0;
+    flex: 0 0 67px;
+
+    padding: 8px;
 
     display: flex;
     align-items: center;
 
-    padding:
-        10px;
-
     border-radius: 13px;
 
-    background: #181822;
+    border: 1px solid #292934;
 
-    border: 1px solid #242431;
-
-    box-shadow:
-        0 5px 15px rgba(0,0,0,.08);
-
-    cursor: pointer;
+    background: #15151e;
 
     transition:
-        border-color .16s ease,
-        background .16s ease;
+        border-color .15s ease,
+        background .15s ease;
 }
+
 
 .product-card:hover {
-    background: #1a1a25;
+    background: #171720;
 }
+
 
 .product-card.selected {
-    border-color: rgba(132, 80, 255, .62);
+    border-color: rgba(132,79,255,.55);
 }
 
 
-/* =========================================================
-   PRODUCT ICON
-   ========================================================= */
+/* ============================================================
+   LOGO
+   ============================================================ */
 
-.product-icon {
-    width: 47px;
-    height: 47px;
+.product-logo-wrap {
+    width: 46px;
+    height: 46px;
 
-    flex-shrink: 0;
+    flex: 0 0 46px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    overflow: hidden;
-
     border-radius: 11px;
 
-    background: #101017;
+    overflow: hidden;
+
+    background: #0e0e15;
 }
 
-.product-icon img {
+
+.product-logo {
     width: 100%;
     height: 100%;
 
+    object-fit: contain;
+
     display: block;
-
-    object-fit: cover;
-
-    border-radius: inherit;
 }
 
 
-/* =========================================================
-   PRODUCT INFORMATION
-   ========================================================= */
+.product-logo.primordial {
+    background: #303033;
+
+    padding: 7px;
+}
+
+
+.product-logo.gamesense {
+    background: #0d1017;
+
+    padding: 6px;
+}
+
+
+/* ============================================================
+   PRODUCT INFO
+   ============================================================ */
 
 .product-info {
     min-width: 0;
 
-    margin-left: 12px;
+    margin-left: 11px;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-self: center;
 }
+
 
 .product-name {
-    color: #dddde5;
+    margin: 0;
+
+    color: #e7e5ec;
 
     font-size: 14px;
-    font-weight: 400;
+    line-height: 16px;
 
-    letter-spacing: -.15px;
+    font-weight: 500;
+
+    letter-spacing: -.25px;
+
+    white-space: nowrap;
 }
 
-.product-game {
-    margin-top: 5px;
-
-    color: #676773;
-
-    font-size: 9px;
-}
-
-
-/* =========================================================
-   PRODUCT RIGHT SIDE
-   ========================================================= */
 
 .product-meta {
+    display: none;
+}
+
+
+/* ============================================================
+   CARD ACTIONS
+   ============================================================ */
+
+.product-actions {
     margin-left: auto;
 
-    width: 92px;
+    width: 91px;
 
     display: flex;
     flex-direction: column;
 
     align-items: stretch;
 
-    gap: 5px;
+    gap: 4px;
 }
 
+
 .subscription {
+    width: 91px;
     height: 20px;
 
     display: flex;
@@ -653,51 +525,71 @@ body {
 
     border-radius: 4px;
 
-    background: #2b202c;
+    background: #301d2c;
 
-    color: #a8667e;
+    color: #a66c7f;
 
-    font-size: 9px;
+    font-size: 8px;
+    font-weight: 450;
+
+    white-space: nowrap;
 }
 
-.game-chip {
-    height: 19px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.game-option {
+    width: 91px;
+    height: 20px;
 
+    border: 0;
     border-radius: 4px;
 
-    background: #23232f;
+    background: #20202c;
 
-    color: #7d7d89;
+    color: #777782;
 
+    font-family: inherit;
     font-size: 9px;
+    font-weight: 450;
+
+    cursor: pointer;
 
     transition:
-        background .16s ease,
-        color .16s ease;
-}
-
-.product-card.selected .game-chip {
-    background: #2a2140;
-    color: #8a58ff;
+        background .14s ease,
+        color .14s ease;
 }
 
 
-/* =========================================================
+.game-option:hover {
+    background: #252535;
+    color: #aaa9b4;
+}
+
+
+.game-option.active {
+    background: #252039;
+
+    color: #8a52ff;
+}
+
+
+/* ============================================================
    INJECT BUTTON
-   ========================================================= */
+   ============================================================ */
 
 .inject-button {
-    position: absolute;
+    flex: 0 0 38px;
 
-    left: 10px;
-    right: 10px;
-    bottom: 0;
+    width: 100%;
+    height: 38px;
 
-    height: 39px;
+    margin-top: 8px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: #7946e8;
+
+    color: #eeeafd;
 
     display: flex;
     align-items: center;
@@ -705,109 +597,131 @@ body {
 
     gap: 6px;
 
-    padding: 0;
-
-    border: 0;
-    border-radius: 9px;
-
-    background: #7847e8;
-
-    color: #eeeafc;
-
-    font: inherit;
+    font-family: inherit;
     font-size: 14px;
+    font-weight: 450;
 
     cursor: pointer;
 
-    box-shadow:
-        0 5px 16px rgba(120,71,232,.16);
-
     transition:
-        background .15s ease,
-        transform .1s ease;
+        background .12s ease,
+        transform .08s ease;
 }
+
 
 .inject-button:hover {
-    background: #8250f0;
+    background: #8350f1;
 }
+
 
 .inject-button:active {
-    transform: translateY(1px);
+    transform: scale(.985);
 }
+
 
 .inject-icon {
-    width: 19px;
-    height: 19px;
+    position: relative;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 15px;
+    height: 13px;
 
-    transform: rotate(-8deg);
-}
-
-.inject-icon svg {
-    width: 100%;
-    height: 100%;
+    display: inline-block;
 }
 
 
-/* =========================================================
-   FULL SCREEN INJECTION PAGE
-   ========================================================= */
+.inject-icon::before {
+    content: "";
 
-.launching-screen {
-    position: fixed;
+    position: absolute;
+
+    left: 1px;
+    top: 5px;
+
+    width: 10px;
+    height: 4px;
+
+    border-radius: 1px 5px 5px 1px;
+
+    background: #ece8ff;
+
+    transform: skewX(28deg);
+}
+
+
+.inject-icon::after {
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+    top: 3px;
+
+    width: 0;
+    height: 0;
+
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid #ece8ff;
+}
+
+
+/* ============================================================
+   LAUNCH SCREEN
+   ============================================================ */
+
+.launch-screen {
+    position: absolute;
 
     inset: 0;
 
-    z-index: 500;
+    z-index: 100;
 
-    display: flex;
+    display: none;
+
     align-items: center;
     justify-content: center;
 
-    background: rgba(15,15,24,.985);
+    background:
+        rgba(14,14,21,.975);
 
-    opacity: 0;
-    visibility: hidden;
+    backdrop-filter: blur(5px);
 
-    pointer-events: none;
-
-    transition:
-        opacity .22s ease,
-        visibility .22s ease;
+    overflow: hidden;
 }
 
-.launching-screen.active {
-    opacity: 1;
-    visibility: visible;
 
-    pointer-events: auto;
+.launch-screen.visible {
+    display: flex;
 }
 
-.launching-inner {
-    width: 275px;
+
+.launch-content {
+    width: 250px;
+
+    text-align: center;
 }
 
-.launching-title {
-    color: #e1e0e8;
 
-    font-size: 22px;
-    font-weight: 400;
+.launch-title {
+    color: #e7e5ed;
 
-    letter-spacing: -.7px;
+    font-size: 19px;
+    font-weight: 500;
+
+    letter-spacing: -.45px;
 }
 
-.launching-option {
-    margin-top: 8px;
 
-    color: #777782;
+.launch-option {
+    margin-top: 7px;
+
+    color: #8050ef;
 
     font-size: 11px;
 }
 
-.launching-progress {
+
+.launch-progress-track {
     width: 100%;
     height: 3px;
 
@@ -815,48 +729,64 @@ body {
 
     overflow: hidden;
 
-    border-radius: 4px;
+    border-radius: 999px;
 
-    background: #292934;
+    background: #282832;
 }
 
-.launching-progress-fill {
-    width: 0;
+
+.launch-progress {
+    width: 0%;
     height: 100%;
 
     border-radius: inherit;
 
-    background: #7b4be8;
+    background: #814bea;
 
     transform-origin: left center;
 }
 
-.launching-cancel {
-    margin-top: 17px;
 
-    padding: 0;
+.cancel-button {
+    margin-top: 20px;
+
+    height: 30px;
+
+    padding: 0 16px;
 
     border: 0;
+    border-radius: 8px;
 
-    background: transparent;
+    background: #1d1d27;
 
-    color: #676772;
+    color: #85848f;
 
-    font: inherit;
+    font-family: inherit;
     font-size: 10px;
 
     cursor: pointer;
 }
 
-.launching-cancel:hover {
-    color: #9999a5;
+
+.cancel-button:hover {
+    background: #242430;
+    color: #b1afb9;
 }
 
 
-/* =========================================================
-   NO SELECTION
-   ========================================================= */
+/* ============================================================
+   NO FOCUS OUTLINES / NO SCROLLBARS
+   ============================================================ */
 
-::selection {
-    background: transparent;
+button:focus {
+    outline: none;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+* {
+    scrollbar-width: none;
 }
