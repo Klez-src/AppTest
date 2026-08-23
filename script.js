@@ -1,622 +1,620 @@
-/* =========================================================
-   ORRO UI
-   ========================================================= */
-
-(() => {
-
-    "use strict";
+"use strict";
 
 
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
 
-    const topbar =
-        document.querySelector(".topbar");
+const optionsElement =
+    document.getElementById("options");
 
+const injectButton =
+    document.getElementById("injectButton");
 
-    const topbarDragArea =
-        document.querySelector(".topbar-drag-area");
+const loadingScreen =
+    document.getElementById("loadingScreen");
 
+const loadingOption =
+    document.getElementById("loadingOption");
 
-    const gameTabs =
-        document.querySelectorAll(".game-tab");
+const loadingBar =
+    document.getElementById("loadingBar");
 
+const cancelButton =
+    document.getElementById("cancelButton");
 
-    const gameCards =
-        document.querySelectorAll(".game-card");
+const minimizeButton =
+    document.getElementById("minimizeButton");
 
+const closeButton =
+    document.getElementById("closeButton");
 
-    const minimizeButton =
-        document.getElementById("minimizeButton");
-
-
-    const closeButton =
-        document.getElementById("closeButton");
-
-
-    const injectButton =
-        document.getElementById("injectButton");
-
-
-    const queueScreen =
-        document.getElementById("queueScreen");
+const gameTabs =
+    document.querySelectorAll(".game-tab");
 
 
-    const cancelQueue =
-        document.getElementById("cancelQueue");
+/* ============================================================
+   OPTIONS
+   ============================================================ */
 
+/*
+    IMPORTANT:
 
-    const queueCount =
-        document.getElementById("queueCount");
+    All games:
+        Primordial CS:GO
+        GameSense CS:GO
+        Primordial CS2
 
+    CS:GO:
+        Primordial CS:GO
+        GameSense CS:GO
 
-    const queuePosition =
-        document.getElementById("queuePosition");
+    CS2:
+        Primordial CS2
+*/
 
+const OPTIONS = {
 
-    const queueTime =
-        document.getElementById("queueTime");
+    primordialCsgo: {
+        id: "primordial-csgo",
+        name: "Primordial",
+        game: "CS:GO",
+        image: "./primordial.png"
+    },
 
+    gamesenseCsgo: {
+        id: "gamesense-csgo",
+        name: "Gamesense",
+        game: "CS:GO",
+        image: "./gamesense.png"
+    },
 
-    const queueProgress =
-        document.getElementById("queueProgress");
-
-
-    /* =====================================================
-       WEBVIEW BRIDGE
-       ===================================================== */
-
-    function sendWindowMessage(message) {
-
-        try {
-
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
-
-                window.chrome.webview.postMessage(
-                    message
-                );
-
-                return true;
-            }
-
-        } catch (_) {}
-
-        return false;
-
+    primordialCs2: {
+        id: "primordial-cs2",
+        name: "Primordial",
+        game: "CS2",
+        image: "./primordial.png"
     }
 
-
-    /* =====================================================
-       WINDOW CONTROLS
-       ===================================================== */
-
-    minimizeButton?.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            sendWindowMessage(
-                "window.minimize"
-            );
-
-        }
-    );
+};
 
 
-    closeButton?.addEventListener(
-        "click",
-        event => {
+const GAME_OPTIONS = {
 
-            event.stopPropagation();
+    all: [
+        OPTIONS.primordialCsgo,
+        OPTIONS.gamesenseCsgo,
+        OPTIONS.primordialCs2
+    ],
 
-            sendWindowMessage(
-                "window.close"
-            );
+    csgo: [
+        OPTIONS.primordialCsgo,
+        OPTIONS.gamesenseCsgo
+    ],
 
-        }
-    );
+    cs2: [
+        OPTIONS.primordialCs2
+    ]
+
+};
 
 
-    /* =====================================================
-       WINDOW DRAG
-       ===================================================== */
+/* ============================================================
+   STATE
+   ============================================================ */
 
-    /*
-       IMPORTANT:
+let currentGame = "all";
 
-       The previous rewrite had the visual top bar,
-       but it no longer actually told the C++ host
-       that the user was trying to drag the window.
+let selectedOption =
+    OPTIONS.primordialCsgo;
 
-       The C++ already understands:
+let launchTimer = null;
 
-           window.drag
+let launchStartTime = 0;
 
-       so all we need to do is send that message when
-       the user presses the top bar.
+let launchDuration = 11000;
 
-       Buttons are deliberately excluded.
-       The cursor stays completely normal.
-    */
+let launchRunning = false;
 
-    function beginWindowDrag(event) {
 
+/* ============================================================
+   NATIVE WINDOW MESSAGES
+   ============================================================ */
+
+function sendNativeMessage(message)
+{
+    try
+    {
         if (
-            event.button !== 0
-        ) {
-
-            return;
-
+            window.chrome &&
+            window.chrome.webview
+        )
+        {
+            window.chrome.webview.postMessage(
+                message
+            );
         }
+    }
+    catch
+    {
+        // Normal browser fallback.
+    }
+}
 
+
+/* ============================================================
+   WINDOW CONTROLS
+   ============================================================ */
+
+minimizeButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        sendNativeMessage(
+            "window.minimize"
+        );
+    }
+);
+
+
+closeButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        sendNativeMessage(
+            "window.close"
+        );
+    }
+);
+
+
+/* ============================================================
+   DRAGGING
+   ============================================================ */
+
+document.addEventListener(
+    "mousedown",
+    event =>
+    {
+        if (event.button !== 0)
+            return;
 
         const target =
             event.target;
 
-
         /*
-           Never drag when clicking the window controls.
+            Do not start a native drag when the user
+            is interacting with an actual control.
         */
 
         if (
-            target.closest &&
-            target.closest(".window-controls")
-        ) {
-
+            target.closest(
+                "button, input, textarea, select, a"
+            )
+        )
+        {
             return;
-
         }
 
-
-        event.preventDefault();
-
-
-        sendWindowMessage(
+        sendNativeMessage(
             "window.drag"
         );
+    }
+);
 
+
+/* ============================================================
+   RENDER OPTIONS
+   ============================================================ */
+
+function renderOptions()
+{
+    optionsElement.innerHTML = "";
+
+    const available =
+        GAME_OPTIONS[currentGame];
+
+    /*
+        If the currently selected option is not valid
+        for the newly selected game, automatically pick
+        the first valid option.
+    */
+
+    const stillAvailable =
+        available.some(
+            option =>
+                option.id === selectedOption.id
+        );
+
+    if (!stillAvailable)
+    {
+        selectedOption =
+            available[0];
     }
 
 
-    topbar?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
-
-
-    topbarDragArea?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
-
-
-    /* =====================================================
-       GAME TAB SELECTION
-       ===================================================== */
-
-    function setActiveTab(tab) {
-
-        gameTabs.forEach(
-            currentTab => {
-
-                currentTab.classList.toggle(
-                    "active",
-                    currentTab === tab
+    available.forEach(
+        option =>
+        {
+            const card =
+                document.createElement(
+                    "button"
                 );
 
-            }
-        );
+            card.type = "button";
 
-    }
+            card.className =
+                "option-card";
 
-
-    function updateGames(game) {
-
-        gameCards.forEach(
-            card => {
-
-                const supportedGames =
-                    (card.dataset.games || "")
-                        .split(",")
-                        .map(
-                            value =>
-                                value.trim()
-                        );
-
-
-                if (
-                    game === "all" ||
-                    supportedGames.includes(game)
-                ) {
-
-                    card.classList.remove(
-                        "hidden-game"
-                    );
-
-                } else {
-
-                    card.classList.add(
-                        "hidden-game"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-           Don't leave a selection on a card that
-           is no longer visible.
-        */
-
-        gameCards.forEach(
-            card => {
-
-                if (
-                    card.classList.contains(
-                        "hidden-game"
-                    )
-                ) {
-
-                    card.classList.remove(
-                        "selected"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    gameTabs.forEach(
-        tab => {
-
-            tab.addEventListener(
-                "click",
-                () => {
-
-                    const game =
-                        tab.dataset.game;
-
-
-                    setActiveTab(tab);
-
-                    updateGames(game);
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       GAME CARD SELECTION
-       ===================================================== */
-
-    function selectCard(card) {
-
-        gameCards.forEach(
-            currentCard => {
-
-                currentCard.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-        card.classList.add(
-            "selected"
-        );
-
-    }
-
-
-    gameCards.forEach(
-        card => {
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    if (
-                        card.classList.contains(
-                            "hidden-game"
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-                    selectCard(card);
-
-                }
-            );
-
-
-            card.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key === "Enter" ||
-                        event.key === " "
-                    ) {
-
-                        event.preventDefault();
-
-                        selectCard(card);
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       QUEUE
-       ===================================================== */
-
-    let queueTimer = null;
-
-    let queueAnimation = null;
-
-    let queueDuration = 0;
-
-    let queueStarted = 0;
-
-
-    function randomQueueTime() {
-
-        /*
-           Around 29 seconds, but not identical every
-           launch.
-
-           Range:
-               27–31 seconds
-        */
-
-        return (
-            27000 +
-            Math.floor(
-                Math.random() * 5000
-            )
-        );
-
-    }
-
-
-    function stopQueueTimers() {
-
-        if (
-            queueTimer !== null
-        ) {
-
-            clearTimeout(
-                queueTimer
-            );
-
-            queueTimer = null;
-
-        }
-
-
-        if (
-            queueAnimation !== null
-        ) {
-
-            cancelAnimationFrame(
-                queueAnimation
-            );
-
-            queueAnimation = null;
-
-        }
-
-    }
-
-
-    function finishQueue() {
-
-        stopQueueTimers();
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "100%";
-
-        }
-
-    }
-
-
-    function startQueue() {
-
-        if (!queueScreen) {
-            return;
-        }
-
-
-        const peopleAhead =
-            Math.floor(
-                Math.random() * 4
-            ) + 1;
-
-
-        const position =
-            peopleAhead + 1;
-
-
-        queueDuration =
-            randomQueueTime();
-
-
-        queueStarted =
-            performance.now();
-
-
-        if (queueCount) {
-
-            queueCount.textContent =
-                peopleAhead;
-
-        }
-
-
-        if (queuePosition) {
-
-            queuePosition.textContent =
-                position;
-
-        }
-
-
-        if (queueTime) {
-
-            queueTime.textContent =
-                "~" +
-                Math.round(
-                    queueDuration / 1000
-                ) +
-                " seconds";
-
-        }
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "0%";
-
-        }
-
-
-        queueScreen.classList.add(
-            "active"
-        );
-
-
-        stopQueueTimers();
-
-
-        function tick(now) {
-
-            const elapsed =
-                now - queueStarted;
-
-
-            const progress =
-                Math.min(
-                    elapsed / queueDuration,
-                    1
-                );
-
-
-            if (queueProgress) {
-
-                queueProgress.style.width =
-                    (progress * 100) +
-                    "%";
-
-            }
-
+            card.dataset.option =
+                option.id;
 
             if (
-                progress < 1
-            ) {
-
-                queueAnimation =
-                    requestAnimationFrame(
-                        tick
-                    );
-
+                option.id ===
+                selectedOption.id
+            )
+            {
+                card.classList.add(
+                    "selected"
+                );
             }
 
-        }
+
+            const logo =
+                document.createElement(
+                    "div"
+                );
+
+            logo.className =
+                "option-logo";
 
 
-        queueAnimation =
-            requestAnimationFrame(
-                tick
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                option.image;
+
+            image.alt =
+                "";
+
+
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+            name.className =
+                "option-name";
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+            title.className =
+                "option-title";
+
+            title.textContent =
+                option.name;
+
+
+            const actions =
+                document.createElement(
+                    "div"
+                );
+
+            actions.className =
+                "option-actions";
+
+
+            const subscription =
+                document.createElement(
+                    "div"
+                );
+
+            subscription.className =
+                "subscription";
+
+            subscription.textContent =
+                "Not subscribed";
+
+
+            const gameBadge =
+                document.createElement(
+                    "div"
+                );
+
+            gameBadge.className =
+                "game-badge";
+
+            gameBadge.textContent =
+                option.game;
+
+
+            logo.appendChild(image);
+
+            name.appendChild(title);
+
+            actions.appendChild(
+                subscription
+            );
+
+            actions.appendChild(
+                gameBadge
+            );
+
+            card.appendChild(logo);
+
+            card.appendChild(name);
+
+            card.appendChild(actions);
+
+
+            card.addEventListener(
+                "click",
+                event =>
+                {
+                    event.stopPropagation();
+
+                    selectedOption =
+                        option;
+
+                    renderOptions();
+                }
             );
 
 
-        queueTimer =
-            window.setTimeout(
-                finishQueue,
-                queueDuration
+            optionsElement.appendChild(
+                card
             );
-
-    }
-
-
-    function cancelQueueLaunch() {
-
-        stopQueueTimers();
-
-
-        queueScreen.classList.remove(
-            "active"
-        );
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "0%";
-
         }
+    );
+}
 
+
+/* ============================================================
+   GAME TABS
+   ============================================================ */
+
+gameTabs.forEach(
+    tab =>
+    {
+        tab.addEventListener(
+            "click",
+            event =>
+            {
+                event.stopPropagation();
+
+                currentGame =
+                    tab.dataset.game;
+
+                gameTabs.forEach(
+                    other =>
+                    {
+                        other.classList.toggle(
+                            "active",
+                            other === tab
+                        );
+                    }
+                );
+
+                renderOptions();
+            }
+        );
+    }
+);
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+function showLoading()
+{
+    loadingOption.textContent =
+        selectedOption.name +
+        " " +
+        selectedOption.game;
+
+    loadingBar.style.width =
+        "0%";
+
+    loadingScreen.classList.add(
+        "visible"
+    );
+
+    loadingScreen.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+}
+
+
+function hideLoading()
+{
+    if (launchTimer)
+    {
+        cancelAnimationFrame(
+            launchTimer
+        );
+
+        launchTimer = null;
+    }
+
+    launchRunning = false;
+
+    loadingBar.style.width =
+        "0%";
+
+    loadingScreen.classList.remove(
+        "visible"
+    );
+
+    loadingScreen.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+}
+
+
+/*
+    Uses a real elapsed-time calculation instead of
+    stepping the bar by a fixed percentage.
+
+    A small amount of easing/variation is applied so
+    it doesn't look like a perfectly mechanical
+    0,1,2,3... animation.
+*/
+
+function getProgress(elapsed)
+{
+    const raw =
+        Math.min(
+            1,
+            elapsed / launchDuration
+        );
+
+    /*
+        Slightly slower at the beginning,
+        a little quicker through the middle,
+        then naturally settles near the end.
+    */
+
+    const eased =
+        1 -
+        Math.pow(
+            1 - raw,
+            1.18
+        );
+
+    return eased * 100;
+}
+
+
+function launchFrame(now)
+{
+    if (!launchRunning)
+        return;
+
+
+    const elapsed =
+        now - launchStartTime;
+
+
+    const progress =
+        getProgress(elapsed);
+
+
+    loadingBar.style.width =
+        `${progress}%`;
+
+
+    if (
+        elapsed >=
+        launchDuration
+    )
+    {
+        loadingBar.style.width =
+            "100%";
+
+        setTimeout(
+            () =>
+            {
+                if (launchRunning)
+                {
+                    hideLoading();
+                }
+            },
+            180
+        );
+
+        return;
     }
 
 
-    injectButton?.addEventListener(
-        "click",
-        startQueue
-    );
-
-
-    cancelQueue?.addEventListener(
-        "click",
-        cancelQueueLaunch
-    );
-
-
-    /* =====================================================
-       INITIAL STATE
-       ===================================================== */
-
-    const defaultTab =
-        document.querySelector(
-            '.game-tab[data-game="csgo"]'
+    launchTimer =
+        requestAnimationFrame(
+            launchFrame
         );
+}
 
 
-    if (defaultTab) {
+function startLaunch()
+{
+    if (launchRunning)
+        return;
 
-        setActiveTab(
-            defaultTab
+
+    launchRunning = true;
+
+
+    /*
+        Roughly eleven seconds, but not mathematically
+        identical every time.
+
+        Range:
+            10.6s - 11.5s
+    */
+
+    launchDuration =
+        10600 +
+        Math.random() * 900;
+
+
+    showLoading();
+
+
+    launchStartTime =
+        performance.now();
+
+
+    launchTimer =
+        requestAnimationFrame(
+            launchFrame
         );
+}
 
-        updateGames(
-            "csgo"
-        );
 
+/* ============================================================
+   CANCEL
+   ============================================================ */
+
+cancelButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        hideLoading();
     }
+);
 
-})();
+
+/* ============================================================
+   INJECT
+   ============================================================ */
+
+injectButton.addEventListener(
+    "click",
+    event =>
+    {
+        event.stopPropagation();
+
+        startLaunch();
+    }
+);
+
+
+/* ============================================================
+   INITIAL STATE
+   ============================================================ */
+
+renderOptions();
