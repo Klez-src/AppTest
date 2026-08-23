@@ -9,11 +9,11 @@
         content="width=device-width, initial-scale=1"
     >
 
-    <title>orro</title>
+    <title>Loader</title>
 
     <link
         rel="stylesheet"
-        href="style.css"
+        href="./style.css?v=20260823"
     >
 </head>
 
@@ -63,7 +63,6 @@
 
     <main class="content">
 
-
         <!-- =================================================
              GAME SELECTOR
              ================================================= -->
@@ -72,14 +71,12 @@
 
             <div class="game-tabs">
 
-
                 <!-- ALL GAMES -->
 
                 <button
                     class="game-tab"
                     data-game="all"
                 >
-
                     <span
                         class="tab-icon lightning-icon"
                         aria-hidden="true"
@@ -88,7 +85,6 @@
                     <span class="tab-label">
                         All games
                     </span>
-
                 </button>
 
 
@@ -98,7 +94,6 @@
                     class="game-tab active"
                     data-game="csgo"
                 >
-
                     <span
                         class="tab-icon csgo-icon"
                         aria-hidden="true"
@@ -107,7 +102,6 @@
                     <span class="tab-label">
                         CS:GO
                     </span>
-
                 </button>
 
 
@@ -117,7 +111,6 @@
                     class="game-tab"
                     data-game="cs2"
                 >
-
                     <span
                         class="tab-icon cs2-icon"
                         aria-hidden="true"
@@ -126,7 +119,6 @@
                     <span class="tab-label">
                         CS:2
                     </span>
-
                 </button>
 
             </div>
@@ -142,14 +134,15 @@
 
             <div class="games">
 
-
                 <!-- =========================================
-                     PRIMORDIAL
+                     PRIMORDIAL — CS:GO
                      ========================================= -->
 
                 <div
                     class="game-card"
                     data-games="csgo"
+                    data-option="Primordial"
+                    data-game-label="CS:GO"
                     tabindex="0"
                 >
 
@@ -158,15 +151,12 @@
                         <div class="game-info">
 
                             <div class="game-logo">
-
                                 <img
                                     src="primordial.png"
                                     alt="Primordial"
                                     draggable="false"
                                 >
-
                             </div>
-
 
                             <div class="game-name">
                                 Primordial
@@ -193,12 +183,14 @@
 
 
                 <!-- =========================================
-                     GAMESENSE
+                     GAMESENSE — CS:GO
                      ========================================= -->
 
                 <div
                     class="game-card"
                     data-games="csgo"
+                    data-option="Gamesense"
+                    data-game-label="CS:GO"
                     tabindex="0"
                 >
 
@@ -207,15 +199,12 @@
                         <div class="game-info">
 
                             <div class="game-logo">
-
                                 <img
                                     src="gamesense.png"
                                     alt="Gamesense"
                                     draggable="false"
                                 >
-
                             </div>
-
 
                             <div class="game-name">
                                 Gamesense
@@ -240,6 +229,53 @@
 
                 </div>
 
+
+                <!-- =========================================
+                     PRIMORDIAL — CS2
+                     ========================================= -->
+
+                <div
+                    class="game-card"
+                    data-games="cs2"
+                    data-option="Primordial"
+                    data-game-label="CS2"
+                    tabindex="0"
+                >
+
+                    <div class="game-card-inner">
+
+                        <div class="game-info">
+
+                            <div class="game-logo">
+                                <img
+                                    src="primordial.png"
+                                    alt="Primordial"
+                                    draggable="false"
+                                >
+                            </div>
+
+                            <div class="game-name">
+                                Primordial
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS2
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -270,65 +306,37 @@
 
 
     <!-- =====================================================
-         QUEUE SCREEN
+         INJECTION SCREEN
          ===================================================== -->
 
     <div
-        id="queueScreen"
-        class="queue-screen"
+        id="injectionScreen"
+        class="injection-screen"
+        aria-hidden="true"
     >
 
-        <div class="queue-content">
+        <div class="injection-content">
 
-            <div class="queue-title">
-                orro
+            <div
+                id="injectionTitle"
+                class="injection-title"
+            >
+                Injecting Primordial
             </div>
 
 
-            <div class="queue-subtitle">
-                You're in the queue
-            </div>
-
-
-            <div class="queue-number">
-
-                <span id="queueCount">
-                    2
-                </span>
-
-                <span class="queue-people">
-                    people ahead
-                </span>
-
-            </div>
-
-
-            <div class="queue-progress">
+            <div class="injection-progress">
 
                 <div
-                    id="queueProgress"
-                    class="queue-progress-fill"
+                    id="injectionProgress"
+                    class="injection-progress-fill"
                 ></div>
 
             </div>
 
 
-            <div class="queue-bottom">
-
-                <span>
-                    Position
-                    <b id="queuePosition">3</b>
-                </span>
-
-                <span id="queueTime">
-                    ~29 seconds
-                </span>
-
-            </div>
-
-
             <button
-                id="cancelQueue"
+                id="cancelInjection"
                 class="cancel-button"
             >
                 Cancel
@@ -341,7 +349,9 @@
 </div>
 
 
-<script src="script.js"></script>
+<script
+    src="./script.js?v=20260823"
+></script>
 
 </body>
 </html>
