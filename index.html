@@ -10,11 +10,27 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no"
     >
 
-    <title>undercal</title>
+    <title></title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500&display=swap"
+        rel="stylesheet"
+    >
 
     <link
         rel="stylesheet"
-        href="style.css?v=2"
+        href="style.css?v=3"
     >
 
 </head>
@@ -29,15 +45,12 @@
          TOP BAR
          ===================================================== -->
 
-    <header class="topbar">
+    <header
+        class="topbar"
+        data-drag
+    >
 
-        <div class="brand">
-
-            <span class="brand-name">
-                undercal
-            </span>
-
-        </div>
+        <div class="topbar-spacer"></div>
 
 
         <div
@@ -69,14 +82,14 @@
 
 
     <!-- =====================================================
-         MAIN CONTENT
+         MAIN
          ===================================================== -->
 
     <main class="content">
 
 
         <!-- =================================================
-             GAME TABS
+             GAME FILTER
              ================================================= -->
 
         <nav
@@ -85,10 +98,11 @@
         >
 
             <button
-                class="game-tab all-tab"
+                class="game-tab"
                 data-game="all"
             >
-                All games
+                <span class="tab-symbol">●</span>
+                <span>All games</span>
             </button>
 
 
@@ -96,7 +110,8 @@
                 class="game-tab active"
                 data-game="csgo"
             >
-                CS:GO
+                <span class="tab-symbol">ʃ</span>
+                <span>CS:GO</span>
             </button>
 
 
@@ -104,7 +119,8 @@
                 class="game-tab"
                 data-game="cs2"
             >
-                CS:2
+                <span class="tab-symbol cs2-symbol">2</span>
+                <span>CS:2</span>
             </button>
 
         </nav>
@@ -112,38 +128,46 @@
 
 
         <!-- =================================================
-             GAME CARDS
+             GAMES
              ================================================= -->
 
         <section
-            class="games"
             id="games"
+            class="games"
         >
 
 
+            <!-- =============================================
+                 PRIMORDIAL
+                 ============================================= -->
+
             <article
                 class="game-card"
                 data-games="csgo"
             >
 
-                <div class="game-info">
+                <div class="game-card-inner">
 
-                    <div class="game-name">
-                        Primordial
+                    <div class="game-info">
+
+                        <div class="game-name">
+                            Primordial
+                        </div>
+
                     </div>
 
-                </div>
 
+                    <div class="game-actions">
 
-                <div class="game-actions">
+                        <div class="subscription">
+                            Not subscribed
+                        </div>
 
-                    <span class="subscription">
-                        Not subscribed
-                    </span>
+                        <div class="game-version">
+                            CS:GO
+                        </div>
 
-                    <span class="game-version">
-                        CS:GO
-                    </span>
+                    </div>
 
                 </div>
 
@@ -151,59 +175,75 @@
 
 
 
+            <!-- =============================================
+                 GAMESENSE
+                 ============================================= -->
+
             <article
                 class="game-card"
                 data-games="csgo"
             >
 
-                <div class="game-info">
+                <div class="game-card-inner">
 
-                    <div class="game-name">
-                        Gamesense
+                    <div class="game-info">
+
+                        <div class="game-name">
+                            Gamesense
+                        </div>
+
                     </div>
 
-                </div>
 
+                    <div class="game-actions">
 
-                <div class="game-actions">
+                        <div class="subscription">
+                            Not subscribed
+                        </div>
 
-                    <span class="subscription">
-                        Not subscribed
-                    </span>
+                        <div class="game-version">
+                            CS:GO
+                        </div>
 
-                    <span class="game-version">
-                        CS:GO
-                    </span>
+                    </div>
 
                 </div>
 
             </article>
 
 
+
+            <!-- =============================================
+                 CS2 PLACEHOLDER
+                 ============================================= -->
 
             <article
                 class="game-card hidden-game"
                 data-games="cs2"
             >
 
-                <div class="game-info">
+                <div class="game-card-inner">
 
-                    <div class="game-name">
-                        Primordial
+                    <div class="game-info">
+
+                        <div class="game-name">
+                            Primordial
+                        </div>
+
                     </div>
 
-                </div>
 
+                    <div class="game-actions">
 
-                <div class="game-actions">
+                        <div class="subscription">
+                            Not subscribed
+                        </div>
 
-                    <span class="subscription">
-                        Not subscribed
-                    </span>
+                        <div class="game-version">
+                            CS:2
+                        </div>
 
-                    <span class="game-version">
-                        CS:2
-                    </span>
+                    </div>
 
                 </div>
 
@@ -215,15 +255,16 @@
 
 
         <!-- =================================================
-             INJECT
+             BOTTOM ACTION
              ================================================= -->
 
         <button
-            class="inject-button"
             id="injectButton"
+            class="inject-button"
             data-no-drag
         >
-            Inject
+            <span class="inject-mark"></span>
+            <span>Inject</span>
         </button>
 
 
@@ -232,7 +273,7 @@
 
 
     <!-- =====================================================
-         QUEUE SCREEN
+         QUEUE / LAUNCH SCREEN
          ===================================================== -->
 
     <div
@@ -241,12 +282,6 @@
     >
 
         <div class="queue-content">
-
-
-            <div class="queue-brand">
-                undercal
-            </div>
-
 
             <div class="queue-title">
                 You're in the queue.
@@ -304,7 +339,6 @@
                 Cancel
             </button>
 
-
         </div>
 
     </div>
@@ -313,7 +347,7 @@
 </div>
 
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 
 </body>
 
