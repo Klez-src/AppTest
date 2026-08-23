@@ -1,675 +1,622 @@
-"use strict";
+/* =========================================================
+   ORRO UI
+   ========================================================= */
+
+(() => {
+
+    "use strict";
 
 
-/* ============================================================
-   ASSET / PRODUCT DATA
-   ============================================================ */
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
-const PRODUCTS = {
-    primordialCsGo: {
-        id: "primordial-csgo",
-        name: "Primordial",
-        game: "CS:GO",
-        logo: "./primordial.png"
-    },
-
-    gamesenseCsGo: {
-        id: "gamesense-csgo",
-        name: "Gamesense",
-        game: "CS:GO",
-        logo: "./gamesense.png"
-    },
-
-    primordialCs2: {
-        id: "primordial-cs2",
-        name: "Primordial",
-        game: "CS:2",
-        logo: "./primordial.png"
-    }
-};
+    const topbar =
+        document.querySelector(".topbar");
 
 
-/*
-    IMPORTANT:
-
-    All games:
-        Primordial CS:GO
-        Gamesense CS:GO
-        Primordial CS:2
-
-    CS:GO:
-        Primordial CS:GO
-        Gamesense CS:GO
-
-    CS:2:
-        Primordial CS:2
-*/
-
-const GAME_LISTS = {
-    all: [
-        PRODUCTS.primordialCsGo,
-        PRODUCTS.gamesenseCsGo,
-        PRODUCTS.primordialCs2
-    ],
-
-    csgo: [
-        PRODUCTS.primordialCsGo,
-        PRODUCTS.gamesenseCsGo
-    ],
-
-    cs2: [
-        PRODUCTS.primordialCs2
-    ]
-};
+    const topbarDragArea =
+        document.querySelector(".topbar-drag-area");
 
 
-/* ============================================================
-   STATE
-   ============================================================ */
-
-let selectedGame = "all";
-
-let selectedProduct =
-    "primordial-csgo";
-
-let launchTimer = null;
-
-let launchRunning = false;
+    const gameTabs =
+        document.querySelectorAll(".game-tab");
 
 
-/* ============================================================
-   ELEMENTS
-   ============================================================ */
-
-const products =
-    document.getElementById("products");
-
-const gameFilters =
-    document.querySelectorAll(".game-filter");
-
-const injectButton =
-    document.getElementById("injectButton");
-
-const launchScreen =
-    document.getElementById("launchScreen");
-
-const launchOption =
-    document.getElementById("launchOption");
-
-const launchProgress =
-    document.getElementById("launchProgress");
-
-const cancelLaunchButton =
-    document.getElementById("cancelLaunch");
-
-const minimizeButton =
-    document.getElementById("minimizeButton");
-
-const closeButton =
-    document.getElementById("closeButton");
+    const gameCards =
+        document.querySelectorAll(".game-card");
 
 
-/* ============================================================
-   NATIVE MESSAGES
-   ============================================================ */
-
-function sendNativeMessage(message)
-{
-    try
-    {
-        if (
-            window.chrome &&
-            window.chrome.webview
-        )
-        {
-            window.chrome.webview.postMessage(
-                message
-            );
-        }
-    }
-    catch
-    {
-        // Normal browser fallback.
-    }
-}
+    const minimizeButton =
+        document.getElementById("minimizeButton");
 
 
-/* ============================================================
-   GAME FILTERS
-   ============================================================ */
+    const closeButton =
+        document.getElementById("closeButton");
 
-function setGame(game)
-{
-    selectedGame = game;
 
-    /*
-        Keep the currently selected product when it still exists
-        in the selected game category.
-    */
+    const injectButton =
+        document.getElementById("injectButton");
 
-    const available =
-        GAME_LISTS[game];
 
-    const stillAvailable =
-        available.some(
-            product =>
-                product.id === selectedProduct
-        );
+    const queueScreen =
+        document.getElementById("queueScreen");
 
-    if (!stillAvailable)
-    {
-        selectedProduct =
-            available[0].id;
+
+    const cancelQueue =
+        document.getElementById("cancelQueue");
+
+
+    const queueCount =
+        document.getElementById("queueCount");
+
+
+    const queuePosition =
+        document.getElementById("queuePosition");
+
+
+    const queueTime =
+        document.getElementById("queueTime");
+
+
+    const queueProgress =
+        document.getElementById("queueProgress");
+
+
+    /* =====================================================
+       WEBVIEW BRIDGE
+       ===================================================== */
+
+    function sendWindowMessage(message) {
+
+        try {
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+
+                window.chrome.webview.postMessage(
+                    message
+                );
+
+                return true;
+            }
+
+        } catch (_) {}
+
+        return false;
+
     }
 
-    gameFilters.forEach(button =>
-    {
-        button.classList.toggle(
-            "active",
-            button.dataset.game === game
-        );
-    });
 
-    renderProducts();
-}
+    /* =====================================================
+       WINDOW CONTROLS
+       ===================================================== */
 
-
-gameFilters.forEach(button =>
-{
-    button.addEventListener(
+    minimizeButton?.addEventListener(
         "click",
-        event =>
-        {
+        event => {
+
             event.stopPropagation();
 
-            setGame(
-                button.dataset.game
+            sendWindowMessage(
+                "window.minimize"
             );
+
         }
     );
-});
 
 
-/* ============================================================
-   PRODUCT RENDERING
-   ============================================================ */
+    closeButton?.addEventListener(
+        "click",
+        event => {
 
-function renderProducts()
-{
-    products.innerHTML = "";
+            event.stopPropagation();
 
-    const list =
-        GAME_LISTS[selectedGame];
+            sendWindowMessage(
+                "window.close"
+            );
 
-    list.forEach(product =>
-    {
-        const card =
-            document.createElement("article");
+        }
+    );
 
-        card.className =
-            "product-card";
 
-        card.dataset.product =
-            product.id;
+    /* =====================================================
+       WINDOW DRAG
+       ===================================================== */
+
+    /*
+       IMPORTANT:
+
+       The previous rewrite had the visual top bar,
+       but it no longer actually told the C++ host
+       that the user was trying to drag the window.
+
+       The C++ already understands:
+
+           window.drag
+
+       so all we need to do is send that message when
+       the user presses the top bar.
+
+       Buttons are deliberately excluded.
+       The cursor stays completely normal.
+    */
+
+    function beginWindowDrag(event) {
 
         if (
-            product.id ===
-            selectedProduct
-        )
-        {
-            card.classList.add(
-                "selected"
-            );
+            event.button !== 0
+        ) {
+
+            return;
+
         }
 
 
-        const logoWrap =
-            document.createElement("div");
-
-        logoWrap.className =
-            "product-logo-wrap";
-
-
-        const logo =
-            document.createElement("img");
-
-        logo.className =
-            "product-logo";
-
-        logo.classList.add(
-            product.name
-                .toLowerCase()
-        );
-
-        logo.src =
-            product.logo;
-
-        logo.alt =
-            product.name;
-
-
-        logoWrap.appendChild(
-            logo
-        );
-
-
-        const info =
-            document.createElement("div");
-
-        info.className =
-            "product-info";
-
-
-        const name =
-            document.createElement("div");
-
-        name.className =
-            "product-name";
-
-        name.textContent =
-            product.name;
+        const target =
+            event.target;
 
 
         /*
-            Deliberately no game text here.
-
-            The previous version duplicated CS:GO/CS:2 under
-            the product name. The game belongs only on the
-            right-side option button.
+           Never drag when clicking the window controls.
         */
 
-        info.appendChild(
-            name
-        );
-
-
-        const actions =
-            document.createElement("div");
-
-        actions.className =
-            "product-actions";
-
-
-        const subscription =
-            document.createElement("div");
-
-        subscription.className =
-            "subscription";
-
-        subscription.textContent =
-            "Not subscribed";
-
-
-        const option =
-            document.createElement("button");
-
-        option.className =
-            "game-option";
-
-        option.textContent =
-            product.game;
-
-        option.dataset.product =
-            product.id;
-
         if (
-            product.id ===
-            selectedProduct
-        )
-        {
-            option.classList.add(
-                "active"
-            );
+            target.closest &&
+            target.closest(".window-controls")
+        ) {
+
+            return;
+
         }
 
 
-        option.addEventListener(
-            "click",
-            event =>
-            {
-                event.stopPropagation();
+        event.preventDefault();
 
-                selectProduct(
-                    product.id
-                );
-            }
+
+        sendWindowMessage(
+            "window.drag"
         );
 
-
-        actions.appendChild(
-            subscription
-        );
-
-        actions.appendChild(
-            option
-        );
-
-
-        card.appendChild(
-            logoWrap
-        );
-
-        card.appendChild(
-            info
-        );
-
-        card.appendChild(
-            actions
-        );
-
-
-        card.addEventListener(
-            "click",
-            event =>
-            {
-                event.stopPropagation();
-
-                selectProduct(
-                    product.id
-                );
-            }
-        );
-
-
-        products.appendChild(
-            card
-        );
-    });
-}
-
-
-/* ============================================================
-   PRODUCT SELECTION
-   ============================================================ */
-
-function selectProduct(productId)
-{
-    selectedProduct =
-        productId;
-
-    document
-        .querySelectorAll(
-            ".product-card"
-        )
-        .forEach(card =>
-        {
-            const selected =
-                card.dataset.product ===
-                productId;
-
-            card.classList.toggle(
-                "selected",
-                selected
-            );
-
-            const option =
-                card.querySelector(
-                    ".game-option"
-                );
-
-            if (option)
-            {
-                option.classList.toggle(
-                    "active",
-                    selected
-                );
-            }
-        });
-}
-
-
-/* ============================================================
-   INJECT
-   ============================================================ */
-
-function getSelectedProduct()
-{
-    for (
-        const key of Object.keys(PRODUCTS)
-    )
-    {
-        if (
-            PRODUCTS[key].id ===
-            selectedProduct
-        )
-        {
-            return PRODUCTS[key];
-        }
     }
 
-    return PRODUCTS.primordialCsGo;
-}
 
-
-function startLaunch()
-{
-    if (launchRunning)
-        return;
-
-    launchRunning = true;
-
-    const product =
-        getSelectedProduct();
-
-    launchOption.textContent =
-        product.name +
-        " " +
-        product.game;
-
-    launchProgress.style.width =
-        "0%";
-
-    launchScreen.classList.add(
-        "visible"
+    topbar?.addEventListener(
+        "mousedown",
+        beginWindowDrag
     );
 
 
-    /*
-        Roughly 11 seconds.
-
-        Slightly varied every run so it doesn't look like a
-        fixed scripted duration.
-    */
-
-    const duration =
-        10300 +
-        Math.random() * 1400;
-
-    const startTime =
-        performance.now();
+    topbarDragArea?.addEventListener(
+        "mousedown",
+        beginWindowDrag
+    );
 
 
-    launchTimer =
-        requestAnimationFrame(
-            function tick(now)
-            {
-                if (!launchRunning)
-                    return;
+    /* =====================================================
+       GAME TAB SELECTION
+       ===================================================== */
 
-                const elapsed =
-                    now -
-                    startTime;
+    function setActiveTab(tab) {
 
-                const linear =
-                    Math.min(
-                        elapsed / duration,
-                        1
-                    );
+        gameTabs.forEach(
+            currentTab => {
 
+                currentTab.classList.toggle(
+                    "active",
+                    currentTab === tab
+                );
 
-                /*
-                    Deliberately not perfectly linear.
+            }
+        );
 
-                    Small changes in velocity make the bar feel
-                    more like an actual process rather than a
-                    CSS animation.
-                */
-
-                let progress;
-
-                if (linear < .12)
-                {
-                    progress =
-                        linear * .72;
-                }
-                else if (linear < .82)
-                {
-                    progress =
-                        .0864 +
-                        (
-                            linear -
-                            .12
-                        ) * 1.03;
-                }
-                else
-                {
-                    progress =
-                        .8085 +
-                        (
-                            linear -
-                            .82
-                        ) * .94;
-                }
+    }
 
 
-                progress =
-                    Math.min(
-                        progress,
-                        1
-                    );
+    function updateGames(game) {
 
+        gameCards.forEach(
+            card => {
 
-                launchProgress.style.width =
-                    `${progress * 100}%`;
+                const supportedGames =
+                    (card.dataset.games || "")
+                        .split(",")
+                        .map(
+                            value =>
+                                value.trim()
+                        );
 
 
                 if (
-                    linear >= 1
-                )
-                {
-                    launchProgress.style.width =
-                        "100%";
+                    game === "all" ||
+                    supportedGames.includes(game)
+                ) {
 
-                    setTimeout(
-                        finishLaunch,
-                        250
+                    card.classList.remove(
+                        "hidden-game"
                     );
 
-                    return;
+                } else {
+
+                    card.classList.add(
+                        "hidden-game"
+                    );
+
                 }
 
+            }
+        );
 
-                launchTimer =
+
+        /*
+           Don't leave a selection on a card that
+           is no longer visible.
+        */
+
+        gameCards.forEach(
+            card => {
+
+                if (
+                    card.classList.contains(
+                        "hidden-game"
+                    )
+                ) {
+
+                    card.classList.remove(
+                        "selected"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    gameTabs.forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                () => {
+
+                    const game =
+                        tab.dataset.game;
+
+
+                    setActiveTab(tab);
+
+                    updateGames(game);
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       GAME CARD SELECTION
+       ===================================================== */
+
+    function selectCard(card) {
+
+        gameCards.forEach(
+            currentCard => {
+
+                currentCard.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+        card.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    gameCards.forEach(
+        card => {
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        card.classList.contains(
+                            "hidden-game"
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+                    selectCard(card);
+
+                }
+            );
+
+
+            card.addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+
+                        event.preventDefault();
+
+                        selectCard(card);
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       QUEUE
+       ===================================================== */
+
+    let queueTimer = null;
+
+    let queueAnimation = null;
+
+    let queueDuration = 0;
+
+    let queueStarted = 0;
+
+
+    function randomQueueTime() {
+
+        /*
+           Around 29 seconds, but not identical every
+           launch.
+
+           Range:
+               27–31 seconds
+        */
+
+        return (
+            27000 +
+            Math.floor(
+                Math.random() * 5000
+            )
+        );
+
+    }
+
+
+    function stopQueueTimers() {
+
+        if (
+            queueTimer !== null
+        ) {
+
+            clearTimeout(
+                queueTimer
+            );
+
+            queueTimer = null;
+
+        }
+
+
+        if (
+            queueAnimation !== null
+        ) {
+
+            cancelAnimationFrame(
+                queueAnimation
+            );
+
+            queueAnimation = null;
+
+        }
+
+    }
+
+
+    function finishQueue() {
+
+        stopQueueTimers();
+
+
+        if (queueProgress) {
+
+            queueProgress.style.width =
+                "100%";
+
+        }
+
+    }
+
+
+    function startQueue() {
+
+        if (!queueScreen) {
+            return;
+        }
+
+
+        const peopleAhead =
+            Math.floor(
+                Math.random() * 4
+            ) + 1;
+
+
+        const position =
+            peopleAhead + 1;
+
+
+        queueDuration =
+            randomQueueTime();
+
+
+        queueStarted =
+            performance.now();
+
+
+        if (queueCount) {
+
+            queueCount.textContent =
+                peopleAhead;
+
+        }
+
+
+        if (queuePosition) {
+
+            queuePosition.textContent =
+                position;
+
+        }
+
+
+        if (queueTime) {
+
+            queueTime.textContent =
+                "~" +
+                Math.round(
+                    queueDuration / 1000
+                ) +
+                " seconds";
+
+        }
+
+
+        if (queueProgress) {
+
+            queueProgress.style.width =
+                "0%";
+
+        }
+
+
+        queueScreen.classList.add(
+            "active"
+        );
+
+
+        stopQueueTimers();
+
+
+        function tick(now) {
+
+            const elapsed =
+                now - queueStarted;
+
+
+            const progress =
+                Math.min(
+                    elapsed / queueDuration,
+                    1
+                );
+
+
+            if (queueProgress) {
+
+                queueProgress.style.width =
+                    (progress * 100) +
+                    "%";
+
+            }
+
+
+            if (
+                progress < 1
+            ) {
+
+                queueAnimation =
                     requestAnimationFrame(
                         tick
                     );
+
             }
+
+        }
+
+
+        queueAnimation =
+            requestAnimationFrame(
+                tick
+            );
+
+
+        queueTimer =
+            window.setTimeout(
+                finishQueue,
+                queueDuration
+            );
+
+    }
+
+
+    function cancelQueueLaunch() {
+
+        stopQueueTimers();
+
+
+        queueScreen.classList.remove(
+            "active"
         );
-}
 
 
-function finishLaunch()
-{
-    launchRunning =
-        false;
+        if (queueProgress) {
 
-    launchTimer =
-        null;
+            queueProgress.style.width =
+                "0%";
 
-    launchScreen.classList.remove(
-        "visible"
+        }
+
+    }
+
+
+    injectButton?.addEventListener(
+        "click",
+        startQueue
     );
-}
 
 
-function cancelLaunch()
-{
-    launchRunning =
-        false;
-
-    if (launchTimer)
-    {
-        cancelAnimationFrame(
-            launchTimer
-        );
-    }
-
-    launchTimer =
-        null;
-
-    launchProgress.style.width =
-        "0%";
-
-    launchScreen.classList.remove(
-        "visible"
+    cancelQueue?.addEventListener(
+        "click",
+        cancelQueueLaunch
     );
-}
 
 
-injectButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
 
-        startLaunch();
-    }
-);
-
-
-cancelLaunchButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
-
-        cancelLaunch();
-    }
-);
-
-
-/* ============================================================
-   WINDOW CONTROLS
-   ============================================================ */
-
-minimizeButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
-
-        sendNativeMessage(
-            "window.minimize"
+    const defaultTab =
+        document.querySelector(
+            '.game-tab[data-game="csgo"]'
         );
-    }
-);
 
 
-closeButton.addEventListener(
-    "click",
-    event =>
-    {
-        event.stopPropagation();
+    if (defaultTab) {
 
-        sendNativeMessage(
-            "window.close"
+        setActiveTab(
+            defaultTab
         );
+
+        updateGames(
+            "csgo"
+        );
+
     }
-);
 
-
-/* ============================================================
-   STARTUP
-   ============================================================ */
-
-renderProducts();
-
-
-/*
-    Make the initial state exactly:
-
-        All games
-        Primordial CS:GO selected
-*/
-
-setGame("all");
+})();
