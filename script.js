@@ -1,5 +1,5 @@
 /* =========================================================
-   ORRO UI
+   LOADER UI
    ========================================================= */
 
 (() => {
@@ -14,14 +14,11 @@
     const topbar =
         document.querySelector(".topbar");
 
-
     const topbarDragArea =
         document.querySelector(".topbar-drag-area");
 
-
     const gameTabs =
         document.querySelectorAll(".game-tab");
-
 
     const gameCards =
         document.querySelectorAll(".game-card");
@@ -29,7 +26,6 @@
 
     const minimizeButton =
         document.getElementById("minimizeButton");
-
 
     const closeButton =
         document.getElementById("closeButton");
@@ -39,28 +35,17 @@
         document.getElementById("injectButton");
 
 
-    const queueScreen =
-        document.getElementById("queueScreen");
+    const injectionScreen =
+        document.getElementById("injectionScreen");
 
+    const injectionTitle =
+        document.getElementById("injectionTitle");
 
-    const cancelQueue =
-        document.getElementById("cancelQueue");
+    const injectionProgress =
+        document.getElementById("injectionProgress");
 
-
-    const queueCount =
-        document.getElementById("queueCount");
-
-
-    const queuePosition =
-        document.getElementById("queuePosition");
-
-
-    const queueTime =
-        document.getElementById("queueTime");
-
-
-    const queueProgress =
-        document.getElementById("queueProgress");
+    const cancelInjection =
+        document.getElementById("cancelInjection");
 
 
     /* =====================================================
@@ -86,7 +71,6 @@
         } catch (_) {}
 
         return false;
-
     }
 
 
@@ -126,32 +110,12 @@
        WINDOW DRAG
        ===================================================== */
 
-    /*
-       IMPORTANT:
-
-       The previous rewrite had the visual top bar,
-       but it no longer actually told the C++ host
-       that the user was trying to drag the window.
-
-       The C++ already understands:
-
-           window.drag
-
-       so all we need to do is send that message when
-       the user presses the top bar.
-
-       Buttons are deliberately excluded.
-       The cursor stays completely normal.
-    */
-
     function beginWindowDrag(event) {
 
         if (
             event.button !== 0
         ) {
-
             return;
-
         }
 
 
@@ -159,27 +123,20 @@
             event.target;
 
 
-        /*
-           Never drag when clicking the window controls.
-        */
-
         if (
+            target &&
             target.closest &&
             target.closest(".window-controls")
         ) {
-
             return;
-
         }
 
 
         event.preventDefault();
 
-
         sendWindowMessage(
             "window.drag"
         );
-
     }
 
 
@@ -211,7 +168,6 @@
 
             }
         );
-
     }
 
 
@@ -226,53 +182,46 @@
                         .map(
                             value =>
                                 value.trim()
-                        );
+                        )
+                        .filter(Boolean);
 
 
-                if (
+                const visible =
                     game === "all" ||
-                    supportedGames.includes(game)
-                ) {
+                    supportedGames.includes(game);
 
-                    card.classList.remove(
-                        "hidden-game"
-                    );
 
-                } else {
-
-                    card.classList.add(
-                        "hidden-game"
-                    );
-
-                }
+                card.classList.toggle(
+                    "hidden-game",
+                    !visible
+                );
 
             }
         );
 
 
         /*
-           Don't leave a selection on a card that
-           is no longer visible.
+            If the current selected card is no longer
+            visible, remove its selection.
         */
 
-        gameCards.forEach(
-            card => {
+        const selectedCard =
+            document.querySelector(
+                ".game-card.selected"
+            );
 
-                if (
-                    card.classList.contains(
-                        "hidden-game"
-                    )
-                ) {
 
-                    card.classList.remove(
-                        "selected"
-                    );
+        if (
+            selectedCard &&
+            selectedCard.classList.contains(
+                "hidden-game"
+            )
+        ) {
 
-                }
-
-            }
-        );
-
+            selectedCard.classList.remove(
+                "selected"
+            );
+        }
     }
 
 
@@ -318,7 +267,6 @@
         card.classList.add(
             "selected"
         );
-
     }
 
 
@@ -334,10 +282,9 @@
                             "hidden-game"
                         )
                     ) {
-
                         return;
-
                     }
+
 
                     selectCard(card);
 
@@ -356,7 +303,13 @@
 
                         event.preventDefault();
 
-                        selectCard(card);
+                        if (
+                            !card.classList.contains(
+                                "hidden-game"
+                            )
+                        ) {
+                            selectCard(card);
+                        }
 
                     }
 
@@ -368,232 +321,405 @@
 
 
     /* =====================================================
-       QUEUE
+       SELECTED OPTION
        ===================================================== */
 
-    let queueTimer = null;
+    function getSelectedCard() {
 
-    let queueAnimation = null;
-
-    let queueDuration = 0;
-
-    let queueStarted = 0;
-
-
-    function randomQueueTime() {
-
-        /*
-           Around 29 seconds, but not identical every
-           launch.
-
-           Range:
-               27–31 seconds
-        */
-
-        return (
-            27000 +
-            Math.floor(
-                Math.random() * 5000
-            )
-        );
-
-    }
-
-
-    function stopQueueTimers() {
-
-        if (
-            queueTimer !== null
-        ) {
-
-            clearTimeout(
-                queueTimer
+        const selected =
+            document.querySelector(
+                ".game-card.selected:not(.hidden-game)"
             );
 
-            queueTimer = null;
 
+        if (selected) {
+            return selected;
         }
 
 
+        /*
+            If nothing has been selected yet,
+            use the first visible card.
+        */
+
+        return Array.from(gameCards)
+            .find(
+                card =>
+                    !card.classList.contains(
+                        "hidden-game"
+                    )
+            ) || null;
+    }
+
+
+    function getSelectedOption() {
+
+        const card =
+            getSelectedCard();
+
+
+        if (!card) {
+            return "Primordial";
+        }
+
+
+        return (
+            card.dataset.option ||
+            card.querySelector(
+                ".game-name"
+            )?.textContent.trim() ||
+            "Primordial"
+        );
+    }
+
+
+    /* =====================================================
+       INJECTION ANIMATION
+       ===================================================== */
+
+    let injectionAnimation = null;
+
+    let injectionTimer = null;
+
+    let injectionRunning = false;
+
+
+    function stopInjectionAnimation() {
+
         if (
-            queueAnimation !== null
+            injectionAnimation !== null
         ) {
 
             cancelAnimationFrame(
-                queueAnimation
+                injectionAnimation
             );
 
-            queueAnimation = null;
-
+            injectionAnimation = null;
         }
 
+
+        if (
+            injectionTimer !== null
+        ) {
+
+            clearTimeout(
+                injectionTimer
+            );
+
+            injectionTimer = null;
+        }
     }
 
 
-    function finishQueue() {
+    function hideInjectionScreen() {
 
-        stopQueueTimers();
+        stopInjectionAnimation();
+
+        injectionRunning = false;
 
 
-        if (queueProgress) {
+        if (injectionProgress) {
 
-            queueProgress.style.width =
-                "100%";
+            injectionProgress.style.width =
+                "0%";
 
+            injectionProgress.style.transform =
+                "none";
         }
 
+
+        if (injectionScreen) {
+
+            injectionScreen.classList.remove(
+                "active"
+            );
+
+            injectionScreen.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        }
     }
 
 
-    function startQueue() {
+    function startInjection() {
 
-        if (!queueScreen) {
+        if (
+            injectionRunning
+        ) {
             return;
         }
 
 
-        const peopleAhead =
+        const selectedOption =
+            getSelectedOption();
+
+
+        if (injectionTitle) {
+
+            injectionTitle.textContent =
+                `Injecting ${selectedOption}`;
+        }
+
+
+        if (injectionProgress) {
+
+            injectionProgress.style.width =
+                "0%";
+
+            injectionProgress.style.transform =
+                "none";
+        }
+
+
+        if (injectionScreen) {
+
+            injectionScreen.classList.add(
+                "active"
+            );
+
+            injectionScreen.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+        }
+
+
+        injectionRunning = true;
+
+
+        stopInjectionAnimation();
+
+
+        /*
+            Roughly 11 seconds, with a small variation
+            so consecutive runs aren't identical.
+        */
+
+        const duration =
+            10500 +
             Math.floor(
-                Math.random() * 4
-            ) + 1;
+                Math.random() * 1200
+            );
 
 
-        const position =
-            peopleAhead + 1;
-
-
-        queueDuration =
-            randomQueueTime();
-
-
-        queueStarted =
+        const started =
             performance.now();
 
 
-        if (queueCount) {
+        /*
+            Generate smooth but slightly irregular
+            progress.
 
-            queueCount.textContent =
-                peopleAhead;
+            The curve intentionally spends a little more
+            time in the middle rather than being a perfectly
+            linear percentage counter.
+        */
 
+        const phaseA =
+            0.17 +
+            Math.random() * 0.035;
+
+        const phaseB =
+            0.57 +
+            Math.random() * 0.06;
+
+        const phaseC =
+            0.86 +
+            Math.random() * 0.035;
+
+
+        function progressCurve(value) {
+
+            if (value <= phaseA) {
+
+                const local =
+                    value / phaseA;
+
+                return (
+                    local *
+                    local *
+                    phaseA
+                );
+            }
+
+
+            if (value <= phaseB) {
+
+                const local =
+                    (value - phaseA) /
+                    (phaseB - phaseA);
+
+                const eased =
+                    local *
+                    (2 - local);
+
+                return (
+                    phaseA +
+                    eased *
+                    (phaseB - phaseA)
+                );
+            }
+
+
+            if (value <= phaseC) {
+
+                const local =
+                    (value - phaseB) /
+                    (phaseC - phaseB);
+
+                const eased =
+                    1 -
+                    Math.pow(
+                        1 - local,
+                        1.35
+                    );
+
+                return (
+                    phaseB +
+                    eased *
+                    (phaseC - phaseB)
+                );
+            }
+
+
+            const local =
+                (value - phaseC) /
+                (1 - phaseC);
+
+            const eased =
+                1 -
+                Math.pow(
+                    1 - local,
+                    1.7
+                );
+
+            return (
+                phaseC +
+                eased *
+                (1 - phaseC)
+            );
         }
-
-
-        if (queuePosition) {
-
-            queuePosition.textContent =
-                position;
-
-        }
-
-
-        if (queueTime) {
-
-            queueTime.textContent =
-                "~" +
-                Math.round(
-                    queueDuration / 1000
-                ) +
-                " seconds";
-
-        }
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "0%";
-
-        }
-
-
-        queueScreen.classList.add(
-            "active"
-        );
-
-
-        stopQueueTimers();
 
 
         function tick(now) {
 
+            if (
+                !injectionRunning
+            ) {
+                return;
+            }
+
+
             const elapsed =
-                now - queueStarted;
+                now - started;
 
 
-            const progress =
+            const rawProgress =
                 Math.min(
-                    elapsed / queueDuration,
+                    elapsed / duration,
                     1
                 );
 
 
-            if (queueProgress) {
+            const curved =
+                progressCurve(
+                    rawProgress
+                );
 
-                queueProgress.style.width =
-                    (progress * 100) +
-                    "%";
 
+            /*
+                Tiny deterministic-looking movement
+                variation, kept extremely subtle so the
+                bar remains smooth.
+            */
+
+            const microVariation =
+                rawProgress < 0.985
+                    ? Math.sin(
+                        rawProgress *
+                        Math.PI *
+                        7
+                    ) *
+                    0.0018
+                    : 0;
+
+
+            const progress =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        curved +
+                        microVariation
+                    )
+                );
+
+
+            if (injectionProgress) {
+
+                injectionProgress.style.width =
+                    `${progress * 100}%`;
             }
 
 
             if (
-                progress < 1
+                rawProgress < 1
             ) {
 
-                queueAnimation =
+                injectionAnimation =
                     requestAnimationFrame(
                         tick
                     );
 
+                return;
             }
 
+
+            injectionAnimation = null;
+
+
+            injectionTimer =
+                window.setTimeout(
+                    () => {
+
+                        injectionRunning =
+                            false;
+
+                        if (
+                            injectionProgress
+                        ) {
+
+                            injectionProgress.style.width =
+                                "100%";
+                        }
+
+                    },
+                    80
+                );
         }
 
 
-        queueAnimation =
+        injectionAnimation =
             requestAnimationFrame(
                 tick
             );
-
-
-        queueTimer =
-            window.setTimeout(
-                finishQueue,
-                queueDuration
-            );
-
     }
 
 
-    function cancelQueueLaunch() {
-
-        stopQueueTimers();
-
-
-        queueScreen.classList.remove(
-            "active"
-        );
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "0%";
-
-        }
-
-    }
-
+    /* =====================================================
+       INJECT / CANCEL
+       ===================================================== */
 
     injectButton?.addEventListener(
         "click",
-        startQueue
+        startInjection
     );
 
 
-    cancelQueue?.addEventListener(
+    cancelInjection?.addEventListener(
         "click",
-        cancelQueueLaunch
+        hideInjectionScreen
     );
 
 
@@ -616,7 +742,6 @@
         updateGames(
             "csgo"
         );
-
     }
 
 })();
