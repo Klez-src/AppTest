@@ -12,10 +12,7 @@
 
     <title></title>
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
         rel="preconnect"
@@ -30,7 +27,7 @@
 
     <link
         rel="stylesheet"
-        href="style.css?v=3"
+        href="style.css?v=4"
     >
 
 </head>
@@ -50,8 +47,7 @@
         data-drag
     >
 
-        <div class="topbar-spacer"></div>
-
+        <div class="topbar-drag-area"></div>
 
         <div
             class="window-controls"
@@ -82,14 +78,14 @@
 
 
     <!-- =====================================================
-         MAIN
+         MAIN CONTENT
          ===================================================== -->
 
     <main class="content">
 
 
         <!-- =================================================
-             GAME FILTER
+             GAME SELECTOR
              ================================================= -->
 
         <nav
@@ -101,8 +97,15 @@
                 class="game-tab"
                 data-game="all"
             >
-                <span class="tab-symbol">●</span>
-                <span>All games</span>
+
+                <span class="tab-icon all-icon">
+                    ●
+                </span>
+
+                <span class="tab-label">
+                    All games
+                </span>
+
             </button>
 
 
@@ -110,8 +113,15 @@
                 class="game-tab active"
                 data-game="csgo"
             >
-                <span class="tab-symbol">ʃ</span>
-                <span>CS:GO</span>
+
+                <span class="tab-icon csgo-icon">
+                    ʃ
+                </span>
+
+                <span class="tab-label">
+                    CS:GO
+                </span>
+
             </button>
 
 
@@ -119,8 +129,15 @@
                 class="game-tab"
                 data-game="cs2"
             >
-                <span class="tab-symbol cs2-symbol">2</span>
-                <span>CS:2</span>
+
+                <span class="tab-icon cs2-icon">
+                    2
+                </span>
+
+                <span class="tab-label">
+                    CS:2
+                </span>
+
             </button>
 
         </nav>
@@ -128,7 +145,7 @@
 
 
         <!-- =================================================
-             GAMES
+             GAME LIST
              ================================================= -->
 
         <section
@@ -137,9 +154,9 @@
         >
 
 
-            <!-- =============================================
+            <!-- =================================================
                  PRIMORDIAL
-                 ============================================= -->
+                 ================================================= -->
 
             <article
                 class="game-card"
@@ -175,9 +192,9 @@
 
 
 
-            <!-- =============================================
+            <!-- =================================================
                  GAMESENSE
-                 ============================================= -->
+                 ================================================= -->
 
             <article
                 class="game-card"
@@ -213,9 +230,9 @@
 
 
 
-            <!-- =============================================
-                 CS2 PLACEHOLDER
-                 ============================================= -->
+            <!-- =================================================
+                 CS2
+                 ================================================= -->
 
             <article
                 class="game-card hidden-game"
@@ -255,7 +272,7 @@
 
 
         <!-- =================================================
-             BOTTOM ACTION
+             INJECT
              ================================================= -->
 
         <button
@@ -263,8 +280,13 @@
             class="inject-button"
             data-no-drag
         >
+
             <span class="inject-mark"></span>
-            <span>Inject</span>
+
+            <span class="inject-label">
+                Inject
+            </span>
+
         </button>
 
 
@@ -273,7 +295,7 @@
 
 
     <!-- =====================================================
-         QUEUE / LAUNCH SCREEN
+         QUEUE SCREEN
          ===================================================== -->
 
     <div
@@ -299,9 +321,9 @@
                     2
                 </span>
 
-                <small>
+                <span class="queue-people">
                     people ahead
-                </small>
+                </span>
 
             </div>
 
@@ -347,7 +369,7 @@
 </div>
 
 
-<script src="script.js?v=3"></script>
+<script src="script.js?v=4"></script>
 
 </body>
 
