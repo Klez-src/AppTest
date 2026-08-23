@@ -1,5 +1,5 @@
 /* =========================================================
-   BASE
+   RESET
    ========================================================= */
 
 * {
@@ -25,7 +25,7 @@ body {
 
     background: #0d0e15;
 
-    color: #d4d2e1;
+    color: #c9c7d5;
 
     font-family:
         "Inter",
@@ -38,9 +38,11 @@ body {
 
     font-weight: 400;
 
-    letter-spacing: -0.15px;
+    letter-spacing: -0.2px;
 
     -webkit-font-smoothing: antialiased;
+
+    text-rendering: geometricPrecision;
 
     user-select: none;
     -webkit-user-select: none;
@@ -51,7 +53,7 @@ body {
 
 
 /* =========================================================
-   APP BACKGROUND
+   APP
    ========================================================= */
 
 #app {
@@ -63,7 +65,7 @@ body {
 
     overflow: hidden;
 
-    background: #13141e;
+    background: #0f1017;
 
 }
 
@@ -86,20 +88,20 @@ body {
 
     align-items: center;
 
-    justify-content: flex-end;
-
-    padding: 0 12px;
-
-    z-index: 20;
+    z-index: 50;
 
     cursor: default;
 
 }
 
 
-.topbar-spacer {
+.topbar-drag-area {
 
-    flex: 1;
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
 
 }
 
@@ -110,11 +112,16 @@ body {
 
 .window-controls {
 
+    position: absolute;
+
+    top: 8px;
+    right: 9px;
+
     display: flex;
 
     align-items: center;
 
-    gap: 2px;
+    gap: 1px;
 
 }
 
@@ -137,32 +144,34 @@ body {
 
     background: transparent;
 
-    color: #777885;
+    color: #767784;
+
+    font-family: inherit;
 
     cursor: pointer;
 
     transition:
-        background .12s ease,
-        color .12s ease;
+        background 120ms ease,
+        color 120ms ease;
 
 }
 
 
 .window-button:hover {
 
-    background: #1b1c27;
+    background: #181923;
 
-    color: #c3c2cd;
+    color: #aaa9b5;
 
 }
 
 
 .window-button.minimize span {
 
+    display: block;
+
     width: 9px;
     height: 1px;
-
-    display: block;
 
     background: currentColor;
 
@@ -175,7 +184,7 @@ body {
 
     font-weight: 300;
 
-    line-height: 20px;
+    line-height: 18px;
 
 }
 
@@ -206,8 +215,22 @@ body {
 
 
 /* =========================================================
-   TAB CONTAINER
+   TOP GAME SELECTOR
    ========================================================= */
+
+/*
+   IMPORTANT:
+   This is intentionally a very subtle outer layer.
+
+   The screenshot has:
+       page background
+           ↓
+       extremely subtle selector shell
+           ↓
+       individual rounded tab surfaces
+           ↓
+       active tab gets its own purple-toned surface
+*/
 
 .game-tabs {
 
@@ -223,25 +246,21 @@ body {
     grid-template-columns:
         1.18fr
         1fr
-        .9fr;
+        .92fr;
 
     gap: 4px;
 
     padding: 4px;
 
-    border-radius: 13px;
+    border-radius: 14px;
 
-    background: #171724;
-
-    box-shadow:
-        inset 0 0 0 1px
-        rgba(255,255,255,.012);
+    background: #11121b;
 
 }
 
 
 /* =========================================================
-   TABS
+   INDIVIDUAL TABS
    ========================================================= */
 
 .game-tab {
@@ -257,84 +276,161 @@ body {
 
     gap: 6px;
 
-    padding: 0;
+    padding: 0 7px;
 
     border: 0;
 
     border-radius: 10px;
 
-    background: transparent;
+    background: #171724;
 
-    color: #777889;
+    color: #777887;
 
     font-family: inherit;
 
-    font-size: 11px;
+    font-size: 11.5px;
 
     font-weight: 400;
 
-    letter-spacing: -0.15px;
+    line-height: 1;
+
+    letter-spacing: -0.25px;
+
+    white-space: nowrap;
 
     cursor: pointer;
 
     transition:
-        background .15s ease,
-        color .15s ease;
+        background 140ms ease,
+        color 140ms ease;
 
 }
 
+
+/* =========================================================
+   INACTIVE HOVER
+   ========================================================= */
 
 .game-tab:hover {
 
-    color: #9a99a8;
+    background: #1a1a28;
+
+    color: #8d8c9c;
 
 }
 
+
+/* =========================================================
+   ACTIVE TAB
+   ========================================================= */
 
 .game-tab.active {
 
-    background: #211b35;
+    background: #28202e;
 
-    color: #8050e6;
-
-    box-shadow:
-        inset 0 0 0 1px
-        rgba(125,77,230,.035);
+    color: #8250e8;
 
 }
 
 
-.tab-symbol {
+.game-tab.active:hover {
+
+    background: #2b2131;
+
+    color: #8954ed;
+
+}
+
+
+/* =========================================================
+   TAB ICONS
+   ========================================================= */
+
+.tab-icon {
+
+    width: 12px;
+    height: 12px;
+
+    flex: 0 0 12px;
 
     display: inline-flex;
 
     align-items: center;
     justify-content: center;
 
-    width: 10px;
-    height: 10px;
+    color: #777888;
 
-    color: #7b7c8d;
-
-    font-size: 8px;
+    line-height: 1;
 
 }
 
 
-.game-tab.active .tab-symbol {
+/* ALL GAMES */
 
-    color: #8050e6;
+.all-icon {
+
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+
+    background: #858594;
+
+    color: #171724;
+
+    font-size: 7px;
 
 }
 
 
-.cs2-symbol {
+/* CS:GO */
 
-    font-size: 12px;
+.csgo-icon {
+
+    font-size: 14px;
+
+    font-weight: 400;
+
+    transform:
+        translateY(-1px)
+        skew(-9deg);
+
+}
+
+
+.game-tab.active .csgo-icon {
+
+    color: #8250e8;
+
+}
+
+
+/* CS2 */
+
+.cs2-icon {
+
+    font-size: 13px;
 
     font-weight: 500;
 
-    transform: skew(-13deg);
+    letter-spacing: -1.2px;
+
+    transform:
+        skew(-13deg);
+
+}
+
+
+/* =========================================================
+   TAB LABELS
+   ========================================================= */
+
+.tab-label {
+
+    display: inline-block;
+
+    transform:
+        translateY(-0.2px);
 
 }
 
@@ -357,7 +453,7 @@ body {
 
 
 /* =========================================================
-   OUTER CARD LAYER
+   GAME CARD — OUTER LAYER
    ========================================================= */
 
 .game-card {
@@ -371,12 +467,16 @@ body {
 
     border-radius: 13px;
 
-    background: #232434;
+    background: #252635;
 
     overflow: hidden;
 
 }
 
+
+/* =========================================================
+   GAME CARD — INNER LAYER
+   ========================================================= */
 
 .game-card-inner {
 
@@ -392,13 +492,13 @@ body {
 
     border-radius: 12px;
 
-    background: #1a1b2a;
+    background: #191a27;
 
 }
 
 
 /* =========================================================
-   GAME INFO
+   GAME INFORMATION
    ========================================================= */
 
 .game-info {
@@ -416,15 +516,15 @@ body {
 
 .game-name {
 
-    color: #d2d0de;
+    color: #d0cedb;
 
-    font-size: 14px;
+    font-size: 15px;
 
     font-weight: 400;
 
     line-height: 1;
 
-    letter-spacing: -0.35px;
+    letter-spacing: -0.45px;
 
     white-space: nowrap;
 
@@ -432,7 +532,7 @@ body {
 
 
 /* =========================================================
-   ACTION COLUMN
+   GAME ACTIONS
    ========================================================= */
 
 .game-actions {
@@ -466,13 +566,15 @@ body {
 
     border-radius: 4px;
 
-    background: #2e2634;
+    background: #302532;
 
-    color: #bd6d7d;
+    color: #bc6d7c;
 
     font-size: 9px;
 
     font-weight: 400;
+
+    line-height: 1;
 
     letter-spacing: -0.1px;
 
@@ -495,13 +597,17 @@ body {
 
     border-radius: 4px;
 
-    background: #212230;
+    background: #222331;
 
     color: #777888;
 
     font-size: 9px;
 
     font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.15px;
 
 }
 
@@ -535,7 +641,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 5px;
+    gap: 4px;
 
     padding: 0;
 
@@ -543,17 +649,19 @@ body {
 
     border-radius: 9px;
 
-    background: #774ee6;
+    background: #774de4;
 
-    color: #e9e5f8;
+    color: #e2deeb;
 
     font-family: inherit;
 
-    font-size: 15px;
+    font-size: 16px;
 
     font-weight: 400;
 
-    letter-spacing: -0.35px;
+    line-height: 1;
+
+    letter-spacing: -0.45px;
 
     cursor: pointer;
 
@@ -561,18 +669,18 @@ body {
         inset 0 1px 0
         rgba(255,255,255,.035),
         0 5px 15px
-        rgba(82,50,170,.14);
+        rgba(72,45,154,.12);
 
     transition:
-        filter .15s ease,
-        transform .12s ease;
+        background 140ms ease,
+        transform 100ms ease;
 
 }
 
 
 .inject-button:hover {
 
-    filter: brightness(1.055);
+    background: #7b50e9;
 
 }
 
@@ -585,7 +693,7 @@ body {
 
 
 /* =========================================================
-   SUBTLE INJECT MARK
+   INJECT MARK
    ========================================================= */
 
 .inject-mark {
@@ -593,11 +701,11 @@ body {
     position: relative;
 
     width: 19px;
-    height: 11px;
+    height: 12px;
 
     display: block;
 
-    opacity: .92;
+    opacity: .9;
 
 }
 
@@ -609,7 +717,7 @@ body {
     position: absolute;
 
     left: 1px;
-    top: 1px;
+    top: 2px;
 
     width: 14px;
     height: 7px;
@@ -617,7 +725,7 @@ body {
     border-radius:
         2px 7px 7px 2px;
 
-    background: #dcd7ec;
+    background: #ded9e9;
 
     transform:
         rotate(27deg);
@@ -632,14 +740,14 @@ body {
     position: absolute;
 
     left: 11px;
-    top: 5px;
+    top: 6px;
 
     width: 5px;
     height: 5px;
 
     border-radius: 50%;
 
-    background: #774ee6;
+    background: #774de4;
 
 }
 
@@ -662,7 +770,7 @@ body {
     justify-content: center;
 
     background:
-        rgba(19,20,30,.975);
+        rgba(13,14,21,.975);
 
     backdrop-filter:
         blur(8px);
@@ -678,7 +786,7 @@ body {
     display: flex;
 
     animation:
-        queueFadeIn .2s ease-out both;
+        queueFadeIn 180ms ease-out both;
 
 }
 
@@ -696,10 +804,6 @@ body {
 }
 
 
-/* =========================================================
-   QUEUE CONTENT
-   ========================================================= */
-
 .queue-content {
 
     width: 270px;
@@ -711,9 +815,9 @@ body {
 
 .queue-title {
 
-    color: #d8d6e2;
+    color: #d2d0dc;
 
-    font-size: 21px;
+    font-size: 20px;
 
     font-weight: 400;
 
@@ -726,9 +830,11 @@ body {
 
     margin-top: 7px;
 
-    color: #686978;
+    color: #686977;
 
     font-size: 10px;
+
+    letter-spacing: -0.1px;
 
 }
 
@@ -744,18 +850,16 @@ body {
 }
 
 
-.queue-number span {
+.queue-number > span:first-child {
 
-    color: #8050e6;
+    color: #8250e8;
 
     font-size: 22px;
-
-    font-weight: 400;
 
 }
 
 
-.queue-number small {
+.queue-people {
 
     margin-left: 5px;
 
@@ -777,7 +881,7 @@ body {
 
     border-radius: 999px;
 
-    background: #292a38;
+    background: #282936;
 
 }
 
@@ -790,7 +894,7 @@ body {
 
     border-radius: inherit;
 
-    background: #774ee6;
+    background: #774de4;
 
     will-change: width;
 
@@ -848,9 +952,9 @@ body {
 
 .cancel-button:hover {
 
-    color: #a09fac;
+    background: #191a25;
 
-    background: #1b1c27;
+    color: #9a99a7;
 
 }
 
@@ -876,16 +980,16 @@ body::-webkit-scrollbar,
 .content::-webkit-scrollbar,
 .games::-webkit-scrollbar {
 
-    display: none;
-
     width: 0;
     height: 0;
+
+    display: none;
 
 }
 
 
 /* =========================================================
-   DRAG CURSOR
+   DRAGGING
    ========================================================= */
 
 [data-drag] {
@@ -899,36 +1003,5 @@ body::-webkit-scrollbar,
 button {
 
     cursor: pointer;
-
-}
-
-
-/* =========================================================
-   315 × 480 TUNING
-   ========================================================= */
-
-@media (max-width: 320px) {
-
-    .content {
-
-        padding-left: 10px;
-        padding-right: 10px;
-
-    }
-
-
-    .game-actions {
-
-        width: 84px;
-
-    }
-
-
-    .subscription,
-    .game-version {
-
-        width: 84px;
-
-    }
 
 }
