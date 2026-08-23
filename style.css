@@ -6,13 +6,18 @@ html,
 body {
     width: 100%;
     height: 100%;
+
     margin: 0;
+    padding: 0;
+
     overflow: hidden;
 }
 
 body {
     background: #111219;
-    color: #e7e6ed;
+
+    color: #e4e3eb;
+
     font-family:
         Inter,
         "Segoe UI",
@@ -21,12 +26,6 @@ body {
 
     user-select: none;
     -webkit-user-select: none;
-}
-
-button {
-    font: inherit;
-    border: 0;
-    outline: none;
 }
 
 
@@ -66,7 +65,9 @@ button {
 
     background: #0d0e14;
 
-    border-bottom: 1px solid rgba(255,255,255,.025);
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.018);
 
     z-index: 20;
 
@@ -76,8 +77,8 @@ button {
 .window-controls {
     position: absolute;
 
-    right: 8px;
     top: 0;
+    right: 7px;
 
     height: 32px;
 
@@ -93,18 +94,20 @@ button {
     width: 28px;
     height: 28px;
 
+    padding: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
 
     background: transparent;
 
-    color: #8d8d98;
+    border-radius: 7px;
+
+    color: #85858f;
 
     font-size: 17px;
     font-weight: 300;
-
-    border-radius: 7px;
 
     cursor: pointer;
 
@@ -114,13 +117,13 @@ button {
 }
 
 .window-button:hover {
-    background: rgba(255,255,255,.055);
-    color: #e8e8ed;
+    background: rgba(255,255,255,.045);
+    color: #e5e5eb;
 }
 
 .window-button.close:hover {
-    background: #b83c4d;
-    color: white;
+    background: #b33d4c;
+    color: #ffffff;
 }
 
 
@@ -137,7 +140,11 @@ button {
     width: 100%;
     height: calc(100% - 32px);
 
-    padding: 10px;
+    padding:
+        10px
+        10px
+        10px
+        10px;
 
     display: flex;
     flex-direction: column;
@@ -151,43 +158,54 @@ button {
    ========================================= */
 
 .game-selector-wrapper {
-    flex-shrink: 0;
-
     width: 100%;
 
-    padding: 0;
+    flex-shrink: 0;
 }
 
 .game-selector {
-    position: relative;
-
     width: 100%;
     height: 40px;
 
     padding: 4px;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1fr;
 
     gap: 4px;
 
-    border-radius: 13px;
-
     background: #171821;
 
-    border: 1px solid rgba(255,255,255,.018);
+    border-radius: 13px;
+
+    /*
+     * Important:
+     * No light outer/inner border.
+     */
+
+    border: none;
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.015),
-        0 4px 16px rgba(0,0,0,.08);
+        0 4px 14px
+        rgba(0,0,0,.12);
 }
+
+
+/* =========================================
+   GAME BUTTONS
+   ========================================= */
 
 .game-option {
     position: relative;
 
-    min-width: 0;
-
+    width: 100%;
     height: 30px;
+
+    padding: 0 7px;
 
     display: flex;
     align-items: center;
@@ -195,46 +213,57 @@ button {
 
     gap: 6px;
 
+    background: #1d1e27;
+
+    border: none;
+
     border-radius: 9px;
 
-    background: transparent;
-
-    color: #8d8c98;
+    color: #898894;
 
     font-size: 13px;
     font-weight: 400;
 
     cursor: pointer;
 
+    /*
+     * The grey rectangles in the reference
+     * are the buttons themselves.
+     */
+
+    box-shadow: none;
+
     transition:
-        color .14s ease,
-        background .14s ease;
+        background .12s ease,
+        color .12s ease;
 }
 
 .game-option:hover {
-    color: #aaa9b4;
+    background: #20212b;
+    color: #a09fa9;
 }
 
 .game-option.active {
     background: #201a35;
-
-    color: #7c4dff;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(124,77,255,.12);
+    color: #7d4cff;
 }
+
+
+/* =========================================
+   GAME ICONS
+   ========================================= */
 
 .game-icon {
     width: 15px;
     height: 15px;
+
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     color: currentColor;
-
-    flex-shrink: 0;
 }
 
 .game-icon svg {
@@ -244,9 +273,40 @@ button {
     display: block;
 }
 
+.csgo-icon {
+    width: 14px;
+    height: 17px;
+}
+
+
+/*
+ * Rebuilt CS2 "2".
+ *
+ * This is intentionally a compact stylised
+ * mark rather than the previous broken SVG.
+ */
+
 .cs2-icon {
     width: 17px;
     height: 17px;
+
+    position: relative;
+
+    color: currentColor;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    font-style: italic;
+
+    line-height: 17px;
+
+    transform:
+        skewX(-10deg);
 }
 
 
@@ -267,15 +327,15 @@ button {
 
     overflow: hidden;
 
-    border-radius: 12px;
-
     background: #13141c;
 
-    border: 1px solid rgba(255,255,255,.018);
+    border-radius: 12px;
+
+    border: none;
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.012),
-        0 6px 22px rgba(0,0,0,.08);
+        0 6px 22px
+        rgba(0,0,0,.10);
 }
 
 .options {
@@ -303,41 +363,54 @@ button {
     display: flex;
     align-items: center;
 
-    border-radius: 11px;
-
     background: #181923;
 
-    border: 1px solid rgba(255,255,255,.035);
+    border-radius: 11px;
+
+    /*
+     * No bright outline by default.
+     */
+
+    border:
+        1px solid
+        rgba(255,255,255,.025);
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.012);
+        inset 0 1px 0
+        rgba(255,255,255,.008);
 
     cursor: pointer;
 
     transition:
-        border-color .14s ease,
-        background .14s ease,
-        box-shadow .14s ease;
+        background .12s ease,
+        border-color .12s ease;
 }
 
 .option-card:hover {
     background: #1a1b24;
-    border-color: rgba(255,255,255,.065);
 }
+
+
+/*
+ * Selected loader.
+ *
+ * Very subtle purple outline only.
+ */
 
 .option-card.selected {
     background: #191923;
 
-    border-color: rgba(124,77,255,.68);
+    border-color:
+        rgba(124,77,255,.58);
 
     box-shadow:
-        inset 0 0 0 1px rgba(124,77,255,.10),
-        0 0 0 1px rgba(124,77,255,.035);
+        0 0 0 1px
+        rgba(124,77,255,.035);
 }
 
 
 /* =========================================
-   OPTION IMAGE
+   OPTION LOGO
    ========================================= */
 
 .option-logo {
@@ -352,11 +425,13 @@ button {
 
     overflow: hidden;
 
-    border-radius: 9px;
-
     background: #101117;
 
-    border: 1px solid rgba(255,255,255,.025);
+    border-radius: 9px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.025);
 }
 
 .option-logo img {
@@ -376,14 +451,14 @@ button {
 .option-info {
     min-width: 0;
 
+    flex: 1;
+
     margin-left: 12px;
 
     display: flex;
     flex-direction: column;
 
     justify-content: center;
-
-    flex: 1;
 }
 
 .option-name {
@@ -395,12 +470,14 @@ button {
     line-height: 18px;
 
     white-space: nowrap;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
 .option-card.selected .option-name {
-    color: #e9e5ff;
+    color: #e8e3ff;
 }
 
 
@@ -411,14 +488,12 @@ button {
 .option-side {
     width: 92px;
 
+    flex-shrink: 0;
+
     display: flex;
     flex-direction: column;
 
-    align-items: stretch;
-
     gap: 4px;
-
-    flex-shrink: 0;
 }
 
 .subscription {
@@ -455,16 +530,18 @@ button {
 
 
 /* =========================================
-   INJECT BUTTON
+   INJECT
    ========================================= */
 
 .inject-button {
-    flex-shrink: 0;
-
     width: 100%;
     height: 39px;
 
+    flex-shrink: 0;
+
     margin-top: 8px;
+
+    padding: 0;
 
     display: flex;
     align-items: center;
@@ -472,9 +549,11 @@ button {
 
     gap: 5px;
 
-    border-radius: 9px;
-
     background: #7546e8;
+
+    border: none;
+
+    border-radius: 9px;
 
     color: #eeeaff;
 
@@ -484,16 +563,16 @@ button {
     cursor: pointer;
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 3px 12px rgba(0,0,0,.12);
+        inset 0 1px 0
+        rgba(255,255,255,.07);
 
     transition:
-        background .14s ease,
-        transform .1s ease;
+        background .12s ease,
+        transform .08s ease;
 }
 
 .inject-button:hover {
-    background: #7e4df0;
+    background: #7d4cf0;
 }
 
 .inject-button:active {
@@ -541,8 +620,8 @@ button {
     pointer-events: none;
 
     transition:
-        opacity .18s ease,
-        visibility .18s ease;
+        opacity .16s ease,
+        visibility .16s ease;
 }
 
 .loading-screen.visible {
@@ -567,25 +646,20 @@ button {
    ========================================= */
 
 .loading-title {
-    color: #e8e7ed;
+    color: #e7e6ed;
 
     font-size: 21px;
     font-weight: 400;
 
     line-height: 26px;
-
-    text-align: center;
 }
 
 .loading-option {
     margin-top: 5px;
 
-    color: #7c4dff;
+    color: #7d4cff;
 
     font-size: 14px;
-    font-weight: 400;
-
-    text-align: center;
 }
 
 
@@ -601,23 +675,18 @@ button {
 
     overflow: hidden;
 
-    border-radius: 999px;
-
     background: #252630;
 
-    box-shadow:
-        inset 0 1px 2px rgba(0,0,0,.25);
+    border-radius: 999px;
 }
 
 .loading-fill {
-    width: 0%;
+    width: 0;
     height: 100%;
-
-    border-radius: inherit;
 
     background: #7546e8;
 
-    transform-origin: left center;
+    border-radius: inherit;
 
     transition:
         width .18s linear;
@@ -629,15 +698,17 @@ button {
    ========================================= */
 
 .cancel-button {
-    margin-top: 18px;
-
     height: 31px;
+
+    margin-top: 18px;
 
     padding: 0 18px;
 
-    border-radius: 8px;
-
     background: #20212a;
+
+    border: none;
+
+    border-radius: 8px;
 
     color: #92919c;
 
@@ -646,8 +717,8 @@ button {
     cursor: pointer;
 
     transition:
-        background .13s ease,
-        color .13s ease;
+        background .12s ease,
+        color .12s ease;
 }
 
 .cancel-button:hover {
@@ -657,7 +728,7 @@ button {
 
 
 /* =========================================
-   EMPTY STATE
+   EMPTY
    ========================================= */
 
 .empty-options {
@@ -674,7 +745,7 @@ button {
 
 
 /* =========================================
-   RESPONSIVE SAFETY
+   SMALL WINDOW SAFETY
    ========================================= */
 
 @media (max-height: 430px) {
