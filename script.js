@@ -1,501 +1,525 @@
-"use strict";
-
-
 /* =========================================================
-   NATIVE WEBVIEW BRIDGE
+   ORRO UI
    ========================================================= */
 
-function nativeMessage(message) {
+(() => {
 
-    if (
-        window.chrome &&
-        window.chrome.webview
-    ) {
+    "use strict";
 
-        window.chrome.webview.postMessage(
-            message
-        );
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const gameTabs =
+        document.querySelectorAll(".game-tab");
+
+
+    const gameCards =
+        document.querySelectorAll(".game-card");
+
+
+    const minimizeButton =
+        document.getElementById("minimizeButton");
+
+
+    const closeButton =
+        document.getElementById("closeButton");
+
+
+    const injectButton =
+        document.getElementById("injectButton");
+
+
+    const queueScreen =
+        document.getElementById("queueScreen");
+
+
+    const cancelQueue =
+        document.getElementById("cancelQueue");
+
+
+    const queueCount =
+        document.getElementById("queueCount");
+
+
+    const queuePosition =
+        document.getElementById("queuePosition");
+
+
+    const queueTime =
+        document.getElementById("queueTime");
+
+
+    const queueProgress =
+        document.getElementById("queueProgress");
+
+
+    /* =====================================================
+       WEBVIEW BRIDGE
+       ===================================================== */
+
+    function sendWindowMessage(message) {
+
+        try {
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+
+                window.chrome.webview.postMessage(
+                    message
+                );
+
+            }
+
+        } catch (_) {
+
+            // Normal browser fallback.
+
+        }
 
     }
 
-}
 
+    /* =====================================================
+       WINDOW CONTROLS
+       ===================================================== */
 
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
+    minimizeButton?.addEventListener(
+        "click",
+        () => {
 
-const tabs =
-    document.querySelectorAll(
-        ".game-tab"
-    );
-
-
-const cards =
-    document.querySelectorAll(
-        ".game-card"
-    );
-
-
-const injectButton =
-    document.getElementById(
-        "injectButton"
-    );
-
-
-const queueScreen =
-    document.getElementById(
-        "queueScreen"
-    );
-
-
-const queueProgress =
-    document.getElementById(
-        "queueProgress"
-    );
-
-
-const queueCount =
-    document.getElementById(
-        "queueCount"
-    );
-
-
-const queuePosition =
-    document.getElementById(
-        "queuePosition"
-    );
-
-
-const queueTime =
-    document.getElementById(
-        "queueTime"
-    );
-
-
-const cancelQueue =
-    document.getElementById(
-        "cancelQueue"
-    );
-
-
-const closeButton =
-    document.getElementById(
-        "closeButton"
-    );
-
-
-const minimizeButton =
-    document.getElementById(
-        "minimizeButton"
-    );
-
-
-/* =========================================================
-   GAME TAB
-   ========================================================= */
-
-const GAME_KEY =
-    "undercal.selectedGame";
-
-
-function setGame(
-    game
-) {
-
-    localStorage.setItem(
-        GAME_KEY,
-        game
-    );
-
-
-    tabs.forEach(
-        tab => {
-
-            tab.classList.toggle(
-                "active",
-                tab.dataset.game === game
+            sendWindowMessage(
+                "window.minimize"
             );
 
         }
     );
 
 
-    cards.forEach(
-        card => {
+    closeButton?.addEventListener(
+        "click",
+        () => {
 
-            const games =
-                card.dataset.games
-                    .split(",");
-
-
-            const visible =
-                game === "all" ||
-                games.includes(game);
-
-
-            card.classList.toggle(
-                "hidden-game",
-                !visible
+            sendWindowMessage(
+                "window.close"
             );
 
         }
     );
 
-}
 
+    /* =====================================================
+       GAME TAB SELECTION
+       ===================================================== */
 
-tabs.forEach(
-    tab => {
+    function setActiveTab(tab) {
 
-        tab.addEventListener(
-            "click",
-            event => {
+        gameTabs.forEach(
+            currentTab => {
 
-                event.stopPropagation();
-
-                setGame(
-                    tab.dataset.game
+                currentTab.classList.toggle(
+                    "active",
+                    currentTab === tab
                 );
 
             }
         );
 
     }
-);
 
 
-const savedGame =
-    localStorage.getItem(
-        GAME_KEY
-    );
+    function updateGames(game) {
+
+        gameCards.forEach(
+            card => {
+
+                const supportedGames =
+                    (card.dataset.games || "")
+                        .split(",")
+                        .map(
+                            value =>
+                                value.trim()
+                        );
 
 
-setGame(
-    savedGame || "csgo"
-);
+                if (
+                    game === "all" ||
+                    supportedGames.includes(game)
+                ) {
 
+                    card.classList.remove(
+                        "hidden-game"
+                    );
 
-/* =========================================================
-   QUEUE
-   ========================================================= */
+                } else {
 
-let queueRunning =
-    false;
+                    card.classList.add(
+                        "hidden-game"
+                    );
 
+                }
 
-let queueFrame =
-    null;
-
-
-let queueStart =
-    0;
-
-
-let queueDuration =
-    0;
-
-
-let startingAhead =
-    0;
-
-
-/*
- * Roughly 29 seconds,
- * but not exactly 29 every time.
- *
- * 25–33 seconds.
- */
-
-function randomDuration() {
-
-    return (
-        25000 +
-        Math.floor(
-            Math.random() * 9000
-        )
-    );
-
-}
-
-
-/*
- * 1–4 people ahead.
- */
-
-function randomQueue() {
-
-    return (
-        Math.floor(
-            Math.random() * 4
-        ) + 1
-    );
-
-}
-
-
-function updateQueue(
-    progress
-) {
-
-    const remaining =
-        Math.max(
-            0,
-            Math.ceil(
-                startingAhead *
-                (1 - progress)
-            )
+            }
         );
 
 
-    queueCount.textContent =
-        remaining;
+        /*
+            If the currently selected card became
+            hidden after switching games, remove
+            its visual selection.
+        */
 
+        gameCards.forEach(
+            card => {
 
-    queuePosition.textContent =
-        remaining + 1;
+                if (
+                    card.classList.contains(
+                        "hidden-game"
+                    )
+                ) {
 
+                    card.classList.remove(
+                        "selected"
+                    );
 
-    queueProgress.style.width =
-        (
-            progress * 100
-        ) + "%";
+                }
 
-
-    const elapsed =
-        performance.now() -
-        queueStart;
-
-
-    const seconds =
-        Math.max(
-            0,
-            Math.ceil(
-                (
-                    queueDuration -
-                    elapsed
-                ) / 1000
-            )
+            }
         );
-
-
-    queueTime.textContent =
-        "~" +
-        seconds +
-        " seconds";
-
-}
-
-
-function animateQueue() {
-
-    if (!queueRunning) {
-
-        return;
 
     }
 
 
-    const elapsed =
-        performance.now() -
-        queueStart;
+    gameTabs.forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                () => {
+
+                    const game =
+                        tab.dataset.game;
 
 
-    const progress =
-        Math.min(
-            elapsed /
-            queueDuration,
-            1
-        );
+                    setActiveTab(tab);
 
+                    updateGames(game);
 
-    updateQueue(
-        progress
+                }
+            );
+
+        }
     );
 
 
-    if (
-        progress >= 1
-    ) {
+    /* =====================================================
+       GAME CARD SELECTION
+       ===================================================== */
 
-        finishQueue();
+    function selectCard(card) {
 
-        return;
+        /*
+            Only one card can be selected at a time.
+        */
 
-    }
+        gameCards.forEach(
+            currentCard => {
 
+                currentCard.classList.remove(
+                    "selected"
+                );
 
-    queueFrame =
-        requestAnimationFrame(
-            animateQueue
+            }
         );
 
-}
 
+        /*
+            Add the subtle outline.
+        */
 
-function startQueue() {
-
-    if (queueRunning) {
-
-        return;
+        card.classList.add(
+            "selected"
+        );
 
     }
 
 
-    queueRunning =
-        true;
+    gameCards.forEach(
+        card => {
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        card.classList.contains(
+                            "hidden-game"
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+                    selectCard(card);
+
+                }
+            );
 
 
-    startingAhead =
-        randomQueue();
+            /*
+                Keyboard accessibility without changing
+                the visual design.
+            */
 
+            card.addEventListener(
+                "keydown",
+                event => {
 
-    queueDuration =
-        randomDuration();
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
 
+                        event.preventDefault();
 
-    queueStart =
-        performance.now();
+                        selectCard(card);
 
+                    }
 
-    queueCount.textContent =
-        startingAhead;
+                }
+            );
 
-
-    queuePosition.textContent =
-        startingAhead + 1;
-
-
-    queueTime.textContent =
-        "~" +
-        Math.ceil(
-            queueDuration / 1000
-        ) +
-        " seconds";
-
-
-    queueProgress.style.width =
-        "0%";
-
-
-    queueScreen.classList.add(
-        "active"
+        }
     );
 
 
-    queueFrame =
-        requestAnimationFrame(
-            animateQueue
-        );
-
-}
-
-
-/* =========================================================
-   FINISH
-   ========================================================= */
-
-function finishQueue() {
-
-    queueRunning =
-        false;
-
-
-    if (queueFrame) {
-
-        cancelAnimationFrame(
-            queueFrame
-        );
-
-        queueFrame =
-            null;
-
-    }
-
-
-    queueProgress.style.width =
-        "100%";
-
-
-    queueCount.textContent =
-        "0";
-
-
-    queuePosition.textContent =
-        "1";
-
-
-    queueTime.textContent =
-        "Ready";
-
+    /* =====================================================
+       DEFAULT SELECTION
+       ===================================================== */
 
     /*
-     * Keep the completed state
-     * visible briefly.
-     */
+        Nothing is aggressively purple by default.
 
-    setTimeout(
-        () => {
+        We leave the cards unselected until the user
+        actually picks one.
+    */
 
-            queueScreen.classList.remove(
-                "active"
+    gameCards.forEach(
+        card => {
+
+            card.classList.remove(
+                "selected"
             );
 
-        },
-        500
+        }
     );
 
-}
+
+    /* =====================================================
+       INJECT / QUEUE
+       ===================================================== */
+
+    let queueTimer = null;
+
+    let queueAnimation = null;
+
+    let queueDuration = 0;
+
+    let queueStarted = 0;
 
 
-/* =========================================================
-   INJECT BUTTON
-   ========================================================= */
+    function randomQueueTime() {
 
-injectButton.addEventListener(
-    "click",
-    event => {
+        /*
+            Roughly 29 seconds.
 
-        event.stopPropagation();
+            Small variation means it isn't exactly
+            the same duration every time.
+        */
 
-        startQueue();
+        return (
+            27000 +
+            Math.floor(
+                Math.random() * 5000
+            )
+        );
 
     }
-);
 
 
-/* =========================================================
-   CANCEL
-   ========================================================= */
+    function startQueue() {
 
-cancelQueue.addEventListener(
-    "click",
-    event => {
-
-        event.stopPropagation();
-
-
-        if (!queueRunning) {
-
+        if (!queueScreen) {
             return;
+        }
+
+
+        const peopleAhead =
+            Math.floor(
+                Math.random() * 4
+            ) + 1;
+
+
+        const position =
+            peopleAhead + 1;
+
+
+        queueDuration =
+            randomQueueTime();
+
+
+        queueStarted =
+            performance.now();
+
+
+        if (queueCount) {
+
+            queueCount.textContent =
+                peopleAhead;
 
         }
 
 
-        queueRunning =
-            false;
+        if (queuePosition) {
+
+            queuePosition.textContent =
+                position;
+
+        }
 
 
-        if (queueFrame) {
+        if (queueTime) {
 
-            cancelAnimationFrame(
-                queueFrame
+            queueTime.textContent =
+                "~" +
+                Math.round(
+                    queueDuration / 1000
+                ) +
+                " seconds";
+
+        }
+
+
+        if (queueProgress) {
+
+            queueProgress.style.width =
+                "0%";
+
+        }
+
+
+        queueScreen.classList.add(
+            "active"
+        );
+
+
+        stopQueueTimers();
+
+
+        function tick(now) {
+
+            const elapsed =
+                now - queueStarted;
+
+
+            const progress =
+                Math.min(
+                    elapsed / queueDuration,
+                    1
+                );
+
+
+            if (queueProgress) {
+
+                queueProgress.style.width =
+                    (progress * 100) +
+                    "%";
+
+            }
+
+
+            if (progress < 1) {
+
+                queueAnimation =
+                    requestAnimationFrame(
+                        tick
+                    );
+
+            }
+
+        }
+
+
+        queueAnimation =
+            requestAnimationFrame(
+                tick
             );
 
-            queueFrame =
-                null;
+
+        queueTimer =
+            window.setTimeout(
+                finishQueue,
+                queueDuration
+            );
+
+    }
+
+
+    function stopQueueTimers() {
+
+        if (queueTimer !== null) {
+
+            clearTimeout(
+                queueTimer
+            );
+
+            queueTimer = null;
 
         }
+
+
+        if (queueAnimation !== null) {
+
+            cancelAnimationFrame(
+                queueAnimation
+            );
+
+            queueAnimation = null;
+
+        }
+
+    }
+
+
+    function finishQueue() {
+
+        stopQueueTimers();
+
+
+        if (queueProgress) {
+
+            queueProgress.style.width =
+                "100%";
+
+        }
+
+        /*
+            Keep the screen here for now.
+
+            This preserves the existing launch/queue
+            behaviour without inventing another UI.
+        */
+
+    }
+
+
+    function cancelQueueLaunch() {
+
+        stopQueueTimers();
 
 
         queueScreen.classList.remove(
@@ -503,114 +527,48 @@ cancelQueue.addEventListener(
         );
 
 
-        queueProgress.style.width =
-            "0%";
+        if (queueProgress) {
 
-    }
-);
-
-
-/* =========================================================
-   WINDOW CONTROLS
-   ========================================================= */
-
-closeButton.addEventListener(
-    "click",
-    event => {
-
-        event.stopPropagation();
-
-        nativeMessage(
-            "window.close"
-        );
-
-    }
-);
-
-
-minimizeButton.addEventListener(
-    "click",
-    event => {
-
-        event.stopPropagation();
-
-        nativeMessage(
-            "window.minimize"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   DRAG
-   ========================================================= */
-
-/*
- * The WebView owns the mouse input, so
- * send the native C++ window a message
- * whenever the user starts dragging on
- * non-interactive UI.
- *
- * We deliberately DON'T change the cursor
- * to a hand.
- */
-
-document.addEventListener(
-    "pointerdown",
-    event => {
-
-        if (
-            event.button !== 0
-        ) {
-
-            return;
+            queueProgress.style.width =
+                "0%";
 
         }
 
-
-        if (
-            event.target.closest(
-                "button, [data-no-drag]"
-            )
-        ) {
-
-            return;
-
-        }
+    }
 
 
-        nativeMessage(
-            "window.drag"
+    injectButton?.addEventListener(
+        "click",
+        startQueue
+    );
+
+
+    cancelQueue?.addEventListener(
+        "click",
+        cancelQueueLaunch
+    );
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    const defaultTab =
+        document.querySelector(
+            '.game-tab[data-game="csgo"]'
+        );
+
+
+    if (defaultTab) {
+
+        setActiveTab(
+            defaultTab
+        );
+
+        updateGames(
+            "csgo"
         );
 
     }
-);
 
-
-/* =========================================================
-   DISABLE CONTEXT MENU
-   ========================================================= */
-
-document.addEventListener(
-    "contextmenu",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
-
-
-/* =========================================================
-   DISABLE SELECTION
-   ========================================================= */
-
-document.addEventListener(
-    "selectstart",
-    event => {
-
-        event.preventDefault();
-
-    }
-);
+})();
