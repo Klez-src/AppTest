@@ -6,242 +6,184 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1.0"
     >
 
     <title>orro</title>
 
     <link
         rel="stylesheet"
-        href="style.css"
+        href="./style.css"
     >
 </head>
 
 <body>
 
-<div id="app">
-
     <!-- =====================================================
-         TOP BAR
+         WINDOW BAR
          ===================================================== -->
 
-    <div class="topbar">
+    <header class="window-bar">
 
         <div
-            class="topbar-drag-area"
-            data-drag
+            class="window-drag-area"
+            aria-hidden="true"
         ></div>
 
         <div class="window-controls">
 
             <button
                 id="minimizeButton"
-                class="window-button minimize"
+                class="window-button minimize-button"
+                type="button"
                 aria-label="Minimize"
-                data-no-drag
             >
                 <span></span>
             </button>
 
             <button
                 id="closeButton"
-                class="window-button close"
+                class="window-button close-button"
+                type="button"
                 aria-label="Close"
-                data-no-drag
             >
-                ×
+                <span></span>
+                <span></span>
             </button>
 
         </div>
 
-    </div>
+    </header>
 
 
     <!-- =====================================================
-         MAIN CONTENT
+         APPLICATION
          ===================================================== -->
 
-    <main class="content">
+    <main id="app">
 
 
         <!-- =================================================
              GAME SELECTOR
              ================================================= -->
 
-        <div class="game-tabs-shell">
+        <section class="game-selector">
 
-            <div class="game-tabs">
+            <button
+                class="game-tab active"
+                data-game="all"
+                type="button"
+            >
 
-
-                <!-- ALL GAMES -->
-
-                <button
-                    class="game-tab"
-                    data-game="all"
-                >
-
-                    <span
-                        class="tab-icon lightning-icon"
+                <span class="game-icon lightning-icon">
+                    <svg
+                        viewBox="0 0 100 100"
                         aria-hidden="true"
-                    ></span>
+                    >
+                        <path
+                            d="M53 18
+                               L31 51
+                               Q29 54 33 54
+                               L46 54
+                               L44 80
+                               Q44 84 47 81
+                               L70 48
+                               Q72 45 68 45
+                               L55 45
+                               L56 21
+                               Q56 16 53 18 Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="4"
+                            stroke-linejoin="round"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </span>
 
-                    <span class="tab-label">
-                        All games
-                    </span>
+                <span>All games</span>
 
-                </button>
+            </button>
 
 
-                <!-- CS:GO -->
+            <button
+                class="game-tab"
+                data-game="csgo"
+                type="button"
+            >
 
-                <button
-                    class="game-tab active"
-                    data-game="csgo"
-                >
-
-                    <span
-                        class="tab-icon csgo-icon"
+                <span class="game-icon csgo-icon">
+                    <svg
+                        viewBox="235 175 195 245"
                         aria-hidden="true"
-                    ></span>
+                    >
+                        <path
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            d="M420 217 L400 218 L399 214 L395 212 L395 206
+                               L394 206 L393 215 L391 213 L343 213 L338 210
+                               L338 207 L336 213 L325 214 L324 207 L329 204
+                               L331 201 L329 190 L327 188 L316 183 L309 183
+                               L302 186 L299 189 L296 196 L296 200 L299 208
+                               L296 211 L293 209 L288 209 L282 213 L277 222
+                               L275 229 L275 243 L271 248 L265 248 L263 252
+                               L262 268 L264 271 L269 272 L271 275 L264 278
+                               L266 299 L263 301 L261 306 L261 313 L265 316
+                               L261 335 L262 344 L251 362 L251 368 L245 380
+                               L247 388 L241 409 L243 414 L245 415 L257 414
+                               L256 395 L259 388 L266 384 L267 375 L271 366
+                               L270 360 L272 355 L277 350 L277 348 L282 344
+                               L282 338 L290 319 L293 316 L306 327 L315 341
+                               L321 341 L324 345 L324 352 L321 356 L323 376
+                               L326 381 L326 396 L324 400 L323 408 L325 409
+                               L334 408 L342 411 L355 411 L356 410 L356 407
+                               L349 404 L339 393 L339 378 L341 374 L340 362
+                               L342 352 L342 340 L341 336 L336 330 L328 309
+                               L318 296 L318 289 L320 287 L324 289 L327 284
+                               L329 273 L329 263 L323 257 L323 254 L325 252
+                               L328 252 L345 261 L349 261 L359 251 L360 243
+                               L364 241 L362 235 L362 229 L366 226 L368 222
+                               L390 222 L392 219 L394 220 L400 219 L414 220
+                               L420 219 Z"
+                        />
+                    </svg>
+                </span>
 
-                    <span class="tab-label">
-                        CS:GO
-                    </span>
+                <span>CS:GO</span>
 
-                </button>
+            </button>
 
 
-                <!-- CS2 -->
+            <button
+                class="game-tab"
+                data-game="cs2"
+                type="button"
+            >
 
-                <button
-                    class="game-tab"
-                    data-game="cs2"
-                >
+                <span class="game-icon cs2-icon">
+                    <img
+                        src="./cs2.svg"
+                        alt=""
+                    >
+                </span>
 
-                    <span
-                        class="tab-icon cs2-icon"
-                        aria-hidden="true"
-                    ></span>
+                <span>CS2</span>
 
-                    <span class="tab-label">
-                        CS:2
-                    </span>
+            </button>
 
-                </button>
-
-            </div>
-
-        </div>
+        </section>
 
 
         <!-- =================================================
-             GAMES PANEL
+             MAIN PANEL
              ================================================= -->
 
-        <section class="games-panel">
+        <section class="content-panel">
 
-            <div class="games">
-
-
-                <!-- =========================================
-                     PRIMORDIAL
-                     ========================================= -->
-
-                <div
-                    class="game-card"
-                    data-games="csgo"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-logo">
-
-                                <img
-                                    src="primordial.png"
-                                    alt="Primordial"
-                                    draggable="false"
-                                >
-
-                            </div>
-
-
-                            <div class="game-name">
-                                Primordial
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS:GO
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =========================================
-                     GAMESENSE
-                     ========================================= -->
-
-                <div
-                    class="game-card"
-                    data-games="csgo"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-logo">
-
-                                <img
-                                    src="gamesense.png"
-                                    alt="Gamesense"
-                                    draggable="false"
-                                >
-
-                            </div>
-
-
-                            <div class="game-name">
-                                Gamesense
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS:GO
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-            </div>
+            <div
+                id="options"
+                class="options"
+            ></div>
 
         </section>
 
@@ -253,95 +195,90 @@
         <button
             id="injectButton"
             class="inject-button"
+            type="button"
         >
 
-            <span
-                class="inject-mark"
-                aria-hidden="true"
-            ></span>
+            <span class="inject-icon">
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M5 12h10"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
 
-            <span>
-                Inject
+                    <path
+                        d="M13 7l6 5-6 5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
             </span>
 
+            <span>Inject</span>
+
         </button>
+
+
+        <!-- =================================================
+             LOADING SCREEN
+             ================================================= -->
+
+        <section
+            id="loadingScreen"
+            class="loading-screen"
+            aria-hidden="true"
+        >
+
+            <div class="loading-content">
+
+                <div
+                    id="loadingTitle"
+                    class="loading-title"
+                >
+                    Injecting
+                </div>
+
+                <div
+                    id="loadingOption"
+                    class="loading-option"
+                >
+                    Primordial CS:GO
+                </div>
+
+                <div class="loading-track">
+
+                    <div
+                        id="loadingBar"
+                        class="loading-bar"
+                    ></div>
+
+                </div>
+
+                <button
+                    id="cancelButton"
+                    class="cancel-button"
+                    type="button"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </section>
 
     </main>
 
 
-    <!-- =====================================================
-         QUEUE SCREEN
-         ===================================================== -->
-
-    <div
-        id="queueScreen"
-        class="queue-screen"
-    >
-
-        <div class="queue-content">
-
-            <div class="queue-title">
-                orro
-            </div>
-
-
-            <div class="queue-subtitle">
-                You're in the queue
-            </div>
-
-
-            <div class="queue-number">
-
-                <span id="queueCount">
-                    2
-                </span>
-
-                <span class="queue-people">
-                    people ahead
-                </span>
-
-            </div>
-
-
-            <div class="queue-progress">
-
-                <div
-                    id="queueProgress"
-                    class="queue-progress-fill"
-                ></div>
-
-            </div>
-
-
-            <div class="queue-bottom">
-
-                <span>
-                    Position
-                    <b id="queuePosition">3</b>
-                </span>
-
-                <span id="queueTime">
-                    ~29 seconds
-                </span>
-
-            </div>
-
-
-            <button
-                id="cancelQueue"
-                class="cancel-button"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<script src="script.js"></script>
+    <script src="./script.js"></script>
 
 </body>
+
 </html>
