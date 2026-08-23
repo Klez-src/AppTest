@@ -6,187 +6,342 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1"
     >
 
-    <title>Application</title>
+    <title>orro</title>
 
     <link
         rel="stylesheet"
-        href="./style.css?v=20260823"
+        href="style.css"
     >
 </head>
 
 <body>
 
-    <div id="app">
+<div id="app">
 
-        <!-- ================================================
-             TOP BAR
-             ================================================ -->
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
 
-        <header
-            id="titlebar"
-            class="titlebar"
-        >
+    <div class="topbar">
 
-            <div class="window-controls">
+        <div
+            class="topbar-drag-area"
+            data-drag
+        ></div>
 
-                <button
-                    id="minimizeButton"
-                    class="window-button"
-                    type="button"
-                    aria-label="Minimise"
-                >
-                    <span class="minimize-icon"></span>
-                </button>
+        <div class="window-controls">
 
-                <button
-                    id="closeButton"
-                    class="window-button close-button"
-                    type="button"
-                    aria-label="Close"
-                >
-                    <span class="close-icon"></span>
-                </button>
+            <button
+                id="minimizeButton"
+                class="window-button minimize"
+                aria-label="Minimize"
+                data-no-drag
+            >
+                <span></span>
+            </button>
 
-            </div>
+            <button
+                id="closeButton"
+                class="window-button close"
+                aria-label="Close"
+                data-no-drag
+            >
+                ×
+            </button>
 
-        </header>
+        </div>
+
+    </div>
 
 
-        <!-- ================================================
-             MAIN UI
-             ================================================ -->
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
-        <main id="main-ui">
+    <main class="content">
 
-            <!-- GAME SELECTOR -->
 
-            <div class="game-selector-shell">
+        <!-- =================================================
+             GAME SELECTOR
+             ================================================= -->
 
-                <button
-                    class="game-tab active"
-                    data-game="all"
-                    type="button"
-                >
-                    <span class="game-icon lightning-icon"></span>
-                    <span>All games</span>
-                </button>
+        <div class="game-tabs-shell">
 
+            <div class="game-tabs">
+
+
+                <!-- ALL GAMES -->
 
                 <button
                     class="game-tab"
-                    data-game="csgo"
-                    type="button"
+                    data-game="all"
                 >
-                    <span class="game-icon csgo-icon"></span>
-                    <span>CS:GO</span>
+
+                    <span
+                        class="tab-icon lightning-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        All games
+                    </span>
+
                 </button>
 
+
+                <!-- CS:GO -->
+
+                <button
+                    class="game-tab active"
+                    data-game="csgo"
+                >
+
+                    <span
+                        class="tab-icon csgo-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        CS:GO
+                    </span>
+
+                </button>
+
+
+                <!-- CS2 -->
 
                 <button
                     class="game-tab"
                     data-game="cs2"
-                    type="button"
                 >
-                    <span class="game-icon cs2-icon"></span>
-                    <span>CS:2</span>
+
+                    <span
+                        class="tab-icon cs2-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="tab-label">
+                        CS:2
+                    </span>
+
                 </button>
 
             </div>
 
-
-            <!-- ============================================
-                 OPTIONS AREA
-                 ============================================ -->
-
-            <section
-                id="options-panel"
-                class="options-panel"
-            >
-
-                <div
-                    id="options-list"
-                    class="options-list"
-                ></div>
-
-            </section>
+        </div>
 
 
-            <!-- ============================================
-                 INJECT
-                 ============================================ -->
+        <!-- =================================================
+             GAMES PANEL
+             ================================================= -->
 
-            <button
-                id="injectButton"
-                class="inject-button"
-                type="button"
-            >
-                <span class="inject-arrow"></span>
-                <span>Inject</span>
-            </button>
+        <section class="games-panel">
 
-        </main>
+            <div class="games">
 
 
-        <!-- ================================================
-             LOADING SCREEN
-             ================================================ -->
-
-        <section
-            id="loading-screen"
-            class="loading-screen"
-            aria-hidden="true"
-        >
-
-            <div class="loading-content">
+                <!-- =========================================
+                     PRIMORDIAL
+                     ========================================= -->
 
                 <div
-                    id="loading-title"
-                    class="loading-title"
+                    class="game-card"
+                    data-games="csgo"
+                    tabindex="0"
                 >
-                    Injecting
-                </div>
+
+                    <div class="game-card-inner">
+
+                        <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="primordial.png"
+                                    alt="Primordial"
+                                    draggable="false"
+                                >
+
+                            </div>
 
 
-                <div
-                    id="loading-option"
-                    class="loading-option"
-                >
-                    Primordial — CS:GO
-                </div>
+                            <div class="game-name">
+                                Primordial
+                            </div>
+
+                        </div>
 
 
-                <div class="loading-track">
+                        <div class="game-actions">
 
-                    <div
-                        id="loading-fill"
-                        class="loading-fill"
-                    ></div>
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                <button
-                    id="cancelButton"
-                    class="cancel-button"
-                    type="button"
+                <!-- =========================================
+                     GAMESENSE
+                     ========================================= -->
+
+                <div
+                    class="game-card"
+                    data-games="csgo"
+                    tabindex="0"
                 >
-                    Cancel
-                </button>
+
+                    <div class="game-card-inner">
+
+                        <div class="game-info">
+
+                            <div class="game-logo">
+
+                                <img
+                                    src="gamesense.png"
+                                    alt="Gamesense"
+                                    draggable="false"
+                                >
+
+                            </div>
+
+
+                            <div class="game-name">
+                                Gamesense
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
 
             </div>
 
         </section>
 
+
+        <!-- =================================================
+             INJECT
+             ================================================= -->
+
+        <button
+            id="injectButton"
+            class="inject-button"
+        >
+
+            <span
+                class="inject-mark"
+                aria-hidden="true"
+            ></span>
+
+            <span>
+                Inject
+            </span>
+
+        </button>
+
+    </main>
+
+
+    <!-- =====================================================
+         QUEUE SCREEN
+         ===================================================== -->
+
+    <div
+        id="queueScreen"
+        class="queue-screen"
+    >
+
+        <div class="queue-content">
+
+            <div class="queue-title">
+                orro
+            </div>
+
+
+            <div class="queue-subtitle">
+                You're in the queue
+            </div>
+
+
+            <div class="queue-number">
+
+                <span id="queueCount">
+                    2
+                </span>
+
+                <span class="queue-people">
+                    people ahead
+                </span>
+
+            </div>
+
+
+            <div class="queue-progress">
+
+                <div
+                    id="queueProgress"
+                    class="queue-progress-fill"
+                ></div>
+
+            </div>
+
+
+            <div class="queue-bottom">
+
+                <span>
+                    Position
+                    <b id="queuePosition">3</b>
+                </span>
+
+                <span id="queueTime">
+                    ~29 seconds
+                </span>
+
+            </div>
+
+
+            <button
+                id="cancelQueue"
+                class="cancel-button"
+            >
+                Cancel
+            </button>
+
+        </div>
+
     </div>
 
+</div>
 
-    <script
-        src="./script.js?v=20260823"
-    ></script>
+
+<script src="script.js"></script>
 
 </body>
-
 </html>
