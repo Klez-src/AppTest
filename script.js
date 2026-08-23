@@ -11,6 +11,14 @@
        ELEMENTS
        ===================================================== */
 
+    const topbar =
+        document.querySelector(".topbar");
+
+
+    const topbarDragArea =
+        document.querySelector(".topbar-drag-area");
+
+
     const gameTabs =
         document.querySelectorAll(".game-tab");
 
@@ -72,13 +80,12 @@
                     message
                 );
 
+                return true;
             }
 
-        } catch (_) {
+        } catch (_) {}
 
-            // Normal browser fallback.
-
-        }
+        return false;
 
     }
 
@@ -89,7 +96,9 @@
 
     minimizeButton?.addEventListener(
         "click",
-        () => {
+        event => {
+
+            event.stopPropagation();
 
             sendWindowMessage(
                 "window.minimize"
@@ -101,13 +110,88 @@
 
     closeButton?.addEventListener(
         "click",
-        () => {
+        event => {
+
+            event.stopPropagation();
 
             sendWindowMessage(
                 "window.close"
             );
 
         }
+    );
+
+
+    /* =====================================================
+       WINDOW DRAG
+       ===================================================== */
+
+    /*
+       IMPORTANT:
+
+       The previous rewrite had the visual top bar,
+       but it no longer actually told the C++ host
+       that the user was trying to drag the window.
+
+       The C++ already understands:
+
+           window.drag
+
+       so all we need to do is send that message when
+       the user presses the top bar.
+
+       Buttons are deliberately excluded.
+       The cursor stays completely normal.
+    */
+
+    function beginWindowDrag(event) {
+
+        if (
+            event.button !== 0
+        ) {
+
+            return;
+
+        }
+
+
+        const target =
+            event.target;
+
+
+        /*
+           Never drag when clicking the window controls.
+        */
+
+        if (
+            target.closest &&
+            target.closest(".window-controls")
+        ) {
+
+            return;
+
+        }
+
+
+        event.preventDefault();
+
+
+        sendWindowMessage(
+            "window.drag"
+        );
+
+    }
+
+
+    topbar?.addEventListener(
+        "mousedown",
+        beginWindowDrag
+    );
+
+
+    topbarDragArea?.addEventListener(
+        "mousedown",
+        beginWindowDrag
     );
 
 
@@ -167,9 +251,8 @@
 
 
         /*
-            If the currently selected card became
-            hidden after switching games, remove
-            its visual selection.
+           Don't leave a selection on a card that
+           is no longer visible.
         */
 
         gameCards.forEach(
@@ -221,10 +304,6 @@
 
     function selectCard(card) {
 
-        /*
-            Only one card can be selected at a time.
-        */
-
         gameCards.forEach(
             currentCard => {
 
@@ -235,10 +314,6 @@
             }
         );
 
-
-        /*
-            Add the subtle outline.
-        */
 
         card.classList.add(
             "selected"
@@ -270,11 +345,6 @@
             );
 
 
-            /*
-                Keyboard accessibility without changing
-                the visual design.
-            */
-
             card.addEventListener(
                 "keydown",
                 event => {
@@ -298,29 +368,7 @@
 
 
     /* =====================================================
-       DEFAULT SELECTION
-       ===================================================== */
-
-    /*
-        Nothing is aggressively purple by default.
-
-        We leave the cards unselected until the user
-        actually picks one.
-    */
-
-    gameCards.forEach(
-        card => {
-
-            card.classList.remove(
-                "selected"
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       INJECT / QUEUE
+       QUEUE
        ===================================================== */
 
     let queueTimer = null;
@@ -335,10 +383,11 @@
     function randomQueueTime() {
 
         /*
-            Roughly 29 seconds.
+           Around 29 seconds, but not identical every
+           launch.
 
-            Small variation means it isn't exactly
-            the same duration every time.
+           Range:
+               27–31 seconds
         */
 
         return (
@@ -347,6 +396,51 @@
                 Math.random() * 5000
             )
         );
+
+    }
+
+
+    function stopQueueTimers() {
+
+        if (
+            queueTimer !== null
+        ) {
+
+            clearTimeout(
+                queueTimer
+            );
+
+            queueTimer = null;
+
+        }
+
+
+        if (
+            queueAnimation !== null
+        ) {
+
+            cancelAnimationFrame(
+                queueAnimation
+            );
+
+            queueAnimation = null;
+
+        }
+
+    }
+
+
+    function finishQueue() {
+
+        stopQueueTimers();
+
+
+        if (queueProgress) {
+
+            queueProgress.style.width =
+                "100%";
+
+        }
 
     }
 
@@ -442,7 +536,9 @@
             }
 
 
-            if (progress < 1) {
+            if (
+                progress < 1
+            ) {
 
                 queueAnimation =
                     requestAnimationFrame(
@@ -465,54 +561,6 @@
                 finishQueue,
                 queueDuration
             );
-
-    }
-
-
-    function stopQueueTimers() {
-
-        if (queueTimer !== null) {
-
-            clearTimeout(
-                queueTimer
-            );
-
-            queueTimer = null;
-
-        }
-
-
-        if (queueAnimation !== null) {
-
-            cancelAnimationFrame(
-                queueAnimation
-            );
-
-            queueAnimation = null;
-
-        }
-
-    }
-
-
-    function finishQueue() {
-
-        stopQueueTimers();
-
-
-        if (queueProgress) {
-
-            queueProgress.style.width =
-                "100%";
-
-        }
-
-        /*
-            Keep the screen here for now.
-
-            This preserves the existing launch/queue
-            behaviour without inventing another UI.
-        */
 
     }
 
