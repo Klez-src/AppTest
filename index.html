@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -9,12 +11,17 @@
 
     <title>Loader</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
+
 
 <body>
 
 <div id="app">
+
 
     <!-- =========================================
          TOP BAR
@@ -23,6 +30,7 @@
     <header class="topbar">
 
         <div class="window-controls">
+
             <button
                 class="window-button minimize"
                 onclick="minimizeWindow()"
@@ -38,33 +46,42 @@
             >
                 ×
             </button>
+
         </div>
 
     </header>
 
 
+
     <!-- =========================================
-         MAIN CONTENT
+         MAIN
          ========================================= -->
 
     <main class="main">
 
-        <!-- GAME SELECTOR -->
+
+        <!-- =====================================
+             GAME SELECTOR
+             ===================================== -->
 
         <div class="game-selector-wrapper">
 
             <div class="game-selector">
+
 
                 <button
                     class="game-option"
                     data-game="all"
                     onclick="selectGame('all')"
                 >
+
                     <span class="game-icon all-icon">
+
                         <svg
                             viewBox="0 0 100 100"
                             aria-hidden="true"
                         >
+
                             <circle
                                 cx="50"
                                 cy="50"
@@ -73,28 +90,37 @@
                             />
 
                             <path
-                                d="M53 18
-                                   L31 51
-                                   Q29 54 33 54
-                                   L46 54
-                                   L44 80
-                                   Q44 84 47 81
-                                   L70 48
-                                   Q72 45 68 45
-                                   L55 45
-                                   L56 21
-                                   Q56 16 53 18Z"
-                                fill="#11121a"
-                                stroke="#11121a"
+                                d="
+                                    M53 18
+                                    L31 51
+                                    Q29 54 33 54
+                                    L46 54
+                                    L44 80
+                                    Q44 84 47 81
+                                    L70 48
+                                    Q72 45 68 45
+                                    L55 45
+                                    L56 21
+                                    Q56 16 53 18
+                                    Z
+                                "
+                                fill="#111219"
+                                stroke="#111219"
                                 stroke-width="4"
                                 stroke-linejoin="round"
                                 stroke-linecap="round"
                             />
+
                         </svg>
+
                     </span>
 
-                    <span>All games</span>
+                    <span>
+                        All games
+                    </span>
+
                 </button>
+
 
 
                 <button
@@ -102,143 +128,153 @@
                     data-game="csgo"
                     onclick="selectGame('csgo')"
                 >
-                    <span class="game-icon">
+
+                    <span class="game-icon csgo-icon">
 
                         <svg
                             viewBox="235 175 195 245"
                             aria-hidden="true"
                         >
+
                             <path
                                 fill="currentColor"
                                 fill-rule="evenodd"
-                                d="M420 217
-                                L400 218
-                                L399 214
-                                L395 212
-                                L395 206
-                                L394 206
-                                L393 215
-                                L391 213
-                                L343 213
-                                L338 210
-                                L338 207
-                                L336 213
-                                L325 214
-                                L324 207
-                                L329 204
-                                L331 201
-                                L329 190
-                                L327 188
-                                L316 183
-                                L309 183
-                                L302 186
-                                L299 189
-                                L296 196
-                                L296 200
-                                L299 208
-                                L296 211
-                                L293 209
-                                L288 209
-                                L282 213
-                                L277 222
-                                L275 229
-                                L275 243
-                                L271 248
-                                L265 248
-                                L263 252
-                                L262 268
-                                L264 271
-                                L269 272
-                                L271 275
-                                L264 278
-                                L266 299
-                                L263 301
-                                L261 306
-                                L261 313
-                                L265 316
-                                L261 335
-                                L262 344
-                                L251 362
-                                L251 368
-                                L245 380
-                                L247 388
-                                L241 409
-                                L243 414
-                                L245 415
-                                L257 414
-                                L256 395
-                                L259 388
-                                L266 384
-                                L267 375
-                                L271 366
-                                L270 360
-                                L272 355
-                                L277 350
-                                L277 348
-                                L282 344
-                                L282 338
-                                L290 319
-                                L293 316
-                                L306 327
-                                L315 341
-                                L321 341
-                                L324 345
-                                L324 352
-                                L321 356
-                                L323 376
-                                L326 381
-                                L326 396
-                                L324 400
-                                L323 408
-                                L325 409
-                                L334 408
-                                L342 411
-                                L355 411
-                                L356 410
-                                L356 407
-                                L349 404
-                                L339 393
-                                L339 378
-                                L341 374
-                                L340 362
-                                L342 352
-                                L342 340
-                                L341 336
-                                L336 330
-                                L328 309
-                                L318 296
-                                L318 289
-                                L320 287
-                                L324 289
-                                L327 284
-                                L329 273
-                                L329 263
-                                L323 257
-                                L323 254
-                                L325 252
-                                L328 252
-                                L345 261
-                                L349 261
-                                L359 251
-                                L360 243
-                                L364 241
-                                L362 235
-                                L362 229
-                                L366 226
-                                L368 222
-                                L390 222
-                                L392 219
-                                L394 220
-                                L400 219
-                                L414 220
-                                L420 219Z"
+                                d="
+                                    M420 217
+                                    L400 218
+                                    L399 214
+                                    L395 212
+                                    L395 206
+                                    L394 206
+                                    L393 215
+                                    L391 213
+                                    L343 213
+                                    L338 210
+                                    L338 207
+                                    L336 213
+                                    L325 214
+                                    L324 207
+                                    L329 204
+                                    L331 201
+                                    L329 190
+                                    L327 188
+                                    L316 183
+                                    L309 183
+                                    L302 186
+                                    L299 189
+                                    L296 196
+                                    L296 200
+                                    L299 208
+                                    L296 211
+                                    L293 209
+                                    L288 209
+                                    L282 213
+                                    L277 222
+                                    L275 229
+                                    L275 243
+                                    L271 248
+                                    L265 248
+                                    L263 252
+                                    L262 268
+                                    L264 271
+                                    L269 272
+                                    L271 275
+                                    L264 278
+                                    L266 299
+                                    L263 301
+                                    L261 306
+                                    L261 313
+                                    L265 316
+                                    L261 335
+                                    L262 344
+                                    L251 362
+                                    L251 368
+                                    L245 380
+                                    L247 388
+                                    L241 409
+                                    L243 414
+                                    L245 415
+                                    L257 414
+                                    L256 395
+                                    L259 388
+                                    L266 384
+                                    L267 375
+                                    L271 366
+                                    L270 360
+                                    L272 355
+                                    L277 350
+                                    L277 348
+                                    L282 344
+                                    L282 338
+                                    L290 319
+                                    L293 316
+                                    L306 327
+                                    L315 341
+                                    L321 341
+                                    L324 345
+                                    L324 352
+                                    L321 356
+                                    L323 376
+                                    L326 381
+                                    L326 396
+                                    L324 400
+                                    L323 408
+                                    L325 409
+                                    L334 408
+                                    L342 411
+                                    L355 411
+                                    L356 410
+                                    L356 407
+                                    L349 404
+                                    L339 393
+                                    L339 378
+                                    L341 374
+                                    L340 362
+                                    L342 352
+                                    L342 340
+                                    L341 336
+                                    L336 330
+                                    L328 309
+                                    L318 296
+                                    L318 289
+                                    L320 287
+                                    L324 289
+                                    L327 284
+                                    L329 273
+                                    L329 263
+                                    L323 257
+                                    L323 254
+                                    L325 252
+                                    L328 252
+                                    L345 261
+                                    L349 261
+                                    L359 251
+                                    L360 243
+                                    L364 241
+                                    L362 235
+                                    L362 229
+                                    L366 226
+                                    L368 222
+                                    L390 222
+                                    L392 219
+                                    L394 220
+                                    L400 219
+                                    L414 220
+                                    L420 219
+                                    Z
+                                "
                             />
+
                         </svg>
 
                     </span>
 
-                    <span>CS:GO</span>
+                    <span>
+                        CS:GO
+                    </span>
+
                 </button>
+
 
 
                 <button
@@ -246,33 +282,15 @@
                     data-game="cs2"
                     onclick="selectGame('cs2')"
                 >
+
                     <span class="game-icon cs2-icon">
-                        <svg
-                            viewBox="0 0 600 600"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill="currentColor"
-                                d="M94 163
-                                L412 163
-                                L412 228
-                                L255 228
-                                L226 257
-                                L409 257
-                                L475 323
-                                L475 388
-                                L412 451
-                                L94 451
-                                L94 386
-                                L380 386
-                                L409 357
-                                L226 357
-                                L94 291Z"
-                            />
-                        </svg>
+                        2
                     </span>
 
-                    <span>CS:2</span>
+                    <span>
+                        CS:2
+                    </span>
+
                 </button>
 
             </div>
@@ -280,9 +298,10 @@
         </div>
 
 
-        <!-- =========================================
-             OPTIONS PANEL
-             ========================================= -->
+
+        <!-- =====================================
+             OPTIONS
+             ===================================== -->
 
         <section class="options-panel">
 
@@ -294,39 +313,52 @@
         </section>
 
 
-        <!-- =========================================
+
+        <!-- =====================================
              INJECT
-             ========================================= -->
+             ===================================== -->
 
         <button
             id="injectButton"
             class="inject-button"
             onclick="beginInjection()"
         >
+
             <span class="inject-icon">
+
                 <svg
                     viewBox="0 0 24 24"
                     aria-hidden="true"
                 >
+
                     <path
-                        d="M3 5
-                           L20 10
-                           L14 14
-                           L11 20
-                           L3 5Z"
+                        d="
+                            M3 5
+                            L20 10
+                            L14 14
+                            L11 20
+                            L3 5
+                            Z
+                        "
                         fill="currentColor"
                     />
+
                 </svg>
+
             </span>
 
-            <span>Inject</span>
+            <span>
+                Inject
+            </span>
+
         </button>
 
     </main>
 
 
+
     <!-- =========================================
-         FULLSCREEN INJECTION SCREEN
+         FULLSCREEN LOADING SCREEN
          ========================================= -->
 
     <div
@@ -350,7 +382,6 @@
                 Primordial
             </div>
 
-
             <div class="loading-bar">
 
                 <div
@@ -359,7 +390,6 @@
                 ></div>
 
             </div>
-
 
             <button
                 id="cancelButton"
@@ -374,6 +404,7 @@
     </div>
 
 </div>
+
 
 <script src="script.js"></script>
 
