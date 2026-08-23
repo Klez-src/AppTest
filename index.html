@@ -30,7 +30,7 @@
 
     <link
         rel="stylesheet"
-        href="style.css?v=5"
+        href="style.css?v=6"
     >
 
 </head>
@@ -50,9 +50,6 @@
         data-drag
     >
 
-        <!-- Empty draggable area.
-             There is intentionally NO logo or name here. -->
-
         <div class="topbar-drag-area"></div>
 
 
@@ -66,9 +63,7 @@
                 class="window-button minimize"
                 aria-label="Minimize"
             >
-
                 <span></span>
-
             </button>
 
 
@@ -87,14 +82,14 @@
 
 
     <!-- =====================================================
-         MAIN CONTENT
+         MAIN
          ===================================================== -->
 
     <main class="content">
 
 
         <!-- =================================================
-             TOP GAME SELECTOR SHELL
+             GAME SELECTOR
              ================================================= -->
 
         <nav
@@ -108,6 +103,7 @@
                 <button
                     class="game-tab"
                     data-game="all"
+                    type="button"
                 >
 
                     <span class="tab-icon all-icon">
@@ -125,6 +121,7 @@
                 <button
                     class="game-tab active"
                     data-game="csgo"
+                    type="button"
                 >
 
                     <span class="tab-icon csgo-icon">
@@ -142,6 +139,7 @@
                 <button
                     class="game-tab"
                     data-game="cs2"
+                    type="button"
                 >
 
                     <span class="tab-icon cs2-icon">
@@ -162,7 +160,7 @@
 
 
         <!-- =================================================
-             MAIN GAME PANEL
+             GAME PANEL
              ================================================= -->
 
         <section
@@ -170,20 +168,19 @@
             class="games-panel"
         >
 
-
             <div
                 id="games"
                 class="games"
             >
 
 
-                <!-- =========================================
-                     PRIMORDIAL
-                     ========================================= -->
+                <!-- PRIMORDIAL -->
 
                 <article
                     class="game-card"
                     data-games="csgo"
+                    data-game-name="primordial"
+                    tabindex="0"
                 >
 
                     <div class="game-card-inner">
@@ -196,7 +193,6 @@
                             </div>
 
                         </div>
-
 
 
                         <div class="game-actions">
@@ -218,13 +214,13 @@
 
 
 
-                <!-- =========================================
-                     GAMESENSE
-                     ========================================= -->
+                <!-- GAMESENSE -->
 
                 <article
                     class="game-card"
                     data-games="csgo"
+                    data-game-name="gamesense"
+                    tabindex="0"
                 >
 
                     <div class="game-card-inner">
@@ -239,7 +235,6 @@
                         </div>
 
 
-
                         <div class="game-actions">
 
                             <div class="subscription">
@@ -259,17 +254,16 @@
 
 
 
-                <!-- =========================================
-                     CS2 PLACEHOLDER
-                     ========================================= -->
+                <!-- CS2 PLACEHOLDER -->
 
                 <article
                     class="game-card hidden-game"
                     data-games="cs2"
+                    data-game-name="primordial-cs2"
+                    tabindex="0"
                 >
 
                     <div class="game-card-inner">
-
 
                         <div class="game-info">
 
@@ -278,7 +272,6 @@
                             </div>
 
                         </div>
-
 
 
                         <div class="game-actions">
@@ -293,7 +286,6 @@
 
                         </div>
 
-
                     </div>
 
                 </article>
@@ -301,19 +293,19 @@
 
             </div>
 
-
         </section>
 
 
 
         <!-- =================================================
-             INJECT BUTTON
+             INJECT
              ================================================= -->
 
         <button
             id="injectButton"
             class="inject-button"
             data-no-drag
+            type="button"
         >
 
             <span class="inject-mark"></span>
@@ -330,7 +322,7 @@
 
 
     <!-- =====================================================
-         QUEUE / LAUNCH SCREEN
+         QUEUE SCREEN
          ===================================================== -->
 
     <div
@@ -394,6 +386,7 @@
             <button
                 id="cancelQueue"
                 class="cancel-button"
+                type="button"
             >
                 Cancel
             </button>
@@ -407,7 +400,7 @@
 </div>
 
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 
 </body>
 
