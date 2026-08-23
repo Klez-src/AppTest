@@ -1,5 +1,5 @@
 /* =========================================================
-   RESET
+   BASE
    ========================================================= */
 
 * {
@@ -18,49 +18,40 @@ body {
 
     overflow: hidden;
 
-    background: #101016;
+}
 
-    color: #d9d9e2;
+
+body {
+
+    background: #0d0e15;
+
+    color: #d4d2e1;
 
     font-family:
-        Inter,
+        "Inter",
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        Arial,
         sans-serif;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 400;
+
+    letter-spacing: -0.15px;
 
     -webkit-font-smoothing: antialiased;
 
     user-select: none;
     -webkit-user-select: none;
 
-}
-
-
-body {
-
     cursor: default;
 
 }
 
 
-button {
-
-    font-family: inherit;
-
-    border: 0;
-    outline: none;
-
-}
-
-
 /* =========================================================
-   APP
+   APP BACKGROUND
    ========================================================= */
 
 #app {
@@ -72,8 +63,7 @@ button {
 
     overflow: hidden;
 
-    background:
-        #101016;
+    background: #13141e;
 
 }
 
@@ -84,43 +74,32 @@ button {
 
 .topbar {
 
-    position: relative;
+    position: absolute;
 
-    width: 100%;
-    height: 43px;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 39px;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: space-between;
+    justify-content: flex-end;
 
-    padding:
-        0 13px;
+    padding: 0 12px;
 
     z-index: 20;
 
-}
-
-
-.brand {
-
-    display: flex;
-
-    align-items: center;
+    cursor: default;
 
 }
 
 
-.brand-name {
+.topbar-spacer {
 
-    color: #d7d7df;
-
-    font-size: 12px;
-
-    font-weight: 450;
-
-    letter-spacing: -.15px;
+    flex: 1;
 
 }
 
@@ -142,19 +121,159 @@ button {
 
 .window-button {
 
-    width: 23px;
-    height: 23px;
+    width: 22px;
+    height: 22px;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    border-radius: 7px;
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 6px;
 
     background: transparent;
 
-    color: #686975;
+    color: #777885;
+
+    cursor: pointer;
+
+    transition:
+        background .12s ease,
+        color .12s ease;
+
+}
+
+
+.window-button:hover {
+
+    background: #1b1c27;
+
+    color: #c3c2cd;
+
+}
+
+
+.window-button.minimize span {
+
+    width: 9px;
+    height: 1px;
+
+    display: block;
+
+    background: currentColor;
+
+}
+
+
+.window-button.close {
+
+    font-size: 19px;
+
+    font-weight: 300;
+
+    line-height: 20px;
+
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
+
+    position: absolute;
+
+    top: 39px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 0;
+
+    padding:
+        3px 10px 7px;
+
+}
+
+
+/* =========================================================
+   TAB CONTAINER
+   ========================================================= */
+
+.game-tabs {
+
+    position: relative;
+
+    width: 100%;
+    height: 39px;
+
+    flex-shrink: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        1.18fr
+        1fr
+        .9fr;
+
+    gap: 4px;
+
+    padding: 4px;
+
+    border-radius: 13px;
+
+    background: #171724;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(255,255,255,.012);
+
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.game-tab {
+
+    position: relative;
+
+    height: 31px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #777889;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    letter-spacing: -0.15px;
 
     cursor: pointer;
 
@@ -165,151 +284,63 @@ button {
 }
 
 
-.window-button:hover {
-
-    background: #191921;
-
-    color: #b8b8c1;
-
-}
-
-
-.window-button.minimize span {
-
-    width: 9px;
-    height: 1px;
-
-    background: currentColor;
-
-}
-
-
-.window-button.close {
-
-    font-size: 18px;
-
-    font-weight: 300;
-
-    line-height: 1;
-
-}
-
-
-.window-button.close:hover {
-
-    background: #292027;
-
-    color: #d5d5dd;
-
-}
-
-
-/* =========================================================
-   MAIN CONTENT
-   ========================================================= */
-
-.content {
-
-    position: absolute;
-
-    left: 0;
-    right: 0;
-
-    top: 43px;
-    bottom: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    padding:
-        0 10px 9px;
-
-}
-
-
-/* =========================================================
-   GAME TABS
-   ========================================================= */
-
-.game-tabs {
-
-    width: 100%;
-    height: 39px;
-
-    flex-shrink: 0;
-
-    display: grid;
-
-    grid-template-columns:
-        1.2fr
-        1fr
-        .9fr;
-
-    gap: 4px;
-
-    padding: 4px;
-
-    border-radius: 13px;
-
-    background: #171720;
-
-}
-
-
-.game-tab {
-
-    height: 31px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background: transparent;
-
-    color: #777884;
-
-    font-size: 11px;
-
-    font-weight: 400;
-
-    letter-spacing: -.1px;
-
-    cursor: pointer;
-
-    transition:
-        background .16s ease,
-        color .16s ease;
-
-}
-
-
 .game-tab:hover {
 
-    color: #a3a3ae;
+    color: #9a99a8;
 
 }
 
 
 .game-tab.active {
 
-    background:
-        #211a38;
+    background: #211b35;
 
-    color: #9666ff;
+    color: #8050e6;
 
     box-shadow:
         inset 0 0 0 1px
-        rgba(137, 85, 255, .08);
+        rgba(125,77,230,.035);
+
+}
+
+
+.tab-symbol {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 10px;
+    height: 10px;
+
+    color: #7b7c8d;
+
+    font-size: 8px;
+
+}
+
+
+.game-tab.active .tab-symbol {
+
+    color: #8050e6;
+
+}
+
+
+.cs2-symbol {
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transform: skew(-13deg);
 
 }
 
 
 /* =========================================================
-   GAME LIST
+   GAME AREA
    ========================================================= */
 
 .games {
@@ -326,7 +357,7 @@ button {
 
 
 /* =========================================================
-   GAME CARD
+   OUTER CARD LAYER
    ========================================================= */
 
 .game-card {
@@ -334,43 +365,34 @@ button {
     width: 100%;
     height: 67px;
 
+    margin-bottom: 7px;
+
+    padding: 1px;
+
+    border-radius: 13px;
+
+    background: #232434;
+
+    overflow: hidden;
+
+}
+
+
+.game-card-inner {
+
+    width: 100%;
+    height: 100%;
+
     display: flex;
 
     align-items: center;
 
-    margin-bottom: 7px;
-
     padding:
-        10px 10px 10px 12px;
+        9px 9px 9px 11px;
 
-    border:
-        1px solid
-        #252531;
+    border-radius: 12px;
 
-    border-radius: 13px;
-
-    background:
-        #15151e;
-
-    transition:
-        background .15s ease,
-        border-color .15s ease;
-
-}
-
-
-.game-card:hover {
-
-    background: #171720;
-
-    border-color: #2c2c39;
-
-}
-
-
-.game-card.hidden-game {
-
-    display: none;
+    background: #1a1b2a;
 
 }
 
@@ -381,22 +403,28 @@ button {
 
 .game-info {
 
+    flex: 1;
+
     min-width: 0;
 
-    flex: 1;
+    display: flex;
+
+    align-items: center;
 
 }
 
 
 .game-name {
 
-    color: #d5d5de;
+    color: #d2d0de;
 
     font-size: 14px;
 
     font-weight: 400;
 
-    letter-spacing: -.2px;
+    line-height: 1;
+
+    letter-spacing: -0.35px;
 
     white-space: nowrap;
 
@@ -404,12 +432,12 @@ button {
 
 
 /* =========================================================
-   GAME ACTIONS
+   ACTION COLUMN
    ========================================================= */
 
 .game-actions {
 
-    width: 94px;
+    width: 84px;
 
     flex-shrink: 0;
 
@@ -422,9 +450,13 @@ button {
 }
 
 
+/* =========================================================
+   SUBSCRIPTION
+   ========================================================= */
+
 .subscription {
 
-    width: 100%;
+    width: 84px;
     height: 20px;
 
     display: flex;
@@ -434,20 +466,26 @@ button {
 
     border-radius: 4px;
 
-    background: #29202b;
+    background: #2e2634;
 
-    color: #b96e7b;
+    color: #bd6d7d;
 
     font-size: 9px;
 
     font-weight: 400;
 
+    letter-spacing: -0.1px;
+
 }
 
 
+/* =========================================================
+   VERSION
+   ========================================================= */
+
 .game-version {
 
-    width: 100%;
+    width: 84px;
     height: 20px;
 
     display: flex;
@@ -457,9 +495,9 @@ button {
 
     border-radius: 4px;
 
-    background: #20202a;
+    background: #212230;
 
-    color: #777884;
+    color: #777888;
 
     font-size: 9px;
 
@@ -469,10 +507,23 @@ button {
 
 
 /* =========================================================
+   HIDDEN GAMES
+   ========================================================= */
+
+.hidden-game {
+
+    display: none;
+
+}
+
+
+/* =========================================================
    INJECT BUTTON
    ========================================================= */
 
 .inject-button {
+
+    position: relative;
 
     width: 100%;
     height: 39px;
@@ -484,28 +535,33 @@ button {
     align-items: center;
     justify-content: center;
 
+    gap: 5px;
+
+    padding: 0;
+
+    border: 0;
+
     border-radius: 9px;
 
-    background:
-        linear-gradient(
-            180deg,
-            #8050e9 0%,
-            #7547dd 100%
-        );
+    background: #774ee6;
 
-    color: #eee9ff;
+    color: #e9e5f8;
+
+    font-family: inherit;
 
     font-size: 15px;
 
     font-weight: 400;
 
-    letter-spacing: -.2px;
+    letter-spacing: -0.35px;
 
     cursor: pointer;
 
     box-shadow:
-        0 7px 20px
-        rgba(105, 59, 220, .18);
+        inset 0 1px 0
+        rgba(255,255,255,.035),
+        0 5px 15px
+        rgba(82,50,170,.14);
 
     transition:
         filter .15s ease,
@@ -516,16 +572,74 @@ button {
 
 .inject-button:hover {
 
-    filter:
-        brightness(1.07);
+    filter: brightness(1.055);
 
 }
 
 
 .inject-button:active {
 
+    transform: scale(.987);
+
+}
+
+
+/* =========================================================
+   SUBTLE INJECT MARK
+   ========================================================= */
+
+.inject-mark {
+
+    position: relative;
+
+    width: 19px;
+    height: 11px;
+
+    display: block;
+
+    opacity: .92;
+
+}
+
+
+.inject-mark::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 1px;
+    top: 1px;
+
+    width: 14px;
+    height: 7px;
+
+    border-radius:
+        2px 7px 7px 2px;
+
+    background: #dcd7ec;
+
     transform:
-        scale(.985);
+        rotate(27deg);
+
+}
+
+
+.inject-mark::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 11px;
+    top: 5px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #774ee6;
 
 }
 
@@ -548,9 +662,12 @@ button {
     justify-content: center;
 
     background:
-        rgba(16, 16, 22, .975);
+        rgba(19,20,30,.975);
 
     backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
         blur(8px);
 
 }
@@ -561,27 +678,27 @@ button {
     display: flex;
 
     animation:
-        queueIn .22s ease-out;
+        queueFadeIn .2s ease-out both;
 
 }
 
 
-@keyframes queueIn {
+@keyframes queueFadeIn {
 
     from {
-
         opacity: 0;
-
     }
 
     to {
-
         opacity: 1;
-
     }
 
 }
 
+
+/* =========================================================
+   QUEUE CONTENT
+   ========================================================= */
 
 .queue-content {
 
@@ -592,30 +709,15 @@ button {
 }
 
 
-.queue-brand {
-
-    margin-bottom: 30px;
-
-    color: #d7d7df;
-
-    font-size: 12px;
-
-    font-weight: 450;
-
-    letter-spacing: -.15px;
-
-}
-
-
 .queue-title {
 
-    color: #e1e1e9;
+    color: #d8d6e2;
 
-    font-size: 23px;
+    font-size: 21px;
 
     font-weight: 400;
 
-    letter-spacing: -.7px;
+    letter-spacing: -0.65px;
 
 }
 
@@ -624,7 +726,7 @@ button {
 
     margin-top: 7px;
 
-    color: #6d6e79;
+    color: #686978;
 
     font-size: 10px;
 
@@ -633,9 +735,9 @@ button {
 
 .queue-number {
 
-    margin-top: 28px;
+    margin-top: 27px;
 
-    color: #999aa5;
+    color: #777888;
 
     font-size: 10px;
 
@@ -644,7 +746,7 @@ button {
 
 .queue-number span {
 
-    color: #9868ff;
+    color: #8050e6;
 
     font-size: 22px;
 
@@ -657,7 +759,7 @@ button {
 
     margin-left: 5px;
 
-    color: #696a75;
+    color: #696a79;
 
     font-size: 10px;
 
@@ -675,7 +777,7 @@ button {
 
     border-radius: 999px;
 
-    background: #292832;
+    background: #292a38;
 
 }
 
@@ -686,10 +788,9 @@ button {
 
     height: 100%;
 
-    border-radius: 999px;
+    border-radius: inherit;
 
-    background:
-        #8050e9;
+    background: #774ee6;
 
     will-change: width;
 
@@ -701,12 +802,11 @@ button {
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     margin-top: 9px;
 
-    color: #555662;
+    color: #565766;
 
     font-size: 9px;
 
@@ -715,7 +815,7 @@ button {
 
 .queue-bottom b {
 
-    color: #777883;
+    color: #777888;
 
     font-weight: 400;
 
@@ -729,34 +829,34 @@ button {
     padding:
         7px 13px;
 
+    border: 0;
+
     border-radius: 8px;
 
     background: transparent;
 
-    color: #62636e;
+    color: #626372;
+
+    font-family: inherit;
 
     font-size: 9px;
 
     cursor: pointer;
-
-    transition:
-        color .15s ease,
-        background .15s ease;
 
 }
 
 
 .cancel-button:hover {
 
-    background: #191921;
+    color: #a09fac;
 
-    color: #a2a3ad;
+    background: #1b1c27;
 
 }
 
 
 /* =========================================================
-   SCROLLBARS
+   NO SCROLLBARS
    ========================================================= */
 
 html,
@@ -776,51 +876,58 @@ body::-webkit-scrollbar,
 .content::-webkit-scrollbar,
 .games::-webkit-scrollbar {
 
+    display: none;
+
     width: 0;
     height: 0;
-
-    display: none;
 
 }
 
 
 /* =========================================================
-   NO HAND CURSOR
+   DRAG CURSOR
    ========================================================= */
 
-body,
-.topbar,
-.content {
+[data-drag] {
 
     cursor: default;
 
 }
 
 
+[data-no-drag],
+button {
+
+    cursor: pointer;
+
+}
+
+
 /* =========================================================
-   SMALL WINDOW
+   315 × 480 TUNING
    ========================================================= */
 
 @media (max-width: 320px) {
 
     .content {
 
-        padding-left: 9px;
-        padding-right: 9px;
+        padding-left: 10px;
+        padding-right: 10px;
 
     }
 
 
     .game-actions {
 
-        width: 90px;
+        width: 84px;
 
     }
 
 
-    .game-name {
+    .subscription,
+    .game-version {
 
-        font-size: 13px;
+        width: 84px;
 
     }
 
