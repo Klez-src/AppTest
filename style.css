@@ -1,13 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap");
-
-
-/* ============================================================
+/* =========================================================
    RESET
-   ============================================================ */
+   ========================================================= */
 
 * {
     box-sizing: border-box;
 }
+
 
 html,
 body {
@@ -18,20 +16,36 @@ body {
     padding: 0;
 
     overflow: hidden;
+
+    scrollbar-width: none;
 }
 
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
+
 body {
-    background: #0f1017;
-    color: #e7e7ed;
+    background: #0d0e15;
+
+    color: #c9c7d5;
 
     font-family:
-        "Poppins",
-        "Inter",
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
 
+    font-size: 12px;
+
+    font-weight: 400;
+
+    letter-spacing: -0.2px;
+
     -webkit-font-smoothing: antialiased;
-    text-rendering: geometricPrecision;
 
     user-select: none;
     -webkit-user-select: none;
@@ -40,248 +54,294 @@ body {
 }
 
 
-button {
-    border: 0;
-    outline: 0;
-
-    font-family: inherit;
-
-    user-select: none;
-    -webkit-user-select: none;
-
-    cursor: pointer;
-}
-
-
-/* ============================================================
-   APPLICATION
-   ============================================================ */
+/* =========================================================
+   APP
+   ========================================================= */
 
 #app {
-    position: fixed;
-    inset: 0;
+    position: relative;
 
     width: 100%;
     height: 100%;
 
     overflow: hidden;
 
-    background: #101117;
+    background: #0d0e15;
 }
 
 
-/* ============================================================
+/* =========================================================
    TOP BAR
-   ============================================================ */
+   ========================================================= */
 
-.titlebar {
+.topbar {
     position: absolute;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 39px;
+    height: 31px;
 
-    z-index: 100;
+    z-index: 50;
 
-    background: #0f1017;
+    background: #101119;
+
+    border-bottom:
+        1px solid #171821;
 
     cursor: default;
 }
 
 
+.topbar-drag-area {
+    position: absolute;
+
+    inset: 0;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   WINDOW CONTROLS
+   ========================================================= */
+
 .window-controls {
     position: absolute;
 
-    top: 0;
-    right: 0;
+    top: 4px;
+    right: 8px;
 
-    height: 39px;
+    height: 23px;
 
     display: flex;
+
     align-items: center;
 
     gap: 1px;
 
-    padding-right: 7px;
+    z-index: 2;
 }
 
 
 .window-button {
-    position: relative;
-
-    width: 32px;
-    height: 39px;
+    width: 23px;
+    height: 23px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     padding: 0;
 
+    border: 0;
+
+    border-radius: 6px;
+
     background: transparent;
 
-    color: #d4d5dc;
+    color: #7d7e8b;
 
-    cursor: default;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 120ms ease,
+        color 120ms ease;
 }
 
 
 .window-button:hover {
-    background: rgba(255,255,255,.035);
+    background: #191a23;
+
+    color: #b0afbb;
 }
 
 
-.close-button:hover {
-    background: rgba(255,80,80,.08);
-}
+.window-button.minimize span {
+    display: block;
 
-
-.minimize-icon {
-    width: 11px;
+    width: 9px;
     height: 1px;
 
-    background: #c9cad1;
-
-    display: block;
+    background: currentColor;
 }
 
 
-.close-icon {
-    position: relative;
+.window-button.close {
+    font-size: 19px;
 
-    width: 12px;
-    height: 12px;
+    font-weight: 300;
 
-    display: block;
+    line-height: 18px;
 }
 
 
-.close-icon::before,
-.close-icon::after {
-    content: "";
+/* =========================================================
+   CONTENT
+   ========================================================= */
 
+.content {
     position: absolute;
 
-    top: 5px;
-    left: 0;
-
-    width: 13px;
-    height: 1px;
-
-    background: #c9cad1;
-
-    transform-origin: center;
-}
-
-
-.close-icon::before {
-    transform: rotate(45deg);
-}
-
-
-.close-icon::after {
-    transform: rotate(-45deg);
-}
-
-
-/* ============================================================
-   MAIN UI
-   ============================================================ */
-
-#main-ui {
-    position: absolute;
-
-    top: 39px;
+    top: 31px;
     left: 0;
     right: 0;
     bottom: 0;
 
     display: flex;
+
     flex-direction: column;
 
+    min-height: 0;
+
     padding:
-        5px
-        6px
-        4px;
+        10px 10px 7px;
 
     overflow: hidden;
 }
 
 
-/* ============================================================
-   GAME SELECTOR
-   ============================================================ */
+/* =========================================================
+   TOP GAME SELECTOR
+   ========================================================= */
 
-.game-selector-shell {
-    position: relative;
-
+.game-tabs-shell {
     width: 100%;
     height: 40px;
 
-    flex: 0 0 40px;
+    flex-shrink: 0;
+
+    padding: 3px;
+
+    border-radius: 14px;
+
+    background: #11121a;
+}
+
+
+.game-tabs {
+    width: 100%;
+    height: 34px;
 
     display: grid;
 
     grid-template-columns:
-        1.25fr
+        1.18fr
         1fr
-        1fr;
+        .92fr;
 
-    gap: 2px;
+    gap: 4px;
 
-    padding: 4px;
+    padding: 2px;
 
-    border-radius: 13px;
+    border-radius: 11px;
 
-    background: #151620;
+    background: #14151f;
 }
 
+
+/* =========================================================
+   GAME TABS
+   ========================================================= */
 
 .game-tab {
     position: relative;
 
-    height: 32px;
+    height: 30px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    gap: 6px;
 
-    padding: 0;
+    padding: 0 7px;
+
+    border: 0;
 
     border-radius: 9px;
 
-    background: transparent;
+    background: #191a26;
 
-    color: #777985;
+    color: #777888;
 
-    font-size: 11px;
+    font-family: inherit;
+
+    font-size: 11.5px;
+
     font-weight: 400;
 
-    letter-spacing: -.15px;
+    line-height: 1;
+
+    letter-spacing: -0.25px;
+
+    white-space: nowrap;
+
+    cursor: pointer;
 
     transition:
-        color .12s ease,
-        background .12s ease;
+        background 140ms ease,
+        color 140ms ease,
+        box-shadow 140ms ease;
 }
 
 
 .game-tab:hover {
-    color: #9b9ca5;
+    background: #1d1e2a;
+
+    color: #9392a0;
 }
 
+
+/* =========================================================
+   SELECTED TAB
+   ========================================================= */
 
 .game-tab.active {
-    color: #8650ff;
+    background: #2a2140;
 
-    background: #24202f;
+    color: #8752ed;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(135, 82, 237, 0.08);
 }
 
 
-.game-icon {
+.game-tab.active:hover {
+    background: #2d2343;
+
+    color: #8b57ef;
+}
+
+
+/* =========================================================
+   REAL SVG ICONS
+   ========================================================= */
+
+/*
+   These are CSS masks rather than <img> elements.
+
+   That is intentional.
+
+   The supplied SVGs use currentColor, and masking them lets
+   the SVG inherit the tab's current CSS colour.
+
+   Therefore:
+
+       inactive = grey
+       active   = purple
+
+   without needing separate SVG files for each state.
+*/
+
+
+.tab-icon {
     position: relative;
 
     width: 13px;
@@ -291,369 +351,462 @@ button {
 
     display: block;
 
-    background: currentColor;
+    background-color: currentColor;
+
+    transition:
+        background-color 140ms ease;
+
+    pointer-events: none;
 }
 
 
-/* ============================================================
-   LIGHTNING ICON
-   ============================================================ */
+/* ---------------------------------------------------------
+   ALL GAMES — supplied lightning SVG
+   --------------------------------------------------------- */
 
 .lightning-icon {
-    border-radius: 50%;
+    width: 14px;
+    height: 14px;
 
-    -webkit-mask:
-        url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48bWFzayBpZD0iYm9sdC1ob2xlIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNjMgMTggTDMxIDUxIFEyOSA1NCAzMyA1NEw0NiA1NEw0NCA4MCBRNDQgODQgNDcgODFMNzAgNDggUTcyIDQ1IDY4IDQ1TDU1IDQ1TDU2IDIxIFE1NiAxNiA1MyAxOFoiIGZpbGw9ImJsYWNrIi8+PC9tYXNrPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ0IiBmaWxsPSJjdXJyZW50Q29sb3IiIG1hc2s9InVybCgjYm9sdC1ob2xlKSIvPjwvc3ZnPg=")
-        center / contain no-repeat;
+    flex-basis: 14px;
 
-    mask:
-        url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48bWFzayBpZD0iYm9sdC1ob2xlIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNjMgMTggTDMxIDUxIFEyOSA1NCAzMyA1NEw0NiA1NEw0NCA4MCBRNDQgODQgNDcgODFMNzAgNDggUTcyIDQ1IDY4IDQ1TDU1IDQ1TDU2IDIxIFE1NiAxNiA1MyAxOFoiIGZpbGw9ImJsYWNrIi8+PC9tYXNrPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ0IiBmaWxsPSJjdXJyZW50Q29sb3IiIG1hc2s9InVybCgjYm9sdC1ob2xlKSIvPjwvc3ZnPg==")
-        center / contain no-repeat;
+    -webkit-mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxpZ2h0bmluZyBpY29uIj4KICA8bWFzayBpZD0iYm9sdC1ob2xlIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTUzIDE4IEwzMSA1MSBRMjkgNTQgMzMgNTQgTDQ2IDU0IEw0NCA4MCBRNDQgODQgNDcgODEgTDcwIDQ4IFE3MiA0NSA2OCA0NSBMNTUgNDUgTDU2IDIxIFE1NiAxNiA1MyAxOCBaIiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L21hc2s+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDQiIGZpbGw9ImN1cnJlbnRDb2xvciIgbWFzaz0idXJsKCNib2x0LWhvbGUpIi8+Cjwvc3ZnPgo=");
+
+    mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkxpZ2h0bmluZyBpY29uIj4KICA8bWFzayBpZD0iYm9sdC1ob2xlIj4KICAgIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTUzIDE4IEwzMSA1MSBRMjkgNTQgMzMgNTQgTDQ2IDU0IEw0NCA4MCBRNDQgODQgNDcgODEgTDcwIDQ4IFE3MiA0NSA2OCA0NSBMNTUgNDUgTDU2IDIxIFE1NiAxNiA1MyAxOCBaIiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8L21hc2s+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDQiIGZpbGw9ImN1cnJlbnRDb2xvciIgbWFzaz0idXJsKCNib2x0LWhvbGUpIi8+Cjwvc3ZnPgo=");
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
 
-/* ============================================================
-   CS:GO ICON
-   ============================================================ */
+/* ---------------------------------------------------------
+   CS:GO — supplied Counter-Strike soldier SVG
+   --------------------------------------------------------- */
 
 .csgo-icon {
     width: 12px;
-    height: 14px;
+    height: 15px;
 
-    -webkit-mask:
-        url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0gNDIwIDIxNyBMIDQwMCAyMTggTCAzOTkgMjE0IEwgMzk1IDIxMiBMIDM5NSAyMDYgTCAzOTQgMjA2IEwgMzkzIDIxNSBMIDM5MSAyMTMgTCAzNDMgMjEzIEwgMzM4IDIxMCBMIDMzOCAyMDcgTCAzMzYgMjEzIEwgMzI1IDIxNCBMIDMyNCAyMDcgTCAzMjkgMjA0IEwgMzMxIDIwMSBMIDMyOSAxOTAgTCAzMjcgMTg4IEwgMzE2IDE4MyBMIDMwOSAxODMgTCAzMDIgMTg2IEwgMjk5IDE4OSBMIDI5NiAxOTYgTCAyOTYgMjAwIEwgMjk5IDIwOCBMIDI5NiAyMTEgTCAyOTMgMjA5IEwgMjg4IDIwOSBMIDI4MiAyMTMgTCAyNzcyMjIgTCAyNzUgMjI5IEwgMjc1IDI0MyBMIDI3MSAyNDggTCAyNjUgMjQ4IEwgMjYzIDI1MiBMIDI2MiAyNjggTCAyNjQgMjcxIEwgMjY5IDI3MiBMIDI3MSAyNzUgTCAyNjQgMjc4IEwgMjY2IDI5OSBMIDI2MyAzMDEgTCAyNjEgMzA2IEwgMjYxIDMxMyBMIDI2NSAzMTYgTCAyNjEgMzM1IEwgMjYyIDM0NCBMIDI1MSAzNjIgTCAyNTEgMzY4IEwgMjQ1IDM4MCBMIDI0NyAzODggTCAyNDEgNDA5IEwgMjQzIDQxNCBMIDI0NSA0MTUgTCAyNTcgNDE0IEwgMjU2IDM5NSBMIDI1OSAzODggTCAyNjYgMzg0IEwgMjY3IDM3NSBMIDI3MSAzNjYgTCAyNzAgMzYwIEwgMjcyIDM1NSBMIDI3NyAzNTAgTCAyNzggMzQ4IEwgMjgyIDM0NCBMIDI4MiAzMzggTCAyOTAgMzE5IEwgMjkzIDMxNiBMIDMwNiAzMjcgTCAzMTUgMzQxIEwgMzIxIDM0MSBMIDMyNCAzNDUgTCAzMjQgMzUyIEwgMzIxIDM1NiBMIDMyMyAzNzYgTCAzMjYgMzgxIEwgMzI2IDM5NiBMIDMyNCA0MDAgTCAzMjMgNDA4IEwgMzI1IDQwOSBMIDMzNCA0MDggTCAzNDIgNDExIEwgMzU1IDQxMSBMIDM1NiA0MTAgTCAzNTYgNDA3IEwgMzQ5IDQwNCBMIDMzOSAzOTMgTCAzMzkgMzc4IEwgMzQxIDM3NCBMIDM0MCAzNjIgTCAzNDIgMzUyIEwgMzQyIDM0MCBMIDM0MSAzMzYgTCAzMzYgMzMwIEwgMzI4IDMwOSBMIDMxOCAyOTYgTCAzMTggMjg5IEwgMzIwIDI4NyBMIDMyNCAyODkgTCAzMjcgMjg0IEwgMzI5IDI3MyBMIDMyOSAyNjMgTCAzMjMgMjU3IEwgMzIzIDI1NCBMIDMyNSAyNTIgTCAzMjggMjUyIEwgMzQ1IDI2MSBMIDM0OSAyNjEgTCAzNTkgMjUxIEwgMzYwIDI0MyBMIDM2NCAyNDEgTCAzNjIgMjM1IEwgMzYyIDIyOSBMIDM2NiAyMjYgTCAzNjggMjIyIEwgMzkwIDIyMiBMIDM5MiAyMTkgTCAzOTQgMjIwIEwgNDAwIDIxOSBMIDQxNCAyMjAgTCA0MjAgMjE5IFoiLz48L3N2Zz4=")
-        center / contain no-repeat;
+    flex-basis: 12px;
 
-    mask:
-        url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSI+PHBhdGggZmlsbD0iY3VycmVudENvbG9yIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0gNDIwIDIxNyBMIDQwMCAyMTggTCAzOTkgMjE0IEwgMzk1IDIxMiBMIDM5NSAyMDYgTCAzOTQgMjA2IEwgMzkzIDIxNSBMIDM5MSAyMTMgTCAzNDMgMjEzIEwgMzM4IDIxMCBMIDMzOCAyMDcgTCAzMzYgMjEzIEwgMzI1IDIxNCBMIDMyNCAyMDcgTCAzMjkgMjA0IEwgMzMxIDIwMSBMIDMyOSAxOTAgTCAzMjcgMTg4IEwgMzE2IDE4MyBMIDMwOSAxODMgTCAzMDIgMTg2IEwgMjk5IDE4OSBMIDI5NiAxOTYgTCAyOTYgMjAwIEwgMjk5IDIwOCBMIDI5NiAyMTEgTCAyOTMgMjA5IEwgMjg4IDIwOSBMIDI4MiAyMTMgTCAyNzcyMjIgTCAyNzUgMjI5IEwgMjc1IDI0MyBMIDI3MSAyNDggTCAyNjUgMjQ4IEwgMjYzIDI1MiBMIDI2MiAyNjggTCAyNjQgMjcxIEwgMjY5IDI3MiBMIDI3MSAyNzUgTCAyNjQgMjc4IEwgMjY2IDI5OSBMIDI2MyAzMDEgTCAyNjEgMzA2IEwgMjYxIDMxMyBMIDI2NSAzMTYgTCAyNjEgMzM1IEwgMjYyIDM0NCBMIDI1MSAzNjIgTCAyNTEgMzY4IEwgMjQ1IDM4MCBMIDI0NyAzODggTCAyNDEgNDA5IEwgMjQzIDQxNCBMIDI0NSA0MTUgTCAyNTcgNDE0IEwgMjU2IDM5NSBMIDI1OSAzODggTCAyNjYgMzg0IEwgMjY3IDM3NSBMIDI3MSAzNjYgTCAyNzAgMzYwIEwgMjcyIDM1NSBMIDI3NyAzNTAgTCAyNzggMzQ4IEwgMjgyIDMzNDAgTCAyODIgMzM4IEwgMjkwIDMxOSBMIDI5MyAzMTYgTCAzMDYgMzI3IEwgMzE1IDM0MSBMIDMyMSAzNDEgTCAzMjQgMzQ1IEwgMzI0IDM1MiBMIDMyMSAzNTYgTCAzMjMgMzc2IEwgMzI2IDM4MSBMIDMyNiAzOTYgTCAzMjQgNDAwIEwgMzIzIDQwOCBMIDMyNSA0MDkgTCAzMzQgNDA4IEwgMzQyIDQxMSBMIDM1NSA0MTEgTCAzNTYgNDEwIEwgMzU2IDQwNyBMIDM0OSA0MDQgTCAzMzkgMzkzIEwgMzM5IDM3OCBMIDM0MSAzNzQgTCAzNDAgMzYyIEwgMzQyIDM1MiBMIDM0MiAzNDAgTCAzNDEgMzM2IEwgMzM2IDMzMCBMIDMyOCAzMDkgTCAzMTggMjk2IEwgMzE4IDI4OSBMIDMyMCAyODcgTCAzMjQgMjg5IEwgMzI3IDI4NCBMIDMyOSAyNzMgTCAzMjkgMjYzIEwgMzIzIDI1NyBMIDMyMyAyNTQgTCAzMjUgMjUyIEwgMzI4IDI1MiBMIDM0NSAyNjEgTCAzNDkgMjYxIEwgMzU5IDI1MSBMIDM2MCAyNDMgTCAzNjQgMjQxIEwgMzYyIDIzNSBMIDM2MiAyMjkgTCAzNjYgMjI2IEwgMzY4IDIyMiBMIDM5MCAyMjIgTCAzOTIgMjE5IEwgMzk0IDIyMCBMIDQwMCAyMTkgTCA0MTQgMjIwIEwgNDIwIDIxOSBaIi8+PC9zdmc+")
-        center / contain no-repeat;
+    -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDb3VudGVyLVN0cmlrZSBzdHlsZSBzb2xkaWVyIHNpbGhvdWV0dGUiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNIDQyMCAyMTcgTCA0MDAgMjE4IEwgMzk5IDIxNCBMIDM5NSAyMTIgTCAzOTUgMjA2IEwgMzk0IDIwNiBMIDM5MyAyMTUgTCAzOTEgMjEzIEwgMzQzIDIxMyBMIDMzOCAyMTAgTCAzMzggMjA3IEwgMzM2IDIxMyBMIDMyNSAyMTQgTCAzMjQgMjA3IEwgMzI5IDIwNCBMIDMzMSAyMDEgTCAzMjkgMTkwIEwgMzI3IDE4OCBMIDMxNiAxODMgTCAzMDkgMTgzIEwgMzAyIDE4NiBMIDI5OSAxODkgTCAyOTYgMTk2IEwgMjk2IDIwMCBMIDI5OSAyMDggTCAyOTYgMjExIEwgMjkzIDIwOSBMIDI4OCAyMDkgTCAyODIgMjEzIEwgMjc3IDIyMiBMIDI3NSAyMjkgTCAyNzUgMjQzIEwgMjcxIDI0OCBMIDI2NSAyNDggTCAyNjMgMjUyIEwgMjYyIDI2OCBMIDI2NCAyNzEgTCAyNjkgMjcyIEwgMjcxIDI3NSBMIDI2NCAyNzggTCAyNjYgMjk5IEwgMjYzIDMwMSBMIDI2MSAzMDYgTCAyNjEgMzEzIEwgMjY1IDMxNiBMIDI2MSAzMzUgTCAyNjIgMzQ0IEwgMjUxIDM2MiBMIDI1MSAzNjggTCAyNDUgMzgwIEwgMjQ3IDM4OCBMIDI0MSA0MDkgTCAyNDMgNDE0IEwgMjQ1IDQxNSBMIDI1NyA0MTQgTCAyNTYgMzk1IEwgMjU5IDM4OCBMIDI2NiAzODQgTCAyNjcgMzc1IEwgMjcxIDM2NiBMIDI3MCAzNjAgTCAyNzIgMzU1IEwgMjc3IDM1MCBMIDI3NyAzNDggTCAyODIgMzQ0IEwgMjgyIDMzOCBMIDI5MCAzMTkgTCAyOTMgMzE2IEwgMzA2IDMyNyBMIDMxNSAzNDEgTCAzMjEgMzQxIEwgMzI0IDM0NSBMIDMyNCAzNTIgTCAzMjEgMzU2IEwgMzIzIDM3NiBMIDMyNiAzODEgTCAzMjYgMzk2IEwgMzI0IDQwMCBMIDMyMyA0MDggTCAzMjUgNDA5IEwgMzM0IDQwOCBMIDM0MiA0MTEgTCAzNTUgNDExIEwgMzU2IDQxMCBMIDM1NiA0MDcgTCAzNDkgNDA0IEwgMzM5IDM5MyBMIDMzOSAzNzggTCAzNDEgMzc0IEwgMzQwIDM2MiBMIDM0MiAzNTIgTCAzNDIgMzQwIEwgMzQxIDMzNiBMIDMzNiAzMzAgTCAzMjggMzA5IEwgMzE4IDI5NiBMIDMxOCAyODkgTCAzMjAgMjg3IEwgMzI0IDI4OSBMIDMyNyAyODQgTCAzMjkgMjczIEwgMzI5IDI2MyBMIDMyMyAyNTcgTCAzMjMgMjU0IEwgMzI1IDI1MiBMIDMyOCAyNTIgTCAzNDUgMjYxIEwgMzQ5IDI2MSBMIDM1OSAyNTEgTCAzNjAgMjQzIEwgMzY0IDI0MSBMIDM2MiAyMzUgTCAzNjIgMjI5IEwgMzY2IDIyNiBMIDM2OCAyMjIgTCAzOTAgMjIyIEwgMzkyIDIxOSBMIDM5NCAyMjAgTCA0MDAgMjE5IEwgNDE0IDIyMCBMIDQyMCAyMTkgWiBNIDM0MyAyMzQgTCAzNDQgMjMxIEwgMzUwIDIzMSBMIDM1MiAyMzMgLCAzNDcgMjM5IFogTSAzNDUgMjMwIEwgMzQ4IDIyOCBMIDM0NyAyMjcgTCAzNDggMjI1IEwgMzU0IDIyNiBMIDM1NCAyMjkgTCAzNTIgMjMxIFoiLz48L3N2Zz4=");
+
+    mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIzNSAxNzUgMTk1IDI0NSIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDb3VudGVyLVN0cmlrZSBzdHlsZSBzb2xkaWVyIHNpbGhvdWV0dGUiPjxwYXRoIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNIDQyMCAyMTcgTCA0MDAgMjE4IEwgMzk5IDIxNCBMIDM5NSAyMTIgTCAzOTUgMjA2IEwgMzk0IDIwNiBMIDM5MyAyMTUgTCAzOTEgMjEzIEwgMzQzIDIxMyBMIDMzOCAyMTAgTCAzMzggMjA3IEwgMzM2IDIxMyBMIDMyNSAyMTQgTCAzMjQgMjA3IEwgMzI5IDIwNCBMIDMzMSAyMDEgTCAzMjkgMTkwIEwgMzI3IDE4OCBMIDMxNiAxODMgTCAzMDkgMTgzIEwgMzAyIDE4NiBMIDI5OSAxODkgTCAyOTYgMTk2IEwgMjk2IDIwMCBMIDI5OSAyMDggTCAyOTYgMjExIEwgMjkzIDIwOSBMIDI4OCAyMDkgTCAyODIgMjEzIEwgMjc3IDIyMiBMIDI3NSAyMjkgTCAyNzUgMjQzIEwgMjcxIDI0OCBMIDI2NSAyNDggTCAyNjMgMjUyIEwgMjYyIDI2OCBMIDI2NCAyNzEgTCAyNjkgMjcyIEwgMjcxIDI3NSBMIDI2NCAyNzggTCAyNjYgMjk5IEwgMjYzIDMwMSBMIDI2MSAzMDYgTCAyNjEgMzEzIEwgMjY1IDMxNiBMIDI2MSAzMzUgTCAyNjIgMzQ0IEwgMjUxIDM2MiBMIDI1MSAzNjggTCAyNDUgMzgwIEwgMjQ3IDM4OCBMIDI0MSA0MDkgTCAyNDMgNDE0IEwgMjQ1IDQxNSBMIDI1NyA0MTQgTCAyNTYgMzk1IEwgMjU5IDM4OCBMIDI2NiAzODQgTCAyNjcgMzc1IEwgMjcxIDM2NiBMIDI3MCAzNjAgTCAyNzIgMzU1IEwgMjc3IDM1MCBMIDI3NyAzNDggTCAyODIgMzQ0IEwgMjgyIDMzOCBMIDI5MCAzMTkgTCAyOTMgMzE2IEwgMzA2IDMyNyBMIDMxNSAzNDEgTCAzMjEgMzQxIEwgMzI0IDM0NSBMIDMyNCAzNTIgTCAzMjEgMzU2IEwgMzIzIDM3NiBMIDMyNiAzODEgTCAzMjYgMzk2IEwgMzI0IDQwMCBMIDMyMyA0MDggTCAzMjUgNDA5IEwgMzM0IDQwOCBMIDM0MiA0MTEgTCAzNTUgNDExIEwgMzU2IDQxMCBMIDM1NiA0MDcgTCAzNDkgNDA0IEwgMzM5IDM5MyBMIDMzOSAzNzggTCAzNDEgMzc0IEwgMzQwIDM2MiBMIDM0MiAzNTIgTCAzNDIgMzQwIEwgMzQxIDMzNiBMIDMzNiAzMzAgTCAzMjggMzA5IEwgMzE4IDI5NiBMIDMxOCAyODkgTCAzMjAgMjg3IEwgMzI0IDI4OSBMIDMyNyAyODQgTCAzMjkgMjczIEwgMzI5IDI2MyBMIDMyMyAyNTcgTCAzMjMgMjU0IEwgMzI1IDI1MiBMIDMyOCAyNTIgTCAzNDUgMjYxIEwgMzQ5IDI2MSBMIDM1OSAyNTEgTCAzNjAgMjQzIEwgMzY0IDI0MSBMIDM2MiAyMzUgTCAzNjIgMjI5IEwgMzY2IDIyNiBMIDM2OCAyMjIgTCAzOTAgMjIyIEwgMzkyIDIxOSBMIDM5NCAyMjAgTCA0MDAgMjE5IEwgNDE0IDIyMCBMIDQyMCAyMTkgWiBNIDM0MyAyMzQgTCAzNDQgMjMxIEwgMzUwIDIyMzEgTCAzNTIgMjMzIEwgMzQ3IDI zOTYgWiBNIDM0NSAyMzAgTCAzNDggMjI4IEwgMzQ3IDIyNyBMIDM0OCAyMjUgTCAzNTQgMjI2IEwgMzU0IDIyOSBMIDM1MiAyMzEiLz48L3N2Zz4=");
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
 
-/* ============================================================
-   CS:2 ICON
-   ============================================================ */
+/* ---------------------------------------------------------
+   CS2 — isolated 2 SVG
+   --------------------------------------------------------- */
 
 .cs2-icon {
-    width: 14px;
-    height: 13px;
+    width: 15px;
+    height: 11px;
 
-    background: transparent;
+    flex-basis: 15px;
 
-    position: relative;
+    -webkit-mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjUgMTExIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkNvdW50ZXItU3RyaWtlIDIgaWNvbiI+CiAgPHBhdGggZD0iTSA0NyAwIDQwIDE1IDQwIDE3IDM3IDIyIDM3IDI0IDEzMSAyNCAxMzIgMjcgMTI1IDQyIDQ5IDQyIDM1IDQ3IDI3IDUzIDIxIDYxIDAgMTEwIDEyNyAxMTAgMTMyIDEwMCAxMzMgOTMgMTMyIDkwIDEyOSA4NyAxMjQgODUgNDMgODUgNDIgODQgNTAgNjcgMTM4IDY3IDE0NCA2NCAxNDkgNTkgMTY0IDI0IDE2NCAxNCAxNjEgOCAxNTYgMyAxNTAgMCBaIE0gNTEgNCAxNDcgNCAxNTIgNiAxNTggMTIgMTYwIDE4IDE2MCAyMSAxNTggMjcgMTU1IDMyIDE1NSAzNCAxNTMgMzcgMTUzIDM5IDE1MCA0NCAxNTAgNDYgMTQ3IDUxIDE0NiA1NSAxNDAgNjEgMTM1IDYzIDQ2IDYzIDQ0IDY5IDQxIDc0IDQxIDc2IDM4IDgxIDM4IDgzIDM1IDg4IDM1IDkwIDEyNSA5MCAxMjggOTMgMTI4IDk3IDEyNSAxMDQgMTIzIDEwNiA4IDEwNiA3IDEwNSA5IDEwMiAxMSA5NSAxNCA5MCAxNCA4OCAxNyA4MyAxNyA4MSAyMCA3NiAyMCA3NCAyMyA2OSAyNCA2NSAyOCA1OSAzMyA1NCAzOSA1MCA0OCA0NyAxMjggNDcgMTM5IDIyIDEzOSAyMCA0NSAyMCA0NCAxOSA0NSAxNSA0OCAxMCA0OSA2IFoiIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg==");
+
+    mask-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjUgMTExIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkNvdW50ZXItU3RyaWtlIDIgaWNvbiI+CiAgPHBhdGggZD0iTSA0NyAwIDQwIDE1IDQwIDE3IDM3IDIyIDM3IDI0IDEzMSAyNCAxMzIgMjcgMTI1IDQyIDQ5IDQyIDM1IDQ3IDI3IDUzIDIxIDYxIDAgMTEwIDEyNyAxMTAgMTMyIDEwMCAxMzMgOTMgMTMyIDkwIDEyOSA4NyAxMjQgODUgNDMgODUgNDIgODQgNTAgNjcgMTM4IDY3IDE0NCA2NCAxNDkgNTkgMTY0IDI0IDE2NCAxNCAxNjEgOCAxNTYgMyAxNTAgMCBaIE0gNTEgNCAxNDcgNCAxNTIgNiAxNTggMTIgMTYwIDE4IDE2MCAyMSAxNTggMjcgMTU1IDMyIDE1NSAzNCAxNTMgMzcgMTUzIDM5IDE1MCA0NCAxNTAgNDYgMTQ3IDUxIDE0NiA1NSAxNDAgNjEgMTM1IDYzIDQ2IDYzIDQ0IDY5IDQxIDc0IDQxIDc2IDM4IDgxIDM4IDgzIDM1IDg4IDM1IDkwIDEyNSA5MCAxMjggOTMgMTI4IDk3IDEyNSAxMDQgMTIzIDEwNiA4IDEwNiA3IDEwNSA5IDEwMiAxMSA5NSAxNCA5MCAxNCA4OCAxNyA4MyAxNyA4MSAyMCA3NiAyMCA3NCAyMyA2OSAyNCA2NSAyOCA1OSAzMyA1NCAzOSA1MCA0OCA0NyAxMjggNDcgMTM5IDIyIDEzOSAyMCA0NSAyMCA0NCAxOSA0NSAxNSA0OCAxMCA0OSA2IFoiIGZpbGw9ImN1cnJlbnRDb2xvciIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg==");
+
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }
 
 
-.cs2-icon::before {
-    content: "2";
+/* =========================================================
+   TAB LABEL
+   ========================================================= */
 
-    position: absolute;
+.tab-label {
+    display: inline-block;
 
-    left: 0;
-    top: -4px;
-
-    font-family:
-        Arial Black,
-        Arial,
-        sans-serif;
-
-    font-size: 17px;
-    font-style: italic;
-    font-weight: 900;
-
-    line-height: 1;
-
-    letter-spacing: -2px;
-
-    color: currentColor;
-
-    transform: scaleX(1.12);
+    transform:
+        translateY(-0.2px);
 }
 
 
-/* ============================================================
-   OPTIONS PANEL
-   ============================================================ */
+/* =========================================================
+   GAMES PANEL
+   ========================================================= */
 
-.options-panel {
-    position: relative;
-
+.games-panel {
     flex: 1;
 
     min-height: 0;
 
-    margin-top: 9px;
+    margin-top: 8px;
+    margin-bottom: 7px;
 
-    padding: 9px;
+    padding:
+        11px 11px 10px;
+
+    overflow: hidden;
 
     border-radius: 13px;
 
-    background: #151620;
-
-    overflow: hidden;
+    background: #14151f;
 }
 
 
-.options-list {
+.games {
     width: 100%;
     height: 100%;
 
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
 
-    gap: 9px;
+    scrollbar-width: none;
 }
 
 
-.option-card {
+.games::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   GAME CARD
+   ========================================================= */
+
+.game-card {
     position: relative;
 
     width: 100%;
     height: 67px;
 
-    flex: 0 0 67px;
+    margin-bottom: 7px;
 
-    display: flex;
-    align-items: center;
-
-    padding:
-        8px
-        9px;
+    padding: 1px;
 
     border-radius: 12px;
 
-    background: #181923;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.055);
-
-    transition:
-        box-shadow .14s ease,
-        background .14s ease;
-}
-
-
-.option-card.selected {
-    box-shadow:
-        inset 0 0 0 1px rgba(153,112,255,.55);
-}
-
-
-.option-card:hover {
-    background: #1a1b25;
-}
-
-
-.option-logo-wrap {
-    width: 45px;
-    height: 45px;
-
-    flex: 0 0 45px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: #272837;
 
     overflow: hidden;
 
-    border-radius: 10px;
+    cursor: pointer;
 
-    background: #101118;
+    outline: none;
+
+    transition:
+        background 140ms ease,
+        box-shadow 140ms ease;
 }
 
 
-.option-logo {
-    width: 45px;
-    height: 45px;
+.game-card.selected {
+    background: #8150df;
+
+    box-shadow:
+        0 0 0 1px
+        rgba(132, 80, 231, 0.20);
+}
+
+
+.game-card.selected .game-card-inner {
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(132, 80, 231, 0.34);
+}
+
+
+.game-card-inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        9px 9px 9px 11px;
+
+    border-radius: 11px;
+
+    background: #1a1b28;
+}
+
+
+/* =========================================================
+   GAME INFO
+   ========================================================= */
+
+.game-info {
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   GAME LOGOS
+   ========================================================= */
+
+.game-logo {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 13px;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background: #101119;
+}
+
+
+.game-logo img {
+    width: 38px;
+    height: 38px;
 
     display: block;
 
     object-fit: contain;
 
-    border-radius: 10px;
+    object-position: center;
+
+    border-radius: 9px;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    -webkit-user-drag: none;
 }
 
 
-.option-info {
-    min-width: 0;
+/* =========================================================
+   GAME NAME
+   ========================================================= */
 
-    flex: 1;
+.game-name {
+    color: #d0cedb;
 
-    margin-left: 10px;
+    font-size: 15px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.45px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.game-actions {
+    width: 84px;
+
+    flex-shrink: 0;
 
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 
-
-.option-name {
-    margin: 0;
-
-    color: #e4e4eb;
-
-    font-size: 13px;
-    font-weight: 500;
-
-    line-height: 1.1;
-
-    letter-spacing: -.3px;
-}
-
-
-.option-actions {
-    width: 91px;
-
-    flex: 0 0 91px;
-
-    display: flex;
     flex-direction: column;
 
     gap: 4px;
-
-    align-items: stretch;
 }
 
 
 .subscription {
-    width: 91px;
+    width: 84px;
     height: 20px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     border-radius: 4px;
 
-    background: #2a1727;
+    background: #302532;
 
-    color: #b96a83;
+    color: #bd6d7d;
 
-    font-size: 8px;
-    font-weight: 400;
+    font-size: 9px;
+
+    line-height: 1;
 }
 
 
-.game-pill {
-    width: 91px;
+.game-version {
+    width: 84px;
     height: 20px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     border-radius: 4px;
 
-    background: #242430;
+    background: #222331;
 
-    color: #858692;
+    color: #777888;
 
-    font-size: 8px;
-    font-weight: 400;
+    font-size: 9px;
+
+    line-height: 1;
 }
 
 
-/* ============================================================
-   INJECT BUTTON
-   ============================================================ */
+/* =========================================================
+   INJECT
+   ========================================================= */
 
 .inject-button {
+    position: relative;
+
     width: 100%;
-    height: 38px;
+    height: 39px;
 
-    flex: 0 0 38px;
-
-    margin-top: 9px;
+    flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    gap: 4px;
 
-    border-radius: 8px;
+    padding: 0;
 
-    background: #7445e7;
+    border: 0;
 
-    color: #f3efff;
+    border-radius: 9px;
 
-    font-size: 13px;
-    font-weight: 500;
+    background: #774de4;
 
-    letter-spacing: -.25px;
+    color: #e2deeb;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -0.45px;
+
+    cursor: pointer;
 
     transition:
-        background .12s ease,
-        transform .1s ease;
+        background 140ms ease,
+        transform 100ms ease;
 }
 
 
 .inject-button:hover {
-    background: #7b4bed;
+    background: #7b50e9;
 }
 
 
 .inject-button:active {
-    transform: scale(.985);
+    transform: scale(.987);
 }
 
 
-.inject-arrow {
+/* =========================================================
+   INJECT MARK
+   ========================================================= */
+
+.inject-mark {
     position: relative;
 
-    width: 14px;
-    height: 10px;
+    width: 19px;
+    height: 12px;
 
     display: block;
+
+    opacity: .9;
 }
 
 
-.inject-arrow::before {
+.inject-mark::before {
     content: "";
 
     position: absolute;
 
-    left: 0;
-    top: 3px;
+    left: 1px;
+    top: 2px;
 
-    width: 9px;
-    height: 5px;
+    width: 14px;
+    height: 7px;
 
-    border-radius: 0 8px 8px 0;
+    border-radius:
+        2px 7px 7px 2px;
 
-    background: currentColor;
+    background: #ded9e9;
 
-    transform: skewX(28deg);
+    transform:
+        rotate(27deg);
 }
 
 
-.inject-arrow::after {
+.inject-mark::after {
     content: "";
 
     position: absolute;
 
-    right: 0;
-    top: 1px;
+    left: 11px;
+    top: 6px;
 
     width: 5px;
     height: 5px;
 
     border-radius: 50%;
 
-    background: currentColor;
+    background: #774de4;
 }
 
 
-/* ============================================================
-   LOADING SCREEN
-   ============================================================ */
+/* =========================================================
+   QUEUE SCREEN
+   ========================================================= */
 
-.loading-screen {
+.queue-screen {
     position: absolute;
 
     inset: 0;
 
-    z-index: 500;
+    z-index: 100;
 
     display: none;
 
@@ -661,123 +814,179 @@ button {
     justify-content: center;
 
     background:
-        rgba(16,17,23,.965);
+        rgba(13,14,21,.975);
 
-    backdrop-filter: blur(7px);
+    backdrop-filter:
+        blur(8px);
 
-    -webkit-backdrop-filter: blur(7px);
+    -webkit-backdrop-filter:
+        blur(8px);
 }
 
 
-.loading-screen.visible {
+.queue-screen.active {
     display: flex;
+
+    animation:
+        queueFadeIn 180ms ease-out both;
 }
 
 
-.loading-content {
-    width: calc(100% - 42px);
+@keyframes queueFadeIn {
 
-    transform: translateY(-5px);
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
 }
 
 
-.loading-title {
-    margin-bottom: 3px;
+.queue-content {
+    width: 270px;
 
-    color: #f0f0f4;
-
-    font-size: 19px;
-    font-weight: 500;
-
-    letter-spacing: -.65px;
+    text-align: center;
 }
 
 
-.loading-option {
-    margin-bottom: 25px;
+.queue-title {
+    color: #d2d0dc;
 
-    color: #777985;
+    font-size: 20px;
 
-    font-size: 10px;
     font-weight: 400;
 
-    letter-spacing: -.1px;
+    letter-spacing: -0.65px;
 }
 
 
-.loading-track {
+.queue-subtitle {
+    margin-top: 7px;
+
+    color: #686977;
+
+    font-size: 10px;
+}
+
+
+.queue-number {
+    margin-top: 27px;
+
+    color: #777888;
+
+    font-size: 10px;
+}
+
+
+.queue-number > span:first-child {
+    color: #8250e8;
+
+    font-size: 22px;
+}
+
+
+.queue-people {
+    margin-left: 5px;
+
+    color: #696a79;
+
+    font-size: 10px;
+}
+
+
+.queue-progress {
     width: 100%;
     height: 3px;
+
+    margin-top: 18px;
 
     overflow: hidden;
 
     border-radius: 999px;
 
-    background: #252632;
+    background: #282936;
 }
 
 
-.loading-fill {
-    width: 0;
+.queue-progress-fill {
+    width: 0%;
     height: 100%;
 
     border-radius: inherit;
 
-    background: #7a49e9;
+    background: #774de4;
 
-    transform-origin: left center;
+    will-change: width;
+}
+
+
+.queue-bottom {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 9px;
+
+    color: #565766;
+
+    font-size: 9px;
+}
+
+
+.queue-bottom b {
+    color: #777888;
+
+    font-weight: 400;
 }
 
 
 .cancel-button {
-    margin-top: 17px;
-
-    height: 30px;
+    margin-top: 24px;
 
     padding:
-        0
-        13px;
+        7px 13px;
 
-    border-radius: 7px;
+    border: 0;
 
-    background: #1d1e28;
+    border-radius: 8px;
 
-    color: #92939d;
+    background: transparent;
 
-    font-size: 10px;
+    color: #626372;
 
-    transition:
-        background .12s ease,
-        color .12s ease;
+    font-family: inherit;
+
+    font-size: 9px;
+
+    cursor: pointer;
 }
 
 
 .cancel-button:hover {
-    background: #242531;
+    background: #191a25;
 
-    color: #c7c8d0;
+    color: #9a99a7;
 }
 
 
-/* ============================================================
-   RESPONSIVE SAFETY
-   ============================================================ */
+/* =========================================================
+   DRAGGING
+   ========================================================= */
 
-@media (max-height: 400px) {
+[data-drag] {
+    cursor: default !important;
+}
 
-    .option-card {
-        height: 60px;
-        flex-basis: 60px;
-    }
 
-    .option-logo-wrap,
-    .option-logo {
-        width: 40px;
-        height: 40px;
-    }
+[data-no-drag] {
+    cursor: pointer;
+}
 
-    .inject-button {
-        height: 34px;
-        flex-basis: 34px;
-    }
+
+button {
+    -webkit-app-region: no-drag;
 }
