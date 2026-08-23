@@ -12,7 +12,10 @@
 
     <title></title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -27,7 +30,7 @@
 
     <link
         rel="stylesheet"
-        href="style.css?v=4"
+        href="style.css?v=5"
     >
 
 </head>
@@ -47,7 +50,11 @@
         data-drag
     >
 
+        <!-- Empty draggable area.
+             There is intentionally NO logo or name here. -->
+
         <div class="topbar-drag-area"></div>
+
 
         <div
             class="window-controls"
@@ -59,7 +66,9 @@
                 class="window-button minimize"
                 aria-label="Minimize"
             >
+
                 <span></span>
+
             </button>
 
 
@@ -85,186 +94,212 @@
 
 
         <!-- =================================================
-             GAME SELECTOR
+             TOP GAME SELECTOR SHELL
              ================================================= -->
 
         <nav
-            class="game-tabs"
+            class="game-tabs-shell"
             data-no-drag
         >
 
-            <button
-                class="game-tab"
-                data-game="all"
-            >
-
-                <span class="tab-icon all-icon">
-                    ●
-                </span>
-
-                <span class="tab-label">
-                    All games
-                </span>
-
-            </button>
+            <div class="game-tabs">
 
 
-            <button
-                class="game-tab active"
-                data-game="csgo"
-            >
+                <button
+                    class="game-tab"
+                    data-game="all"
+                >
 
-                <span class="tab-icon csgo-icon">
-                    ʃ
-                </span>
+                    <span class="tab-icon all-icon">
+                        ●
+                    </span>
 
-                <span class="tab-label">
-                    CS:GO
-                </span>
+                    <span class="tab-label">
+                        All games
+                    </span>
 
-            </button>
+                </button>
 
 
-            <button
-                class="game-tab"
-                data-game="cs2"
-            >
 
-                <span class="tab-icon cs2-icon">
-                    2
-                </span>
+                <button
+                    class="game-tab active"
+                    data-game="csgo"
+                >
 
-                <span class="tab-label">
-                    CS:2
-                </span>
+                    <span class="tab-icon csgo-icon">
+                        ʃ
+                    </span>
 
-            </button>
+                    <span class="tab-label">
+                        CS:GO
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    class="game-tab"
+                    data-game="cs2"
+                >
+
+                    <span class="tab-icon cs2-icon">
+                        2
+                    </span>
+
+                    <span class="tab-label">
+                        CS:2
+                    </span>
+
+                </button>
+
+
+            </div>
 
         </nav>
 
 
 
         <!-- =================================================
-             GAME LIST
+             MAIN GAME PANEL
              ================================================= -->
 
         <section
-            id="games"
-            class="games"
+            id="gamesPanel"
+            class="games-panel"
         >
 
 
-            <!-- =================================================
-                 PRIMORDIAL
-                 ================================================= -->
-
-            <article
-                class="game-card"
-                data-games="csgo"
+            <div
+                id="games"
+                class="games"
             >
 
-                <div class="game-card-inner">
 
-                    <div class="game-info">
+                <!-- =========================================
+                     PRIMORDIAL
+                     ========================================= -->
 
-                        <div class="game-name">
-                            Primordial
+                <article
+                    class="game-card"
+                    data-games="csgo"
+                >
+
+                    <div class="game-card-inner">
+
+
+                        <div class="game-info">
+
+                            <div class="game-name">
+                                Primordial
+                            </div>
+
                         </div>
+
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
+                        </div>
+
 
                     </div>
 
+                </article>
 
-                    <div class="game-actions">
 
-                        <div class="subscription">
-                            Not subscribed
+
+                <!-- =========================================
+                     GAMESENSE
+                     ========================================= -->
+
+                <article
+                    class="game-card"
+                    data-games="csgo"
+                >
+
+                    <div class="game-card-inner">
+
+
+                        <div class="game-info">
+
+                            <div class="game-name">
+                                Gamesense
+                            </div>
+
                         </div>
 
-                        <div class="game-version">
-                            CS:GO
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:GO
+                            </div>
+
                         </div>
+
 
                     </div>
 
-                </div>
-
-            </article>
+                </article>
 
 
 
-            <!-- =================================================
-                 GAMESENSE
-                 ================================================= -->
+                <!-- =========================================
+                     CS2 PLACEHOLDER
+                     ========================================= -->
 
-            <article
-                class="game-card"
-                data-games="csgo"
-            >
+                <article
+                    class="game-card hidden-game"
+                    data-games="cs2"
+                >
 
-                <div class="game-card-inner">
+                    <div class="game-card-inner">
 
-                    <div class="game-info">
 
-                        <div class="game-name">
-                            Gamesense
+                        <div class="game-info">
+
+                            <div class="game-name">
+                                Primordial
+                            </div>
+
                         </div>
+
+
+
+                        <div class="game-actions">
+
+                            <div class="subscription">
+                                Not subscribed
+                            </div>
+
+                            <div class="game-version">
+                                CS:2
+                            </div>
+
+                        </div>
+
 
                     </div>
 
-
-                    <div class="game-actions">
-
-                        <div class="subscription">
-                            Not subscribed
-                        </div>
-
-                        <div class="game-version">
-                            CS:GO
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </article>
+                </article>
 
 
-
-            <!-- =================================================
-                 CS2
-                 ================================================= -->
-
-            <article
-                class="game-card hidden-game"
-                data-games="cs2"
-            >
-
-                <div class="game-card-inner">
-
-                    <div class="game-info">
-
-                        <div class="game-name">
-                            Primordial
-                        </div>
-
-                    </div>
-
-
-                    <div class="game-actions">
-
-                        <div class="subscription">
-                            Not subscribed
-                        </div>
-
-                        <div class="game-version">
-                            CS:2
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </article>
+            </div>
 
 
         </section>
@@ -272,7 +307,7 @@
 
 
         <!-- =================================================
-             INJECT
+             INJECT BUTTON
              ================================================= -->
 
         <button
@@ -295,7 +330,7 @@
 
 
     <!-- =====================================================
-         QUEUE SCREEN
+         QUEUE / LAUNCH SCREEN
          ===================================================== -->
 
     <div
@@ -304,6 +339,7 @@
     >
 
         <div class="queue-content">
+
 
             <div class="queue-title">
                 You're in the queue.
@@ -344,6 +380,7 @@
                     ~29 seconds
                 </span>
 
+
                 <span>
                     position
                     <b id="queuePosition">
@@ -361,6 +398,7 @@
                 Cancel
             </button>
 
+
         </div>
 
     </div>
@@ -369,7 +407,7 @@
 </div>
 
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 
 </body>
 
