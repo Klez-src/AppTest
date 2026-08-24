@@ -8,6 +8,35 @@
 
 
     /* =====================================================
+       CONFIGURATION
+       ===================================================== */
+
+    /*
+        This is the backend API, NOT the GitHub repository.
+
+        Your mock website/backend should expose:
+
+            GET /api/me/subscriptions
+
+        and return:
+
+            {
+                "loggedIn": true,
+                "subscriptions": [
+                    "Primordial:CS:GO"
+                ]
+            }
+
+        The desktop loader can authenticate using its normal
+        session/cookie mechanism. No subscription ownership is
+        stored in localStorage.
+    */
+
+    const SUBSCRIPTION_API =
+        "http://localhost:3000/api/me/subscriptions";
+
+
+    /* =====================================================
        ELEMENTS
        ===================================================== */
 
@@ -46,6 +75,238 @@
 
     const cancelInjection =
         document.getElementById("cancelInjection");
+
+
+    /* =====================================================
+       SUBSCRIPTION STATE
+       ===================================================== */
+
+    let ownedSubscriptions =
+        new Set();
+
+    let subscriptionStateLoaded =
+        false;
+
+
+    function normalizeSubscriptionKey(value) {
+
+        return String(value || "")
+            .trim()
+            .toLowerCase();
+    }
+
+
+    function cardSubscriptionKey(card) {
+
+        return normalizeSubscriptionKey(
+            card?.dataset.subscriptionKey
+        );
+    }
+
+
+    function setCardSubscriptionState(
+        card,
+        subscribed
+    ) {
+
+        const subscription =
+            card.querySelector(
+                ".subscription"
+            );
+
+
+        if (!subscription) {
+            return;
+        }
+
+
+        subscription.classList.toggle(
+            "subscribed",
+            subscribed
+        );
+
+
+        subscription.textContent =
+            subscribed
+                ? "Subscribed"
+                : "Not subscribed";
+    }
+
+
+    function renderSubscriptionState() {
+
+        gameCards.forEach(
+            card => {
+
+                const key =
+                    cardSubscriptionKey(card);
+
+
+                setCardSubscriptionState(
+                    card,
+                    ownedSubscriptions.has(key)
+                );
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       BACKEND SUBSCRIPTION CHECK
+       ===================================================== */
+
+    async function loadSubscriptions() {
+
+        /*
+            Reset first so stale ownership is never retained.
+        */
+
+        ownedSubscriptions =
+            new Set();
+
+        subscriptionStateLoaded =
+            false;
+
+        renderSubscriptionState();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    SUBSCRIPTION_API,
+                    {
+                        method: "GET",
+
+                        credentials: "include",
+
+                        cache: "no-store",
+
+                        headers: {
+                            "Accept":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error(
+                    `Subscription API returned ${response.status}`
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !data ||
+                data.loggedIn !== true
+            ) {
+
+                renderSubscriptionState();
+
+                return;
+            }
+
+
+            const subscriptions =
+                Array.isArray(
+                    data.subscriptions
+                )
+                    ? data.subscriptions
+                    : [];
+
+
+            subscriptions.forEach(
+                subscription => {
+
+                    if (
+                        typeof subscription ===
+                        "string"
+                    ) {
+
+                        ownedSubscriptions.add(
+                            normalizeSubscriptionKey(
+                                subscription
+                            )
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                        Also supports:
+
+                        {
+                            "name": "Primordial",
+                            "game": "CS:GO"
+                        }
+                    */
+
+                    if (
+                        subscription &&
+                        typeof subscription ===
+                        "object"
+                    ) {
+
+                        const name =
+                            subscription.name;
+
+                        const game =
+                            subscription.game;
+
+
+                        if (
+                            name &&
+                            game
+                        ) {
+
+                            ownedSubscriptions.add(
+                                normalizeSubscriptionKey(
+                                    `${name}:${game}`
+                                )
+                            );
+                        }
+                    }
+
+                }
+            );
+
+
+            subscriptionStateLoaded =
+                true;
+
+
+            renderSubscriptionState();
+
+        } catch (error) {
+
+            /*
+                Fail closed.
+
+                If the backend cannot be reached,
+                nothing is considered subscribed.
+            */
+
+            ownedSubscriptions =
+                new Set();
+
+            subscriptionStateLoaded =
+                false;
+
+            renderSubscriptionState();
+
+            console.error(
+                "Unable to load subscription state:",
+                error
+            );
+        }
+    }
 
 
     /* =====================================================
@@ -200,11 +461,6 @@
         );
 
 
-        /*
-            If the current selected card is no longer
-            visible, remove its selection.
-        */
-
         const selectedCard =
             document.querySelector(
                 ".game-card.selected"
@@ -337,11 +593,6 @@
         }
 
 
-        /*
-            If nothing has been selected yet,
-            use the first visible card.
-        */
-
         return Array.from(gameCards)
             .find(
                 card =>
@@ -373,15 +624,94 @@
     }
 
 
+    function getSelectedSubscriptionKey() {
+
+        const card =
+            getSelectedCard();
+
+
+        if (!card) {
+            return "";
+        }
+
+
+        return cardSubscriptionKey(
+            card
+        );
+    }
+
+
+    /* =====================================================
+       SUBSCRIPTION OWNERSHIP
+       ===================================================== */
+
+    function ownsSelectedOption() {
+
+        const key =
+            getSelectedSubscriptionKey();
+
+
+        if (!key) {
+            return false;
+        }
+
+
+        return ownedSubscriptions.has(
+            key
+        );
+    }
+
+
+    /* =====================================================
+       WINDOWS-STYLE OWNERSHIP ERROR
+       ===================================================== */
+
+    function showNotSubscribedError() {
+
+        /*
+            The loader does not silently proceed when the
+            account doesn't own the selected option.
+
+            The native desktop host can replace this message
+            with its own native MessageBox if desired.
+        */
+
+        const sent =
+            sendWindowMessage({
+                type:
+                    "subscription.required",
+
+                title:
+                    "Loader",
+
+                message:
+                    "You are not subscribed to this option."
+            });
+
+
+        if (sent) {
+            return;
+        }
+
+
+        window.alert(
+            "You are not subscribed to this option."
+        );
+    }
+
+
     /* =====================================================
        INJECTION ANIMATION
        ===================================================== */
 
-    let injectionAnimation = null;
+    let injectionAnimation =
+        null;
 
-    let injectionTimer = null;
+    let injectionTimer =
+        null;
 
-    let injectionRunning = false;
+    let injectionRunning =
+        false;
 
 
     function stopInjectionAnimation() {
@@ -451,8 +781,48 @@
         }
 
 
+        /*
+            Fail closed until the backend has supplied
+            an ownership result.
+        */
+
+        if (
+            !subscriptionStateLoaded ||
+            !ownsSelectedOption()
+        ) {
+
+            showNotSubscribedError();
+
+            return;
+        }
+
+
         const selectedOption =
             getSelectedOption();
+
+
+        const selectedKey =
+            getSelectedSubscriptionKey();
+
+
+        /*
+            Notify the native host that an owned option
+            was selected for injection.
+
+            This does NOT contain an actual DLL/manual-map/
+            process-injection implementation.
+        */
+
+        sendWindowMessage({
+            type:
+                "loader.inject",
+
+            option:
+                selectedOption,
+
+            subscription:
+                selectedKey
+        });
 
 
         if (injectionTitle) {
@@ -491,11 +861,6 @@
         stopInjectionAnimation();
 
 
-        /*
-            Roughly 11 seconds, with a small variation
-            so consecutive runs aren't identical.
-        */
-
         const duration =
             10500 +
             Math.floor(
@@ -506,15 +871,6 @@
         const started =
             performance.now();
 
-
-        /*
-            Generate smooth but slightly irregular
-            progress.
-
-            The curve intentionally spends a little more
-            time in the middle rather than being a perfectly
-            linear percentage counter.
-        */
 
         const phaseA =
             0.17 +
@@ -628,12 +984,6 @@
                 );
 
 
-            /*
-                Tiny deterministic-looking movement
-                variation, kept extremely subtle so the
-                bar remains smooth.
-            */
-
             const microVariation =
                 rawProgress < 0.985
                     ? Math.sin(
@@ -676,7 +1026,8 @@
             }
 
 
-            injectionAnimation = null;
+            injectionAnimation =
+                null;
 
 
             injectionTimer =
@@ -743,5 +1094,28 @@
             "csgo"
         );
     }
+
+
+    /*
+        Load ownership from the backend when the loader
+        starts.
+
+        Nothing is persisted in localStorage.
+    */
+
+    loadSubscriptions();
+
+
+    /*
+        Refresh periodically so a subscription purchased
+        through the website can appear in the loader without
+        requiring the loader UI to be redesigned/restarted.
+    */
+
+    window.setInterval(
+        loadSubscriptions,
+        30000
+    );
+
 
 })();
