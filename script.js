@@ -1,39 +1,6 @@
-/* =========================================================
-   LOADER UI
-   ========================================================= */
-
 (() => {
 
     "use strict";
-
-
-    /* =====================================================
-       CONFIGURATION
-       ===================================================== */
-
-    /*
-        This is the backend API, NOT the GitHub repository.
-
-        Your mock website/backend should expose:
-
-            GET /api/me/subscriptions
-
-        and return:
-
-            {
-                "loggedIn": true,
-                "subscriptions": [
-                    "Primordial:CS:GO"
-                ]
-            }
-
-        The desktop loader can authenticate using its normal
-        session/cookie mechanism. No subscription ownership is
-        stored in localStorage.
-    */
-
-    const SUBSCRIPTION_API =
-        "http://localhost:3000/api/me/subscriptions";
 
 
     /* =====================================================
@@ -78,235 +45,11 @@
 
 
     /* =====================================================
-       SUBSCRIPTION STATE
+       LOCALHOST SUBSCRIPTION API
        ===================================================== */
 
-    let ownedSubscriptions =
-        new Set();
-
-    let subscriptionStateLoaded =
-        false;
-
-
-    function normalizeSubscriptionKey(value) {
-
-        return String(value || "")
-            .trim()
-            .toLowerCase();
-    }
-
-
-    function cardSubscriptionKey(card) {
-
-        return normalizeSubscriptionKey(
-            card?.dataset.subscriptionKey
-        );
-    }
-
-
-    function setCardSubscriptionState(
-        card,
-        subscribed
-    ) {
-
-        const subscription =
-            card.querySelector(
-                ".subscription"
-            );
-
-
-        if (!subscription) {
-            return;
-        }
-
-
-        subscription.classList.toggle(
-            "subscribed",
-            subscribed
-        );
-
-
-        subscription.textContent =
-            subscribed
-                ? "Subscribed"
-                : "Not subscribed";
-    }
-
-
-    function renderSubscriptionState() {
-
-        gameCards.forEach(
-            card => {
-
-                const key =
-                    cardSubscriptionKey(card);
-
-
-                setCardSubscriptionState(
-                    card,
-                    ownedSubscriptions.has(key)
-                );
-
-            }
-        );
-    }
-
-
-    /* =====================================================
-       BACKEND SUBSCRIPTION CHECK
-       ===================================================== */
-
-    async function loadSubscriptions() {
-
-        /*
-            Reset first so stale ownership is never retained.
-        */
-
-        ownedSubscriptions =
-            new Set();
-
-        subscriptionStateLoaded =
-            false;
-
-        renderSubscriptionState();
-
-
-        try {
-
-            const response =
-                await fetch(
-                    SUBSCRIPTION_API,
-                    {
-                        method: "GET",
-
-                        credentials: "include",
-
-                        cache: "no-store",
-
-                        headers: {
-                            "Accept":
-                                "application/json"
-                        }
-                    }
-                );
-
-
-            if (!response.ok) {
-                throw new Error(
-                    `Subscription API returned ${response.status}`
-                );
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (
-                !data ||
-                data.loggedIn !== true
-            ) {
-
-                renderSubscriptionState();
-
-                return;
-            }
-
-
-            const subscriptions =
-                Array.isArray(
-                    data.subscriptions
-                )
-                    ? data.subscriptions
-                    : [];
-
-
-            subscriptions.forEach(
-                subscription => {
-
-                    if (
-                        typeof subscription ===
-                        "string"
-                    ) {
-
-                        ownedSubscriptions.add(
-                            normalizeSubscriptionKey(
-                                subscription
-                            )
-                        );
-
-                        return;
-                    }
-
-
-                    /*
-                        Also supports:
-
-                        {
-                            "name": "Primordial",
-                            "game": "CS:GO"
-                        }
-                    */
-
-                    if (
-                        subscription &&
-                        typeof subscription ===
-                        "object"
-                    ) {
-
-                        const name =
-                            subscription.name;
-
-                        const game =
-                            subscription.game;
-
-
-                        if (
-                            name &&
-                            game
-                        ) {
-
-                            ownedSubscriptions.add(
-                                normalizeSubscriptionKey(
-                                    `${name}:${game}`
-                                )
-                            );
-                        }
-                    }
-
-                }
-            );
-
-
-            subscriptionStateLoaded =
-                true;
-
-
-            renderSubscriptionState();
-
-        } catch (error) {
-
-            /*
-                Fail closed.
-
-                If the backend cannot be reached,
-                nothing is considered subscribed.
-            */
-
-            ownedSubscriptions =
-                new Set();
-
-            subscriptionStateLoaded =
-                false;
-
-            renderSubscriptionState();
-
-            console.error(
-                "Unable to load subscription state:",
-                error
-            );
-        }
-    }
+    const SUBSCRIPTION_API =
+        "http://127.0.0.1:3000/api/loader/subscriptions";
 
 
     /* =====================================================
@@ -564,7 +307,9 @@
                                 "hidden-game"
                             )
                         ) {
+
                             selectCard(card);
+
                         }
 
                     }
@@ -574,6 +319,163 @@
 
         }
     );
+
+
+    /* =====================================================
+       SUBSCRIPTION PRODUCT IDs
+       ===================================================== */
+
+    function getProductId(card) {
+
+        const option =
+            card.dataset.option || "";
+
+        const game =
+            card.dataset.gameLabel || "";
+
+
+        if (
+            option === "Primordial" &&
+            game === "CS:GO"
+        ) {
+            return "primordial-csgo";
+        }
+
+
+        if (
+            option === "Gamesense" &&
+            game === "CS:GO"
+        ) {
+            return "gamesense-csgo";
+        }
+
+
+        if (
+            option === "Primordial" &&
+            game === "CS2"
+        ) {
+            return "primordial-cs2";
+        }
+
+
+        return null;
+    }
+
+
+    /* =====================================================
+       UPDATE SUBSCRIPTION UI
+       ===================================================== */
+
+    function applySubscriptions(
+        subscriptions
+    ) {
+
+        const owned =
+            new Set(
+                Array.isArray(subscriptions)
+                    ? subscriptions
+                    : []
+            );
+
+
+        gameCards.forEach(
+            card => {
+
+                const productId =
+                    getProductId(card);
+
+                const badge =
+                    card.querySelector(
+                        ".subscription"
+                    );
+
+
+                if (!badge) {
+                    return;
+                }
+
+
+                const subscribed =
+                    productId !== null &&
+                    owned.has(productId);
+
+
+                badge.textContent =
+                    subscribed
+                        ? "Subscribed"
+                        : "Not subscribed";
+
+
+                badge.classList.toggle(
+                    "subscribed",
+                    subscribed
+                );
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       SYNC SUBSCRIPTIONS
+       ===================================================== */
+
+    let subscriptionRequest = null;
+
+
+    async function syncSubscriptions() {
+
+        if (subscriptionRequest) {
+            return subscriptionRequest;
+        }
+
+
+        subscriptionRequest =
+            (async () => {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            SUBSCRIPTION_API,
+                            {
+                                method: "GET",
+                                cache: "no-store"
+                            }
+                        );
+
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    applySubscriptions(
+                        data.subscriptions || []
+                    );
+
+                } catch (_) {
+
+                    /*
+                     * If localhost isn't running,
+                     * leave the loader visually unchanged.
+                     */
+
+                } finally {
+
+                    subscriptionRequest =
+                        null;
+                }
+
+            })();
+
+
+        return subscriptionRequest;
+    }
 
 
     /* =====================================================
@@ -624,79 +526,67 @@
     }
 
 
-    function getSelectedSubscriptionKey() {
+    /* =====================================================
+       INJECTION OWNERSHIP CHECK
+       ===================================================== */
+
+    async function ownsSelectedSubscription() {
+
+        await syncSubscriptions();
+
 
         const card =
             getSelectedCard();
 
 
         if (!card) {
-            return "";
-        }
-
-
-        return cardSubscriptionKey(
-            card
-        );
-    }
-
-
-    /* =====================================================
-       SUBSCRIPTION OWNERSHIP
-       ===================================================== */
-
-    function ownsSelectedOption() {
-
-        const key =
-            getSelectedSubscriptionKey();
-
-
-        if (!key) {
             return false;
         }
 
 
-        return ownedSubscriptions.has(
-            key
-        );
-    }
+        const productId =
+            getProductId(card);
 
 
-    /* =====================================================
-       WINDOWS-STYLE OWNERSHIP ERROR
-       ===================================================== */
-
-    function showNotSubscribedError() {
-
-        /*
-            The loader does not silently proceed when the
-            account doesn't own the selected option.
-
-            The native desktop host can replace this message
-            with its own native MessageBox if desired.
-        */
-
-        const sent =
-            sendWindowMessage({
-                type:
-                    "subscription.required",
-
-                title:
-                    "Loader",
-
-                message:
-                    "You are not subscribed to this option."
-            });
-
-
-        if (sent) {
-            return;
+        if (!productId) {
+            return false;
         }
 
 
-        window.alert(
-            "You are not subscribed to this option."
-        );
+        try {
+
+            const response =
+                await fetch(
+                    SUBSCRIPTION_API,
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+                return false;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            return (
+                data.signedIn === true &&
+                Array.isArray(
+                    data.subscriptions
+                ) &&
+                data.subscriptions.includes(
+                    productId
+                )
+            );
+
+        } catch (_) {
+
+            return false;
+        }
     }
 
 
@@ -704,14 +594,11 @@
        INJECTION ANIMATION
        ===================================================== */
 
-    let injectionAnimation =
-        null;
+    let injectionAnimation = null;
 
-    let injectionTimer =
-        null;
+    let injectionTimer = null;
 
-    let injectionRunning =
-        false;
+    let injectionRunning = false;
 
 
     function stopInjectionAnimation() {
@@ -772,7 +659,20 @@
     }
 
 
-    function startInjection() {
+    /* =====================================================
+       WINDOWS-STYLE OWNERSHIP ERROR
+       ===================================================== */
+
+    function showNotSubscribedError() {
+
+        window.alert(
+            "Windows cannot complete this operation.\n\n" +
+            "You do not have an active subscription for this loader."
+        );
+    }
+
+
+    async function startInjection() {
 
         if (
             injectionRunning
@@ -781,15 +681,11 @@
         }
 
 
-        /*
-            Fail closed until the backend has supplied
-            an ownership result.
-        */
+        const owned =
+            await ownsSelectedSubscription();
 
-        if (
-            !subscriptionStateLoaded ||
-            !ownsSelectedOption()
-        ) {
+
+        if (!owned) {
 
             showNotSubscribedError();
 
@@ -799,30 +695,6 @@
 
         const selectedOption =
             getSelectedOption();
-
-
-        const selectedKey =
-            getSelectedSubscriptionKey();
-
-
-        /*
-            Notify the native host that an owned option
-            was selected for injection.
-
-            This does NOT contain an actual DLL/manual-map/
-            process-injection implementation.
-        */
-
-        sendWindowMessage({
-            type:
-                "loader.inject",
-
-            option:
-                selectedOption,
-
-            subscription:
-                selectedKey
-        });
 
 
         if (injectionTitle) {
@@ -1026,8 +898,7 @@
             }
 
 
-            injectionAnimation =
-                null;
+            injectionAnimation = null;
 
 
             injectionTimer =
@@ -1096,26 +967,16 @@
     }
 
 
-    /*
-        Load ownership from the backend when the loader
-        starts.
+    /* =====================================================
+       INITIAL SUBSCRIPTION SYNC
+       ===================================================== */
 
-        Nothing is persisted in localStorage.
-    */
+    syncSubscriptions();
 
-    loadSubscriptions();
-
-
-    /*
-        Refresh periodically so a subscription purchased
-        through the website can appear in the loader without
-        requiring the loader UI to be redesigned/restarted.
-    */
 
     window.setInterval(
-        loadSubscriptions,
-        30000
+        syncSubscriptions,
+        3000
     );
-
 
 })();
