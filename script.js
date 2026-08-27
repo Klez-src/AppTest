@@ -1,46 +1,14 @@
 (() => {
-
     "use strict";
 
+    const LOADER_API =
+        "http://127.0.0.1:3000";
 
-    /* =====================================================
-       CONFIG
-       ===================================================== */
+    const topbar =
+        document.querySelector(".topbar");
 
-    /*
-        Your local website.
-
-        The loader itself is hosted from GitHub, but the
-        account/subscription API is running locally.
-    */
-
-    const API_BASE =
-        "http://localhost:3000";
-
-
-    /*
-        The C++ loader can provide the account token through
-        the query string:
-
-            ?token=YOUR_TOKEN
-
-        Example:
-
-            index.html?token=abc123
-    */
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    let authToken =
-        params.get("token");
-
-
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
+    const topbarDragArea =
+        document.querySelector(".topbar-drag-area");
 
     const gameTabs =
         document.querySelectorAll(".game-tab");
@@ -71,189 +39,62 @@
 
 
     /* =====================================================
+       LOADER TOKEN
+       ===================================================== */
+
+    let loaderToken = null;
+
+    let rememberedToken = null;
+
+    try {
+        rememberedToken =
+            window.localStorage.getItem(
+                "loaderToken"
+            );
+    } catch {
+        rememberedToken = null;
+    }
+
+
+    if (rememberedToken) {
+        loaderToken = rememberedToken;
+    }
+
+
+    /*
+     * The loader token can also be supplied by
+     * the native host through window.loaderToken.
+     */
+
+    if (
+        !loaderToken &&
+        typeof window.loaderToken === "string" &&
+        window.loaderToken.trim()
+    ) {
+        loaderToken =
+            window.loaderToken.trim();
+    }
+
+
+    /* =====================================================
        WEBVIEW BRIDGE
        ===================================================== */
 
     function sendWindowMessage(message) {
-
         try {
-
             if (
                 window.chrome &&
                 window.chrome.webview
             ) {
-
                 window.chrome.webview.postMessage(
                     message
                 );
 
                 return true;
             }
-
         } catch (_) {}
 
         return false;
-    }
-
-
-    /* =====================================================
-       API
-       ===================================================== */
-
-    async function api(path, options = {}) {
-
-        const headers = {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        };
-
-
-        if (authToken) {
-
-            headers.Authorization =
-                `Bearer ${authToken}`;
-        }
-
-
-        const response =
-            await fetch(
-                `${API_BASE}${path}`,
-                {
-                    ...options,
-                    headers
-                }
-            );
-
-
-        let data = {};
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch (_) {}
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                `Request failed (${response.status})`
-            );
-        }
-
-
-        return data;
-    }
-
-
-    /* =====================================================
-       SUBSCRIPTIONS
-       ===================================================== */
-
-    let subscriptions =
-        new Set();
-
-
-    async function loadSubscriptions() {
-
-        if (!authToken) {
-
-            updateSubscriptionUI();
-
-            return;
-        }
-
-
-        try {
-
-            const data =
-                await api("/api/me");
-
-
-            subscriptions =
-                new Set(
-                    Array.isArray(
-                        data.user.subscriptions
-                    )
-                        ? data.user.subscriptions
-                        : []
-                );
-
-
-            updateSubscriptionUI();
-
-        } catch (_) {
-
-            /*
-                Invalid/expired token.
-
-                Do not treat the user as subscribed.
-            */
-
-            subscriptions =
-                new Set();
-
-            updateSubscriptionUI();
-        }
-    }
-
-
-    function updateSubscriptionUI() {
-
-        gameCards.forEach(card => {
-
-            const productId =
-                card.dataset.productId;
-
-            const subscription =
-                card.querySelector(
-                    ".subscription"
-                );
-
-
-            if (!subscription) {
-                return;
-            }
-
-
-            const subscribed =
-                subscriptions.has(
-                    productId
-                );
-
-
-            subscription.textContent =
-                subscribed
-                    ? "Subscribed"
-                    : "Not subscribed";
-
-
-            subscription.classList.toggle(
-                "subscribed",
-                subscribed
-            );
-
-        });
-    }
-
-
-    function ownsSelectedCard() {
-
-        const card =
-            getSelectedCard();
-
-
-        if (!card) {
-            return false;
-        }
-
-
-        return subscriptions.has(
-            card.dataset.productId
-        );
     }
 
 
@@ -264,13 +105,11 @@
     minimizeButton?.addEventListener(
         "click",
         event => {
-
             event.stopPropagation();
 
             sendWindowMessage(
                 "window.minimize"
             );
-
         }
     );
 
@@ -278,13 +117,11 @@
     closeButton?.addEventListener(
         "click",
         event => {
-
             event.stopPropagation();
 
             sendWindowMessage(
                 "window.close"
             );
-
         }
     );
 
@@ -294,17 +131,12 @@
        ===================================================== */
 
     function beginWindowDrag(event) {
-
-        if (
-            event.button !== 0
-        ) {
+        if (event.button !== 0) {
             return;
         }
 
-
         const target =
             event.target;
-
 
         if (
             target &&
@@ -314,9 +146,7 @@
             return;
         }
 
-
         event.preventDefault();
-
 
         sendWindowMessage(
             "window.drag"
@@ -324,75 +154,171 @@
     }
 
 
-    document
-        .querySelector(".topbar")
-        ?.addEventListener(
-            "mousedown",
-            beginWindowDrag
-        );
+    topbar?.addEventListener(
+        "mousedown",
+        beginWindowDrag
+    );
 
-
-    document
-        .querySelector(".topbar-drag-area")
-        ?.addEventListener(
-            "mousedown",
-            beginWindowDrag
-        );
+    topbarDragArea?.addEventListener(
+        "mousedown",
+        beginWindowDrag
+    );
 
 
     /* =====================================================
-       GAME TABS
+       SUBSCRIPTION API
+       ===================================================== */
+
+    async function getLoaderAccount() {
+        if (!loaderToken) {
+            throw new Error(
+                "No loader token has been configured."
+            );
+        }
+
+        const response =
+            await fetch(
+                `${LOADER_API}/api/loader/account`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "X-Loader-Token":
+                            loaderToken
+                    }
+                }
+            );
+
+        let data = {};
+
+        try {
+            data =
+                await response.json();
+        } catch {
+            data = {};
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to authenticate loader."
+            );
+        }
+
+        return data;
+    }
+
+
+    function applySubscriptions(
+        subscriptions
+    ) {
+        const owned =
+            new Set(
+                Array.isArray(
+                    subscriptions
+                )
+                    ? subscriptions
+                    : []
+            );
+
+        gameCards.forEach(card => {
+            const productId =
+                card.dataset.productId;
+
+            const subscription =
+                card.querySelector(
+                    ".subscription"
+                );
+
+            if (!subscription) {
+                return;
+            }
+
+            const subscribed =
+                owned.has(productId);
+
+            subscription.classList.toggle(
+                "subscribed",
+                subscribed
+            );
+
+            subscription.classList.toggle(
+                "not-subscribed",
+                !subscribed
+            );
+
+            subscription.textContent =
+                subscribed
+                    ? "Subscribed"
+                    : "Not subscribed";
+        });
+    }
+
+
+    async function refreshSubscriptions() {
+        try {
+            const account =
+                await getLoaderAccount();
+
+            applySubscriptions(
+                account.subscriptions
+            );
+
+            return true;
+        } catch (error) {
+            console.error(
+                "Loader authentication failed:",
+                error
+            );
+
+            applySubscriptions([]);
+
+            return false;
+        }
+    }
+
+
+    /* =====================================================
+       GAME TAB SELECTION
        ===================================================== */
 
     function setActiveTab(tab) {
-
         gameTabs.forEach(
             currentTab => {
-
                 currentTab.classList.toggle(
                     "active",
                     currentTab === tab
                 );
-
             }
         );
     }
 
 
     function updateGames(game) {
+        gameCards.forEach(card => {
+            const supportedGames =
+                (card.dataset.games || "")
+                    .split(",")
+                    .map(
+                        value =>
+                            value.trim()
+                    )
+                    .filter(Boolean);
 
-        gameCards.forEach(
-            card => {
+            const visible =
+                game === "all" ||
+                supportedGames.includes(game);
 
-                const supportedGames =
-                    (card.dataset.games || "")
-                        .split(",")
-                        .map(
-                            value =>
-                                value.trim()
-                        )
-                        .filter(Boolean);
-
-
-                const visible =
-                    game === "all" ||
-                    supportedGames.includes(game);
-
-
-                card.classList.toggle(
-                    "hidden-game",
-                    !visible
-                );
-
-            }
-        );
-
+            card.classList.toggle(
+                "hidden-game",
+                !visible
+            );
+        });
 
         const selectedCard =
             document.querySelector(
                 ".game-card.selected"
             );
-
 
         if (
             selectedCard &&
@@ -400,7 +326,6 @@
                 "hidden-game"
             )
         ) {
-
             selectedCard.classList.remove(
                 "selected"
             );
@@ -408,44 +333,32 @@
     }
 
 
-    gameTabs.forEach(
-        tab => {
+    gameTabs.forEach(tab => {
+        tab.addEventListener(
+            "click",
+            () => {
+                const game =
+                    tab.dataset.game;
 
-            tab.addEventListener(
-                "click",
-                () => {
-
-                    const game =
-                        tab.dataset.game;
-
-
-                    setActiveTab(tab);
-
-                    updateGames(game);
-
-                }
-            );
-
-        }
-    );
+                setActiveTab(tab);
+                updateGames(game);
+            }
+        );
+    });
 
 
     /* =====================================================
-       GAME CARD SELECTION
+       CARD SELECTION
        ===================================================== */
 
     function selectCard(card) {
-
         gameCards.forEach(
             currentCard => {
-
                 currentCard.classList.remove(
                     "selected"
                 );
-
             }
         );
-
 
         card.classList.add(
             "selected"
@@ -453,57 +366,43 @@
     }
 
 
-    gameCards.forEach(
-        card => {
+    gameCards.forEach(card => {
+        card.addEventListener(
+            "click",
+            () => {
+                if (
+                    card.classList.contains(
+                        "hidden-game"
+                    )
+                ) {
+                    return;
+                }
 
-            card.addEventListener(
-                "click",
-                () => {
+                selectCard(card);
+            }
+        );
+
+
+        card.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+                    event.preventDefault();
 
                     if (
-                        card.classList.contains(
+                        !card.classList.contains(
                             "hidden-game"
                         )
                     ) {
-                        return;
+                        selectCard(card);
                     }
-
-
-                    selectCard(card);
-
                 }
-            );
-
-
-            card.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key === "Enter" ||
-                        event.key === " "
-                    ) {
-
-                        event.preventDefault();
-
-
-                        if (
-                            !card.classList.contains(
-                                "hidden-game"
-                            )
-                        ) {
-
-                            selectCard(card);
-
-                        }
-
-                    }
-
-                }
-            );
-
-        }
-    );
+            }
+        );
+    });
 
 
     /* =====================================================
@@ -511,61 +410,83 @@
        ===================================================== */
 
     function getSelectedCard() {
-
         const selected =
             document.querySelector(
                 ".game-card.selected:not(.hidden-game)"
             );
 
-
         if (selected) {
             return selected;
         }
 
-
-        return Array.from(gameCards)
-            .find(
-                card =>
-                    !card.classList.contains(
-                        "hidden-game"
-                    )
-            ) || null;
+        return Array.from(
+            gameCards
+        ).find(
+            card =>
+                !card.classList.contains(
+                    "hidden-game"
+                )
+        ) || null;
     }
 
 
     function getSelectedOption() {
-
         const card =
             getSelectedCard();
 
-
         if (!card) {
-            return "Primordial";
+            return null;
         }
 
+        return {
+            name:
+                card.dataset.option ||
+                "Unknown",
 
-        return (
-            card.dataset.option ||
-            "Primordial"
+            productId:
+                card.dataset.productId ||
+                ""
+        };
+    }
+
+
+    function selectedCardIsSubscribed() {
+        const card =
+            getSelectedCard();
+
+        if (!card) {
+            return false;
+        }
+
+        const subscription =
+            card.querySelector(
+                ".subscription"
+            );
+
+        return Boolean(
+            subscription &&
+            subscription.classList.contains(
+                "subscribed"
+            )
         );
     }
 
 
     /* =====================================================
-       INJECTION
+       DEMO ACTION
        ===================================================== */
 
-    let injectionAnimation = null;
-    let injectionTimer = null;
     let injectionRunning = false;
+
+    let injectionAnimation = null;
+
+    let injectionTimer = null;
 
 
     function stopInjectionAnimation() {
-
         if (
             injectionAnimation !== null
         ) {
-
             cancelAnimationFrame(
                 injectionAnimation
             );
@@ -573,11 +494,9 @@
             injectionAnimation = null;
         }
 
-
         if (
             injectionTimer !== null
         ) {
-
             clearTimeout(
                 injectionTimer
             );
@@ -588,340 +507,130 @@
 
 
     function hideInjectionScreen() {
-
         stopInjectionAnimation();
 
         injectionRunning = false;
 
-
         if (injectionProgress) {
-
             injectionProgress.style.width =
                 "0%";
-
-            injectionProgress.style.transform =
-                "none";
         }
 
+        injectionScreen?.classList.remove(
+            "active"
+        );
 
-        if (injectionScreen) {
-
-            injectionScreen.classList.remove(
-                "active"
-            );
-
-            injectionScreen.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-        }
+        injectionScreen?.setAttribute(
+            "aria-hidden",
+            "true"
+        );
     }
 
 
-    function showOwnershipError() {
-
-        /*
-            Native-style browser alert is intentional here.
-            The actual native Windows MessageBox is handled
-            by C++ if the bridge receives this message.
-        */
-
-        const sent =
-            sendWindowMessage(
-                "subscription.required"
-            );
-
-
-        if (!sent) {
-
-            window.alert(
-                "Windows cannot complete this operation.\n\n" +
-                "You are not subscribed to this option."
-            );
-        }
-    }
-
-
-    function startInjection() {
-
-        if (
-            injectionRunning
-        ) {
+    function startDemoAction() {
+        if (injectionRunning) {
             return;
         }
 
-
         /*
-            IMPORTANT:
+         * Re-check the backend immediately before
+         * allowing the demo action.
+         */
 
-            Subscription is checked locally against the
-            server-provided account state before anything
-            can be started.
-        */
-
-        if (!ownsSelectedCard()) {
-
-            showOwnershipError();
-
-            return;
-        }
-
-
-        const selectedOption =
-            getSelectedOption();
-
-
-        if (injectionTitle) {
-
-            injectionTitle.textContent =
-                `Injecting ${selectedOption}`;
-        }
-
-
-        if (injectionProgress) {
-
-            injectionProgress.style.width =
-                "0%";
-
-            injectionProgress.style.transform =
-                "none";
-        }
-
-
-        if (injectionScreen) {
-
-            injectionScreen.classList.add(
-                "active"
-            );
-
-            injectionScreen.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-        }
-
-
-        injectionRunning = true;
-
-
-        stopInjectionAnimation();
-
-
-        const duration =
-            10500 +
-            Math.floor(
-                Math.random() * 1200
-            );
-
-
-        const started =
-            performance.now();
-
-
-        const phaseA =
-            0.17 +
-            Math.random() * 0.035;
-
-        const phaseB =
-            0.57 +
-            Math.random() * 0.06;
-
-        const phaseC =
-            0.86 +
-            Math.random() * 0.035;
-
-
-        function progressCurve(value) {
-
-            if (value <= phaseA) {
-
-                const local =
-                    value / phaseA;
-
-                return (
-                    local *
-                    local *
-                    phaseA
-                );
-            }
-
-
-            if (value <= phaseB) {
-
-                const local =
-                    (value - phaseA) /
-                    (phaseB - phaseA);
-
-                const eased =
-                    local *
-                    (2 - local);
-
-                return (
-                    phaseA +
-                    eased *
-                    (phaseB - phaseA)
-                );
-            }
-
-
-            if (value <= phaseC) {
-
-                const local =
-                    (value - phaseB) /
-                    (phaseC - phaseB);
-
-                const eased =
-                    1 -
-                    Math.pow(
-                        1 - local,
-                        1.35
+        refreshSubscriptions()
+            .then(isAuthenticated => {
+                if (!isAuthenticated) {
+                    window.alert(
+                        "Unable to authenticate this loader."
                     );
 
-                return (
-                    phaseB +
-                    eased *
-                    (phaseC - phaseB)
-                );
-            }
+                    return;
+                }
 
+                if (
+                    !selectedCardIsSubscribed()
+                ) {
+                    window.alert(
+                        "Windows-style error:\n\nYou are not subscribed to this option."
+                    );
 
-            const local =
-                (value - phaseC) /
-                (1 - phaseC);
+                    return;
+                }
 
-            const eased =
-                1 -
-                Math.pow(
-                    1 - local,
-                    1.7
-                );
+                const selected =
+                    getSelectedOption();
 
-            return (
-                phaseC +
-                eased *
-                (1 - phaseC)
-            );
-        }
+                if (!selected) {
+                    return;
+                }
 
-
-        function tick(now) {
-
-            if (
-                !injectionRunning
-            ) {
-                return;
-            }
-
-
-            const elapsed =
-                now - started;
-
-
-            const rawProgress =
-                Math.min(
-                    elapsed / duration,
-                    1
-                );
-
-
-            const curved =
-                progressCurve(
-                    rawProgress
-                );
-
-
-            const microVariation =
-                rawProgress < 0.985
-                    ? Math.sin(
-                        rawProgress *
-                        Math.PI *
-                        7
-                    ) *
-                    0.0018
-                    : 0;
-
-
-            const progress =
-                Math.max(
-                    0,
-                    Math.min(
-                        1,
-                        curved +
-                        microVariation
-                    )
-                );
-
-
-            if (injectionProgress) {
+                injectionTitle.textContent =
+                    `Loading ${selected.name}`;
 
                 injectionProgress.style.width =
-                    `${progress * 100}%`;
-            }
+                    "0%";
 
+                injectionScreen.classList.add(
+                    "active"
+                );
 
-            if (
-                rawProgress < 1
-            ) {
+                injectionScreen.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                injectionRunning = true;
+
+                const started =
+                    performance.now();
+
+                const duration = 3000;
+
+                function tick(now) {
+                    if (!injectionRunning) {
+                        return;
+                    }
+
+                    const progress =
+                        Math.min(
+                            (now - started) /
+                            duration,
+                            1
+                        );
+
+                    injectionProgress.style.width =
+                        `${progress * 100}%`;
+
+                    if (progress < 1) {
+                        injectionAnimation =
+                            requestAnimationFrame(
+                                tick
+                            );
+                    } else {
+                        injectionRunning =
+                            false;
+
+                        injectionTimer =
+                            setTimeout(
+                                () => {
+                                    hideInjectionScreen();
+                                },
+                                250
+                            );
+                    }
+                }
 
                 injectionAnimation =
                     requestAnimationFrame(
                         tick
                     );
-
-                return;
-            }
-
-
-            injectionAnimation = null;
-
-
-            /*
-                Tell C++ that the subscribed mock action
-                completed.
-            */
-
-            sendWindowMessage({
-                type: "loader.complete",
-                product: getSelectedCard()?.dataset.productId,
-                option: selectedOption
             });
-
-
-            injectionTimer =
-                window.setTimeout(
-                    () => {
-
-                        injectionRunning =
-                            false;
-
-                        if (
-                            injectionProgress
-                        ) {
-
-                            injectionProgress.style.width =
-                                "100%";
-                        }
-
-                    },
-                    80
-                );
-        }
-
-
-        injectionAnimation =
-            requestAnimationFrame(
-                tick
-            );
     }
 
 
-    /* =====================================================
-       INJECT / CANCEL
-       ===================================================== */
-
     injectButton?.addEventListener(
         "click",
-        startInjection
+        startDemoAction
     );
 
 
@@ -940,9 +649,7 @@
             '.game-tab[data-game="csgo"]'
         );
 
-
     if (defaultTab) {
-
         setActiveTab(
             defaultTab
         );
@@ -954,20 +661,9 @@
 
 
     /*
-        Load the account's subscriptions from the backend.
-    */
+     * Authenticate every time the loader starts.
+     */
 
-    loadSubscriptions();
-
-
-    /*
-        Refresh periodically so a subscription purchased/
-        removed on the website appears in the loader.
-    */
-
-    window.setInterval(
-        loadSubscriptions,
-        5000
-    );
+    refreshSubscriptions();
 
 })();
