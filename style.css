@@ -960,3 +960,13 @@ body {
 button {
     -webkit-app-region: no-drag;
 }
+
+
+/* =========================================================
+   SUBSCRIPTION STATE
+   ========================================================= */
+
+.subscription.subscribed {
+    background: #20352a;
+    color: #55d98a;
+}
