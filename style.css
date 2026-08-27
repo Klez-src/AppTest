@@ -962,11 +962,19 @@ button {
 }
 
 
+
+
+
 /* =========================================================
    SUBSCRIPTION STATE
    ========================================================= */
 
 .subscription.subscribed {
-    background: #20352a;
-    color: #55d98a;
+    background: #20362a;
+    color: #63d58b;
+}
+
+.subscription.not-subscribed {
+    background: #302532;
+    color: #bd6d7d;
 }
