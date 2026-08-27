@@ -13,17 +13,13 @@
 
     <link
         rel="stylesheet"
-        href="./style.css?v=20260824"
+        href="./style.css"
     >
 </head>
 
 <body>
 
 <div id="app">
-
-    <!-- =====================================================
-         TOP BAR
-         ===================================================== -->
 
     <div class="topbar">
 
@@ -57,15 +53,7 @@
     </div>
 
 
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
-
     <main class="content">
-
-        <!-- =================================================
-             GAME SELECTOR
-             ================================================= -->
 
         <div class="game-tabs-shell">
 
@@ -120,10 +108,6 @@
         </div>
 
 
-        <!-- =================================================
-             GAMES PANEL
-             ================================================= -->
-
         <section class="games-panel">
 
             <div class="games">
@@ -132,8 +116,8 @@
                     class="game-card"
                     data-games="csgo"
                     data-option="Primordial"
+                    data-product-id="primordial-csgo"
                     data-game-label="CS:GO"
-                    data-subscription-key="Primordial:CS:GO"
                     tabindex="0"
                 >
 
@@ -177,8 +161,8 @@
                     class="game-card"
                     data-games="csgo"
                     data-option="Gamesense"
+                    data-product-id="gamesense-csgo"
                     data-game-label="CS:GO"
-                    data-subscription-key="Gamesense:CS:GO"
                     tabindex="0"
                 >
 
@@ -222,8 +206,8 @@
                     class="game-card"
                     data-games="cs2"
                     data-option="Primordial"
+                    data-product-id="primordial-cs2"
                     data-game-label="CS2"
-                    data-subscription-key="Primordial:CS2"
                     tabindex="0"
                 >
 
@@ -267,10 +251,6 @@
         </section>
 
 
-        <!-- =================================================
-             INJECT
-             ================================================= -->
-
         <button
             id="injectButton"
             class="inject-button"
@@ -289,10 +269,6 @@
 
     </main>
 
-
-    <!-- =====================================================
-         INJECTION SCREEN
-         ===================================================== -->
 
     <div
         id="injectionScreen"
@@ -334,9 +310,7 @@
 </div>
 
 
-<script
-    src="./script.js?v=20260824"
-></script>
+<script src="./script.js"></script>
 
 </body>
 </html>
