@@ -4,14 +4,43 @@
 
 
     /* =====================================================
-       ELEMENTS
+       CONFIG
        ===================================================== */
 
-    const topbar =
-        document.querySelector(".topbar");
+    /*
+        Your local website.
 
-    const topbarDragArea =
-        document.querySelector(".topbar-drag-area");
+        The loader itself is hosted from GitHub, but the
+        account/subscription API is running locally.
+    */
+
+    const API_BASE =
+        "http://localhost:3000";
+
+
+    /*
+        The C++ loader can provide the account token through
+        the query string:
+
+            ?token=YOUR_TOKEN
+
+        Example:
+
+            index.html?token=abc123
+    */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    let authToken =
+        params.get("token");
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
     const gameTabs =
         document.querySelectorAll(".game-tab");
@@ -19,17 +48,14 @@
     const gameCards =
         document.querySelectorAll(".game-card");
 
-
     const minimizeButton =
         document.getElementById("minimizeButton");
 
     const closeButton =
         document.getElementById("closeButton");
 
-
     const injectButton =
         document.getElementById("injectButton");
-
 
     const injectionScreen =
         document.getElementById("injectionScreen");
@@ -42,14 +68,6 @@
 
     const cancelInjection =
         document.getElementById("cancelInjection");
-
-
-    /* =====================================================
-       LOCALHOST SUBSCRIPTION API
-       ===================================================== */
-
-    const SUBSCRIPTION_API =
-        "http://127.0.0.1:3000/api/loader/subscriptions";
 
 
     /* =====================================================
@@ -75,6 +93,167 @@
         } catch (_) {}
 
         return false;
+    }
+
+
+    /* =====================================================
+       API
+       ===================================================== */
+
+    async function api(path, options = {}) {
+
+        const headers = {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        };
+
+
+        if (authToken) {
+
+            headers.Authorization =
+                `Bearer ${authToken}`;
+        }
+
+
+        const response =
+            await fetch(
+                `${API_BASE}${path}`,
+                {
+                    ...options,
+                    headers
+                }
+            );
+
+
+        let data = {};
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch (_) {}
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                `Request failed (${response.status})`
+            );
+        }
+
+
+        return data;
+    }
+
+
+    /* =====================================================
+       SUBSCRIPTIONS
+       ===================================================== */
+
+    let subscriptions =
+        new Set();
+
+
+    async function loadSubscriptions() {
+
+        if (!authToken) {
+
+            updateSubscriptionUI();
+
+            return;
+        }
+
+
+        try {
+
+            const data =
+                await api("/api/me");
+
+
+            subscriptions =
+                new Set(
+                    Array.isArray(
+                        data.user.subscriptions
+                    )
+                        ? data.user.subscriptions
+                        : []
+                );
+
+
+            updateSubscriptionUI();
+
+        } catch (_) {
+
+            /*
+                Invalid/expired token.
+
+                Do not treat the user as subscribed.
+            */
+
+            subscriptions =
+                new Set();
+
+            updateSubscriptionUI();
+        }
+    }
+
+
+    function updateSubscriptionUI() {
+
+        gameCards.forEach(card => {
+
+            const productId =
+                card.dataset.productId;
+
+            const subscription =
+                card.querySelector(
+                    ".subscription"
+                );
+
+
+            if (!subscription) {
+                return;
+            }
+
+
+            const subscribed =
+                subscriptions.has(
+                    productId
+                );
+
+
+            subscription.textContent =
+                subscribed
+                    ? "Subscribed"
+                    : "Not subscribed";
+
+
+            subscription.classList.toggle(
+                "subscribed",
+                subscribed
+            );
+
+        });
+    }
+
+
+    function ownsSelectedCard() {
+
+        const card =
+            getSelectedCard();
+
+
+        if (!card) {
+            return false;
+        }
+
+
+        return subscriptions.has(
+            card.dataset.productId
+        );
     }
 
 
@@ -138,26 +317,31 @@
 
         event.preventDefault();
 
+
         sendWindowMessage(
             "window.drag"
         );
     }
 
 
-    topbar?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
+    document
+        .querySelector(".topbar")
+        ?.addEventListener(
+            "mousedown",
+            beginWindowDrag
+        );
 
 
-    topbarDragArea?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
+    document
+        .querySelector(".topbar-drag-area")
+        ?.addEventListener(
+            "mousedown",
+            beginWindowDrag
+        );
 
 
     /* =====================================================
-       GAME TAB SELECTION
+       GAME TABS
        ===================================================== */
 
     function setActiveTab(tab) {
@@ -302,6 +486,7 @@
 
                         event.preventDefault();
 
+
                         if (
                             !card.classList.contains(
                                 "hidden-game"
@@ -322,164 +507,7 @@
 
 
     /* =====================================================
-       SUBSCRIPTION PRODUCT IDs
-       ===================================================== */
-
-    function getProductId(card) {
-
-        const option =
-            card.dataset.option || "";
-
-        const game =
-            card.dataset.gameLabel || "";
-
-
-        if (
-            option === "Primordial" &&
-            game === "CS:GO"
-        ) {
-            return "primordial-csgo";
-        }
-
-
-        if (
-            option === "Gamesense" &&
-            game === "CS:GO"
-        ) {
-            return "gamesense-csgo";
-        }
-
-
-        if (
-            option === "Primordial" &&
-            game === "CS2"
-        ) {
-            return "primordial-cs2";
-        }
-
-
-        return null;
-    }
-
-
-    /* =====================================================
-       UPDATE SUBSCRIPTION UI
-       ===================================================== */
-
-    function applySubscriptions(
-        subscriptions
-    ) {
-
-        const owned =
-            new Set(
-                Array.isArray(subscriptions)
-                    ? subscriptions
-                    : []
-            );
-
-
-        gameCards.forEach(
-            card => {
-
-                const productId =
-                    getProductId(card);
-
-                const badge =
-                    card.querySelector(
-                        ".subscription"
-                    );
-
-
-                if (!badge) {
-                    return;
-                }
-
-
-                const subscribed =
-                    productId !== null &&
-                    owned.has(productId);
-
-
-                badge.textContent =
-                    subscribed
-                        ? "Subscribed"
-                        : "Not subscribed";
-
-
-                badge.classList.toggle(
-                    "subscribed",
-                    subscribed
-                );
-
-            }
-        );
-    }
-
-
-    /* =====================================================
-       SYNC SUBSCRIPTIONS
-       ===================================================== */
-
-    let subscriptionRequest = null;
-
-
-    async function syncSubscriptions() {
-
-        if (subscriptionRequest) {
-            return subscriptionRequest;
-        }
-
-
-        subscriptionRequest =
-            (async () => {
-
-                try {
-
-                    const response =
-                        await fetch(
-                            SUBSCRIPTION_API,
-                            {
-                                method: "GET",
-                                cache: "no-store"
-                            }
-                        );
-
-
-                    if (!response.ok) {
-                        return;
-                    }
-
-
-                    const data =
-                        await response.json();
-
-
-                    applySubscriptions(
-                        data.subscriptions || []
-                    );
-
-                } catch (_) {
-
-                    /*
-                     * If localhost isn't running,
-                     * leave the loader visually unchanged.
-                     */
-
-                } finally {
-
-                    subscriptionRequest =
-                        null;
-                }
-
-            })();
-
-
-        return subscriptionRequest;
-    }
-
-
-    /* =====================================================
-       SELECTED OPTION
+       SELECTED CARD
        ===================================================== */
 
     function getSelectedCard() {
@@ -518,86 +546,17 @@
 
         return (
             card.dataset.option ||
-            card.querySelector(
-                ".game-name"
-            )?.textContent.trim() ||
             "Primordial"
         );
     }
 
 
     /* =====================================================
-       INJECTION OWNERSHIP CHECK
-       ===================================================== */
-
-    async function ownsSelectedSubscription() {
-
-        await syncSubscriptions();
-
-
-        const card =
-            getSelectedCard();
-
-
-        if (!card) {
-            return false;
-        }
-
-
-        const productId =
-            getProductId(card);
-
-
-        if (!productId) {
-            return false;
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    SUBSCRIPTION_API,
-                    {
-                        cache: "no-store"
-                    }
-                );
-
-
-            if (!response.ok) {
-                return false;
-            }
-
-
-            const data =
-                await response.json();
-
-
-            return (
-                data.signedIn === true &&
-                Array.isArray(
-                    data.subscriptions
-                ) &&
-                data.subscriptions.includes(
-                    productId
-                )
-            );
-
-        } catch (_) {
-
-            return false;
-        }
-    }
-
-
-    /* =====================================================
-       INJECTION ANIMATION
+       INJECTION
        ===================================================== */
 
     let injectionAnimation = null;
-
     let injectionTimer = null;
-
     let injectionRunning = false;
 
 
@@ -659,20 +618,31 @@
     }
 
 
-    /* =====================================================
-       WINDOWS-STYLE OWNERSHIP ERROR
-       ===================================================== */
+    function showOwnershipError() {
 
-    function showNotSubscribedError() {
+        /*
+            Native-style browser alert is intentional here.
+            The actual native Windows MessageBox is handled
+            by C++ if the bridge receives this message.
+        */
 
-        window.alert(
-            "Windows cannot complete this operation.\n\n" +
-            "You do not have an active subscription for this loader."
-        );
+        const sent =
+            sendWindowMessage(
+                "subscription.required"
+            );
+
+
+        if (!sent) {
+
+            window.alert(
+                "Windows cannot complete this operation.\n\n" +
+                "You are not subscribed to this option."
+            );
+        }
     }
 
 
-    async function startInjection() {
+    function startInjection() {
 
         if (
             injectionRunning
@@ -681,13 +651,17 @@
         }
 
 
-        const owned =
-            await ownsSelectedSubscription();
+        /*
+            IMPORTANT:
 
+            Subscription is checked locally against the
+            server-provided account state before anything
+            can be started.
+        */
 
-        if (!owned) {
+        if (!ownsSelectedCard()) {
 
-            showNotSubscribedError();
+            showOwnershipError();
 
             return;
         }
@@ -901,6 +875,18 @@
             injectionAnimation = null;
 
 
+            /*
+                Tell C++ that the subscribed mock action
+                completed.
+            */
+
+            sendWindowMessage({
+                type: "loader.complete",
+                product: getSelectedCard()?.dataset.productId,
+                option: selectedOption
+            });
+
+
             injectionTimer =
                 window.setTimeout(
                     () => {
@@ -967,16 +953,21 @@
     }
 
 
-    /* =====================================================
-       INITIAL SUBSCRIPTION SYNC
-       ===================================================== */
+    /*
+        Load the account's subscriptions from the backend.
+    */
 
-    syncSubscriptions();
+    loadSubscriptions();
 
+
+    /*
+        Refresh periodically so a subscription purchased/
+        removed on the website appears in the loader.
+    */
 
     window.setInterval(
-        syncSubscriptions,
-        3000
+        loadSubscriptions,
+        5000
     );
 
 })();
