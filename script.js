@@ -1,498 +1,668 @@
-(() => {
-    "use strict";
-
-    const LOADER_API =
-        "http://127.0.0.1:3000";
-
-    const topbar =
-        document.querySelector(".topbar");
-
-    const topbarDragArea =
-        document.querySelector(".topbar-drag-area");
-
-    const gameTabs =
-        document.querySelectorAll(".game-tab");
-
-    const gameCards =
-        document.querySelectorAll(".game-card");
-
-    const minimizeButton =
-        document.getElementById("minimizeButton");
-
-    const closeButton =
-        document.getElementById("closeButton");
-
-    const injectButton =
-        document.getElementById("injectButton");
-
-    const injectionScreen =
-        document.getElementById("injectionScreen");
-
-    const injectionTitle =
-        document.getElementById("injectionTitle");
-
-    const injectionProgress =
-        document.getElementById("injectionProgress");
-
-    const cancelInjection =
-        document.getElementById("cancelInjection");
+"use strict";
 
 
-    /* =====================================================
-       LOADER TOKEN
-       ===================================================== */
+/* =========================================================
+   CONFIG
+   ========================================================= */
 
-    let loaderToken = null;
+const API_URL =
+    "http://127.0.0.1:3000";
 
-    let rememberedToken = null;
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let loaderToken = null;
+let currentAccount = null;
+let injectionRunning = false;
+let injectionTimer = null;
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const tokenSection =
+    document.getElementById(
+        "tokenSection"
+    );
+
+const loaderSection =
+    document.getElementById(
+        "loaderSection"
+    );
+
+const tokenInput =
+    document.getElementById(
+        "tokenInput"
+    );
+
+const rememberToken =
+    document.getElementById(
+        "rememberToken"
+    );
+
+const authenticateButton =
+    document.getElementById(
+        "authenticateButton"
+    );
+
+const tokenMessage =
+    document.getElementById(
+        "tokenMessage"
+    );
+
+const gameTabs =
+    document.querySelectorAll(
+        ".game-tab"
+    );
+
+const gameCards =
+    document.querySelectorAll(
+        ".game-card"
+    );
+
+const injectButton =
+    document.getElementById(
+        "injectButton"
+    );
+
+const injectionScreen =
+    document.getElementById(
+        "injectionScreen"
+    );
+
+const injectionTitle =
+    document.getElementById(
+        "injectionTitle"
+    );
+
+const injectionProgress =
+    document.getElementById(
+        "injectionProgress"
+    );
+
+const cancelInjection =
+    document.getElementById(
+        "cancelInjection"
+    );
+
+const minimizeButton =
+    document.getElementById(
+        "minimizeButton"
+    );
+
+const closeButton =
+    document.getElementById(
+        "closeButton"
+    );
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function readRememberedToken() {
+    try {
+        return localStorage.getItem(
+            "loaderToken"
+        );
+    } catch {
+        return null;
+    }
+}
+
+
+function rememberUserToken(token) {
+    try {
+        localStorage.setItem(
+            "loaderToken",
+            token
+        );
+    } catch {}
+}
+
+
+function forgetUserToken() {
+    try {
+        localStorage.removeItem(
+            "loaderToken"
+        );
+    } catch {}
+}
+
+
+/* =========================================================
+   API
+   ========================================================= */
+
+async function authenticateToken(token) {
+    const response =
+        await fetch(
+            `${API_URL}/api/loader/account`,
+            {
+                method: "GET",
+
+                headers: {
+                    "X-Loader-Token":
+                        token
+                }
+            }
+        );
+
+    let data = {};
 
     try {
-        rememberedToken =
-            window.localStorage.getItem(
-                "loaderToken"
-            );
-    } catch {
-        rememberedToken = null;
+        data =
+            await response.json();
+    } catch {}
+
+    if (!response.ok) {
+        throw new Error(
+            data.error ||
+            "Unable to authenticate."
+        );
     }
 
-
-    if (rememberedToken) {
-        loaderToken = rememberedToken;
-    }
+    return data;
+}
 
 
-    /*
-     * The loader token can also be supplied by
-     * the native host through window.loaderToken.
-     */
+/* =========================================================
+   AUTH UI
+   ========================================================= */
 
-    if (
-        !loaderToken &&
-        typeof window.loaderToken === "string" &&
-        window.loaderToken.trim()
-    ) {
-        loaderToken =
-            window.loaderToken.trim();
-    }
+function showAuth() {
+    tokenSection.classList.remove(
+        "hidden"
+    );
+
+    loaderSection.classList.add(
+        "hidden"
+    );
+}
 
 
-    /* =====================================================
-       WEBVIEW BRIDGE
-       ===================================================== */
+function showLoader() {
+    tokenSection.classList.add(
+        "hidden"
+    );
 
-    function sendWindowMessage(message) {
-        try {
-            if (
-                window.chrome &&
-                window.chrome.webview
-            ) {
-                window.chrome.webview.postMessage(
-                    message
-                );
+    loaderSection.classList.remove(
+        "hidden"
+    );
+}
 
-                return true;
-            }
-        } catch (_) {}
+
+function showTokenMessage(message) {
+    tokenMessage.textContent =
+        message || "";
+}
+
+
+/* =========================================================
+   AUTHENTICATE
+   ========================================================= */
+
+async function loginWithToken(
+    token,
+    remember
+) {
+    token =
+        String(token || "").trim();
+
+    if (!token) {
+        showTokenMessage(
+            "Enter your account token."
+        );
 
         return false;
     }
 
 
-    /* =====================================================
-       WINDOW CONTROLS
-       ===================================================== */
+    authenticateButton.disabled =
+        true;
 
-    minimizeButton?.addEventListener(
-        "click",
-        event => {
-            event.stopPropagation();
-
-            sendWindowMessage(
-                "window.minimize"
-            );
-        }
+    showTokenMessage(
+        "Authenticating..."
     );
 
 
-    closeButton?.addEventListener(
-        "click",
-        event => {
-            event.stopPropagation();
-
-            sendWindowMessage(
-                "window.close"
+    try {
+        const account =
+            await authenticateToken(
+                token
             );
+
+
+        loaderToken =
+            token;
+
+        currentAccount =
+            account;
+
+
+        if (remember) {
+            rememberUserToken(
+                token
+            );
+        } else {
+            forgetUserToken();
         }
-    );
 
 
-    /* =====================================================
-       WINDOW DRAG
-       ===================================================== */
+        showTokenMessage("");
 
-    function beginWindowDrag(event) {
-        if (event.button !== 0) {
-            return;
-        }
+        showLoader();
 
-        const target =
-            event.target;
+        applySubscriptions(
+            account.subscriptions
+        );
 
+        return true;
+
+    } catch (error) {
+        loaderToken = null;
+        currentAccount = null;
+
+        showTokenMessage(
+            error.message ||
+            "Unable to authenticate."
+        );
+
+        return false;
+
+    } finally {
+        authenticateButton.disabled =
+            false;
+    }
+}
+
+
+/* =========================================================
+   AUTH BUTTON
+   ========================================================= */
+
+authenticateButton.addEventListener(
+    "click",
+    () => {
+        loginWithToken(
+            tokenInput.value,
+            rememberToken.checked
+        );
+    }
+);
+
+
+tokenInput.addEventListener(
+    "keydown",
+    event => {
         if (
-            target &&
-            target.closest &&
-            target.closest(".window-controls")
+            event.key === "Enter"
         ) {
-            return;
+            event.preventDefault();
+
+            loginWithToken(
+                tokenInput.value,
+                rememberToken.checked
+            );
         }
+    }
+);
 
-        event.preventDefault();
 
-        sendWindowMessage(
-            "window.drag"
+/* =========================================================
+   REFRESH ACCOUNT
+   ========================================================= */
+
+async function refreshAccount() {
+    if (!loaderToken) {
+        return false;
+    }
+
+    try {
+        const account =
+            await authenticateToken(
+                loaderToken
+            );
+
+        currentAccount =
+            account;
+
+        applySubscriptions(
+            account.subscriptions
         );
-    }
 
+        return true;
 
-    topbar?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
+    } catch {
+        currentAccount = null;
+        loaderToken = null;
 
-    topbarDragArea?.addEventListener(
-        "mousedown",
-        beginWindowDrag
-    );
+        showAuth();
 
+        tokenInput.value = "";
 
-    /* =====================================================
-       SUBSCRIPTION API
-       ===================================================== */
-
-    async function getLoaderAccount() {
-        if (!loaderToken) {
-            throw new Error(
-                "No loader token has been configured."
-            );
-        }
-
-        const response =
-            await fetch(
-                `${LOADER_API}/api/loader/account`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "X-Loader-Token":
-                            loaderToken
-                    }
-                }
-            );
-
-        let data = {};
-
-        try {
-            data =
-                await response.json();
-        } catch {
-            data = {};
-        }
-
-        if (!response.ok) {
-            throw new Error(
-                data.error ||
-                "Unable to authenticate loader."
-            );
-        }
-
-        return data;
-    }
-
-
-    function applySubscriptions(
-        subscriptions
-    ) {
-        const owned =
-            new Set(
-                Array.isArray(
-                    subscriptions
-                )
-                    ? subscriptions
-                    : []
-            );
-
-        gameCards.forEach(card => {
-            const productId =
-                card.dataset.productId;
-
-            const subscription =
-                card.querySelector(
-                    ".subscription"
-                );
-
-            if (!subscription) {
-                return;
-            }
-
-            const subscribed =
-                owned.has(productId);
-
-            subscription.classList.toggle(
-                "subscribed",
-                subscribed
-            );
-
-            subscription.classList.toggle(
-                "not-subscribed",
-                !subscribed
-            );
-
-            subscription.textContent =
-                subscribed
-                    ? "Subscribed"
-                    : "Not subscribed";
-        });
-    }
-
-
-    async function refreshSubscriptions() {
-        try {
-            const account =
-                await getLoaderAccount();
-
-            applySubscriptions(
-                account.subscriptions
-            );
-
-            return true;
-        } catch (error) {
-            console.error(
-                "Loader authentication failed:",
-                error
-            );
-
-            applySubscriptions([]);
-
-            return false;
-        }
-    }
-
-
-    /* =====================================================
-       GAME TAB SELECTION
-       ===================================================== */
-
-    function setActiveTab(tab) {
-        gameTabs.forEach(
-            currentTab => {
-                currentTab.classList.toggle(
-                    "active",
-                    currentTab === tab
-                );
-            }
+        showTokenMessage(
+            "Your token could not be authenticated."
         );
+
+        return false;
     }
+}
 
 
-    function updateGames(game) {
-        gameCards.forEach(card => {
-            const supportedGames =
-                (card.dataset.games || "")
-                    .split(",")
-                    .map(
-                        value =>
-                            value.trim()
-                    )
-                    .filter(Boolean);
+/* =========================================================
+   SUBSCRIPTIONS
+   ========================================================= */
 
-            const visible =
-                game === "all" ||
-                supportedGames.includes(game);
-
-            card.classList.toggle(
-                "hidden-game",
-                !visible
-            );
-        });
-
-        const selectedCard =
-            document.querySelector(
-                ".game-card.selected"
-            );
-
-        if (
-            selectedCard &&
-            selectedCard.classList.contains(
-                "hidden-game"
+function applySubscriptions(
+    subscriptions
+) {
+    const owned =
+        new Set(
+            Array.isArray(
+                subscriptions
             )
-        ) {
-            selectedCard.classList.remove(
-                "selected"
-            );
-        }
-    }
-
-
-    gameTabs.forEach(tab => {
-        tab.addEventListener(
-            "click",
-            () => {
-                const game =
-                    tab.dataset.game;
-
-                setActiveTab(tab);
-                updateGames(game);
-            }
+                ? subscriptions
+                : []
         );
-    });
-
-
-    /* =====================================================
-       CARD SELECTION
-       ===================================================== */
-
-    function selectCard(card) {
-        gameCards.forEach(
-            currentCard => {
-                currentCard.classList.remove(
-                    "selected"
-                );
-            }
-        );
-
-        card.classList.add(
-            "selected"
-        );
-    }
 
 
     gameCards.forEach(card => {
-        card.addEventListener(
-            "click",
-            () => {
-                if (
-                    card.classList.contains(
-                        "hidden-game"
-                    )
-                ) {
-                    return;
-                }
+        const productId =
+            card.dataset.productId;
 
-                selectCard(card);
-            }
-        );
-
-
-        card.addEventListener(
-            "keydown",
-            event => {
-                if (
-                    event.key === "Enter" ||
-                    event.key === " "
-                ) {
-                    event.preventDefault();
-
-                    if (
-                        !card.classList.contains(
-                            "hidden-game"
-                        )
-                    ) {
-                        selectCard(card);
-                    }
-                }
-            }
-        );
-    });
-
-
-    /* =====================================================
-       SELECTED CARD
-       ===================================================== */
-
-    function getSelectedCard() {
-        const selected =
-            document.querySelector(
-                ".game-card.selected:not(.hidden-game)"
-            );
-
-        if (selected) {
-            return selected;
-        }
-
-        return Array.from(
-            gameCards
-        ).find(
-            card =>
-                !card.classList.contains(
-                    "hidden-game"
-                )
-        ) || null;
-    }
-
-
-    function getSelectedOption() {
-        const card =
-            getSelectedCard();
-
-        if (!card) {
-            return null;
-        }
-
-        return {
-            name:
-                card.dataset.option ||
-                "Unknown",
-
-            productId:
-                card.dataset.productId ||
-                ""
-        };
-    }
-
-
-    function selectedCardIsSubscribed() {
-        const card =
-            getSelectedCard();
-
-        if (!card) {
-            return false;
-        }
-
-        const subscription =
+        const status =
             card.querySelector(
                 ".subscription"
             );
 
-        return Boolean(
-            subscription &&
-            subscription.classList.contains(
-                "subscribed"
-            )
+        if (!status) {
+            return;
+        }
+
+
+        const subscribed =
+            owned.has(productId);
+
+
+        status.classList.toggle(
+            "subscribed",
+            subscribed
         );
+
+        status.classList.toggle(
+            "not-subscribed",
+            !subscribed
+        );
+
+
+        status.textContent =
+            subscribed
+                ? "Subscribed"
+                : "Not subscribed";
+    });
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+function setActiveTab(tab) {
+    gameTabs.forEach(
+        item => {
+            item.classList.toggle(
+                "active",
+                item === tab
+            );
+        }
+    );
+}
+
+
+function updateGameCards(game) {
+    gameCards.forEach(card => {
+        const games =
+            (
+                card.dataset.games ||
+                ""
+            )
+                .split(",")
+                .map(
+                    value =>
+                        value.trim()
+                );
+
+
+        const visible =
+            game === "all" ||
+            games.includes(game);
+
+
+        card.classList.toggle(
+            "hidden-game",
+            !visible
+        );
+    });
+}
+
+
+gameTabs.forEach(tab => {
+    tab.addEventListener(
+        "click",
+        () => {
+            const game =
+                tab.dataset.game;
+
+            setActiveTab(tab);
+
+            updateGameCards(
+                game
+            );
+        }
+    );
+});
+
+
+/* =========================================================
+   CARD SELECTION
+   ========================================================= */
+
+gameCards.forEach(card => {
+    card.addEventListener(
+        "click",
+        () => {
+            if (
+                card.classList.contains(
+                    "hidden-game"
+                )
+            ) {
+                return;
+            }
+
+
+            gameCards.forEach(
+                item => {
+                    item.classList.remove(
+                        "selected"
+                    );
+                }
+            );
+
+
+            card.classList.add(
+                "selected"
+            );
+        }
+    );
+});
+
+
+function getSelectedCard() {
+    return (
+        document.querySelector(
+            ".game-card.selected:not(.hidden-game)"
+        ) ||
+        document.querySelector(
+            ".game-card:not(.hidden-game)"
+        )
+    );
+}
+
+
+/* =========================================================
+   MOCK LOAD ACTION
+   ========================================================= */
+
+async function loadSelected() {
+    /*
+        Always re-check the backend immediately
+        before performing the mock action.
+    */
+
+    const authenticated =
+        await refreshAccount();
+
+
+    if (!authenticated) {
+        return;
     }
 
 
-    /* =====================================================
-       DEMO ACTION
-       ===================================================== */
-
-    let injectionRunning = false;
-
-    let injectionAnimation = null;
-
-    let injectionTimer = null;
+    const card =
+        getSelectedCard();
 
 
-    function stopInjectionAnimation() {
-        if (
-            injectionAnimation !== null
-        ) {
-            cancelAnimationFrame(
-                injectionAnimation
-            );
+    if (!card) {
+        return;
+    }
 
-            injectionAnimation = null;
+
+    const productId =
+        card.dataset.productId;
+
+
+    const subscriptions =
+        new Set(
+            currentAccount?.subscriptions ||
+            []
+        );
+
+
+    if (
+        !subscriptions.has(
+            productId
+        )
+    ) {
+        window.alert(
+            "Unable to authenticate this option."
+        );
+
+        return;
+    }
+
+
+    const name =
+        card.dataset.option ||
+        "Option";
+
+
+    injectionTitle.textContent =
+        `Loading ${name}`;
+
+
+    injectionProgress.style.width =
+        "0%";
+
+
+    injectionScreen.classList.add(
+        "active"
+    );
+
+
+    injectionScreen.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    injectionRunning =
+        true;
+
+
+    let progress = 0;
+
+
+    function update() {
+        if (!injectionRunning) {
+            return;
         }
+
+
+        progress += 2;
+
+
+        injectionProgress.style.width =
+            `${Math.min(
+                progress,
+                100
+            )}%`;
+
+
+        if (progress >= 100) {
+            injectionRunning =
+                false;
+
+            injectionTimer =
+                setTimeout(
+                    () => {
+                        injectionScreen.classList.remove(
+                            "active"
+                        );
+
+                        injectionScreen.setAttribute(
+                            "aria-hidden",
+                            "true"
+                        );
+                    },
+                    300
+                );
+
+            return;
+        }
+
+
+        injectionTimer =
+            setTimeout(
+                update,
+                30
+            );
+    }
+
+
+    update();
+}
+
+
+injectButton.addEventListener(
+    "click",
+    loadSelected
+);
+
+
+/* =========================================================
+   CANCEL
+   ========================================================= */
+
+cancelInjection.addEventListener(
+    "click",
+    () => {
+        injectionRunning =
+            false;
+
 
         if (
             injectionTimer !== null
@@ -503,167 +673,128 @@
 
             injectionTimer = null;
         }
-    }
 
 
-    function hideInjectionScreen() {
-        stopInjectionAnimation();
-
-        injectionRunning = false;
-
-        if (injectionProgress) {
-            injectionProgress.style.width =
-                "0%";
-        }
-
-        injectionScreen?.classList.remove(
+        injectionScreen.classList.remove(
             "active"
         );
 
-        injectionScreen?.setAttribute(
+
+        injectionScreen.setAttribute(
             "aria-hidden",
             "true"
         );
+
+
+        injectionProgress.style.width =
+            "0%";
     }
+);
 
 
-    function startDemoAction() {
-        if (injectionRunning) {
-            return;
+/* =========================================================
+   WINDOW CONTROLS
+   ========================================================= */
+
+minimizeButton?.addEventListener(
+    "click",
+    () => {
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(
+                "window.minimize"
+            );
         }
-
-        /*
-         * Re-check the backend immediately before
-         * allowing the demo action.
-         */
-
-        refreshSubscriptions()
-            .then(isAuthenticated => {
-                if (!isAuthenticated) {
-                    window.alert(
-                        "Unable to authenticate this loader."
-                    );
-
-                    return;
-                }
-
-                if (
-                    !selectedCardIsSubscribed()
-                ) {
-                    window.alert(
-                        "Windows-style error:\n\nYou are not subscribed to this option."
-                    );
-
-                    return;
-                }
-
-                const selected =
-                    getSelectedOption();
-
-                if (!selected) {
-                    return;
-                }
-
-                injectionTitle.textContent =
-                    `Loading ${selected.name}`;
-
-                injectionProgress.style.width =
-                    "0%";
-
-                injectionScreen.classList.add(
-                    "active"
-                );
-
-                injectionScreen.setAttribute(
-                    "aria-hidden",
-                    "false"
-                );
-
-                injectionRunning = true;
-
-                const started =
-                    performance.now();
-
-                const duration = 3000;
-
-                function tick(now) {
-                    if (!injectionRunning) {
-                        return;
-                    }
-
-                    const progress =
-                        Math.min(
-                            (now - started) /
-                            duration,
-                            1
-                        );
-
-                    injectionProgress.style.width =
-                        `${progress * 100}%`;
-
-                    if (progress < 1) {
-                        injectionAnimation =
-                            requestAnimationFrame(
-                                tick
-                            );
-                    } else {
-                        injectionRunning =
-                            false;
-
-                        injectionTimer =
-                            setTimeout(
-                                () => {
-                                    hideInjectionScreen();
-                                },
-                                250
-                            );
-                    }
-                }
-
-                injectionAnimation =
-                    requestAnimationFrame(
-                        tick
-                    );
-            });
     }
+);
 
 
-    injectButton?.addEventListener(
-        "click",
-        startDemoAction
+closeButton?.addEventListener(
+    "click",
+    () => {
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(
+                "window.close"
+            );
+        }
+    }
+);
+
+
+/* =========================================================
+   DRAG
+   ========================================================= */
+
+document
+    .querySelector(".topbar-drag-area")
+    ?.addEventListener(
+        "mousedown",
+        event => {
+            if (event.button !== 0) {
+                return;
+            }
+
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+                window.chrome.webview.postMessage(
+                    "window.drag"
+                );
+            }
+        }
     );
 
 
-    cancelInjection?.addEventListener(
-        "click",
-        hideInjectionScreen
-    );
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
+(async function start() {
+    const savedToken =
+        readRememberedToken();
 
 
-    /* =====================================================
-       INITIAL STATE
-       ===================================================== */
+    if (!savedToken) {
+        showAuth();
 
-    const defaultTab =
-        document.querySelector(
-            '.game-tab[data-game="csgo"]'
-        );
+        tokenInput.focus();
 
-    if (defaultTab) {
-        setActiveTab(
-            defaultTab
-        );
-
-        updateGames(
-            "csgo"
-        );
+        return;
     }
+
+
+    tokenInput.value =
+        savedToken;
+
+    rememberToken.checked =
+        true;
 
 
     /*
-     * Authenticate every time the loader starts.
-     */
+        Automatically authenticate the saved
+        token when the loader opens.
+    */
 
-    refreshSubscriptions();
+    const success =
+        await loginWithToken(
+            savedToken,
+            true
+        );
+
+
+    if (!success) {
+        forgetUserToken();
+
+        tokenInput.value = "";
+
+        tokenInput.focus();
+    }
 
 })();
