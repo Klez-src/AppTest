@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1.0"
     >
 
     <title>Loader</title>
@@ -21,291 +19,343 @@
 
 <div id="app">
 
-    <div class="topbar">
-
-        <div
-            class="topbar-drag-area"
-            data-drag
-        ></div>
-
-        <div class="window-controls">
-
-            <button
-                id="minimizeButton"
-                class="window-button minimize"
-                aria-label="Minimize"
-                data-no-drag
-            >
-                <span></span>
-            </button>
-
-            <button
-                id="closeButton"
-                class="window-button close"
-                aria-label="Close"
-                data-no-drag
-            >
-                ×
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <main class="content">
-
-        <div class="game-tabs-shell">
-
-            <div class="game-tabs">
-
-                <button
-                    class="game-tab"
-                    data-game="all"
-                >
-                    <span
-                        class="tab-icon lightning-icon"
-                        aria-hidden="true"
-                    ></span>
-
-                    <span class="tab-label">
-                        All games
-                    </span>
-                </button>
-
-
-                <button
-                    class="game-tab active"
-                    data-game="csgo"
-                >
-                    <span
-                        class="tab-icon csgo-icon"
-                        aria-hidden="true"
-                    ></span>
-
-                    <span class="tab-label">
-                        CS:GO
-                    </span>
-                </button>
-
-
-                <button
-                    class="game-tab"
-                    data-game="cs2"
-                >
-                    <span
-                        class="tab-icon cs2-icon"
-                        aria-hidden="true"
-                    ></span>
-
-                    <span class="tab-label">
-                        CS:2
-                    </span>
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <section class="games-panel">
-
-            <div class="games">
-
-                <div
-                    class="game-card"
-                    data-games="csgo"
-                    data-option="Primordial"
-                    data-product-id="primordial-csgo"
-                    data-game-label="CS:GO"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-logo">
-                                <img
-                                    src="primordial.png"
-                                    alt="Primordial"
-                                    draggable="false"
-                                >
-                            </div>
-
-                            <div class="game-name">
-                                Primordial
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS:GO
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="game-card"
-                    data-games="csgo"
-                    data-option="Gamesense"
-                    data-product-id="gamesense-csgo"
-                    data-game-label="CS:GO"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-logo">
-                                <img
-                                    src="gamesense.png"
-                                    alt="Gamesense"
-                                    draggable="false"
-                                >
-                            </div>
-
-                            <div class="game-name">
-                                Gamesense
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS:GO
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="game-card"
-                    data-games="cs2"
-                    data-option="Primordial"
-                    data-product-id="primordial-cs2"
-                    data-game-label="CS2"
-                    tabindex="0"
-                >
-
-                    <div class="game-card-inner">
-
-                        <div class="game-info">
-
-                            <div class="game-logo">
-                                <img
-                                    src="primordial.png"
-                                    alt="Primordial"
-                                    draggable="false"
-                                >
-                            </div>
-
-                            <div class="game-name">
-                                Primordial
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-actions">
-
-                            <div class="subscription">
-                                Not subscribed
-                            </div>
-
-                            <div class="game-version">
-                                CS2
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <button
-            id="injectButton"
-            class="inject-button"
-        >
-
-            <span
-                class="inject-mark"
-                aria-hidden="true"
-            ></span>
-
-            <span>
-                Inject
-            </span>
-
-        </button>
-
-    </main>
-
-
-    <div
-        id="injectionScreen"
-        class="injection-screen"
-        aria-hidden="true"
+    <!-- TOKEN LOGIN -->
+
+    <section
+        id="tokenSection"
+        class="token-section"
     >
 
-        <div class="injection-content">
+        <div class="token-content">
 
-            <div
-                id="injectionTitle"
-                class="injection-title"
+            <div class="token-title">
+                Loader authentication
+            </div>
+
+            <div class="token-subtitle">
+                Enter your account token to continue.
+            </div>
+
+            <input
+                id="tokenInput"
+                class="token-input"
+                type="password"
+                placeholder="Account token"
+                autocomplete="off"
+                spellcheck="false"
             >
-                Injecting Primordial
-            </div>
 
+            <label class="remember-token">
+                <input
+                    id="rememberToken"
+                    type="checkbox"
+                >
 
-            <div class="injection-progress">
-
-                <div
-                    id="injectionProgress"
-                    class="injection-progress-fill"
-                ></div>
-
-            </div>
-
+                <span>
+                    Remember my token
+                </span>
+            </label>
 
             <button
-                id="cancelInjection"
-                class="cancel-button"
+                id="authenticateButton"
+                class="authenticate-button"
             >
-                Cancel
+                Authenticate
             </button>
+
+            <div
+                id="tokenMessage"
+                class="token-message"
+            ></div>
 
         </div>
 
-    </div>
+    </section>
+
+
+    <!-- NORMAL LOADER -->
+
+    <section
+        id="loaderSection"
+        class="loader-section hidden"
+    >
+
+        <div class="topbar">
+
+            <div
+                class="topbar-drag-area"
+                data-drag
+            ></div>
+
+            <div class="window-controls">
+
+                <button
+                    id="minimizeButton"
+                    class="window-button minimize"
+                    aria-label="Minimize"
+                    data-no-drag
+                >
+                    <span></span>
+                </button>
+
+                <button
+                    id="closeButton"
+                    class="window-button close"
+                    aria-label="Close"
+                    data-no-drag
+                >
+                    ×
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <main class="content">
+
+            <div class="game-tabs-shell">
+
+                <div class="game-tabs">
+
+                    <button
+                        class="game-tab"
+                        data-game="all"
+                    >
+                        <span
+                            class="tab-icon lightning-icon"
+                        ></span>
+
+                        <span class="tab-label">
+                            All games
+                        </span>
+                    </button>
+
+
+                    <button
+                        class="game-tab active"
+                        data-game="csgo"
+                    >
+                        <span
+                            class="tab-icon csgo-icon"
+                        ></span>
+
+                        <span class="tab-label">
+                            CS:GO
+                        </span>
+                    </button>
+
+
+                    <button
+                        class="game-tab"
+                        data-game="cs2"
+                    >
+                        <span
+                            class="tab-icon cs2-icon"
+                        ></span>
+
+                        <span class="tab-label">
+                            CS:2
+                        </span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <section class="games-panel">
+
+                <div class="games">
+
+                    <div
+                        class="game-card"
+                        data-games="csgo"
+                        data-option="Primordial"
+                        data-product-id="primordial-csgo"
+                        tabindex="0"
+                    >
+
+                        <div class="game-card-inner">
+
+                            <div class="game-info">
+
+                                <div class="game-logo">
+                                    <img
+                                        src="primordial.png"
+                                        alt="Primordial"
+                                        draggable="false"
+                                    >
+                                </div>
+
+                                <div class="game-name">
+                                    Primordial
+                                </div>
+
+                            </div>
+
+
+                            <div class="game-actions">
+
+                                <div class="subscription">
+                                    Not subscribed
+                                </div>
+
+                                <div class="game-version">
+                                    CS:GO
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="game-card"
+                        data-games="csgo"
+                        data-option="Gamesense"
+                        data-product-id="gamesense-csgo"
+                        tabindex="0"
+                    >
+
+                        <div class="game-card-inner">
+
+                            <div class="game-info">
+
+                                <div class="game-logo">
+                                    <img
+                                        src="gamesense.png"
+                                        alt="Gamesense"
+                                        draggable="false"
+                                    >
+                                </div>
+
+                                <div class="game-name">
+                                    Gamesense
+                                </div>
+
+                            </div>
+
+
+                            <div class="game-actions">
+
+                                <div class="subscription">
+                                    Not subscribed
+                                </div>
+
+                                <div class="game-version">
+                                    CS:GO
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="game-card"
+                        data-games="cs2"
+                        data-option="Primordial"
+                        data-product-id="primordial-cs2"
+                        tabindex="0"
+                    >
+
+                        <div class="game-card-inner">
+
+                            <div class="game-info">
+
+                                <div class="game-logo">
+                                    <img
+                                        src="primordial.png"
+                                        alt="Primordial"
+                                        draggable="false"
+                                    >
+                                </div>
+
+                                <div class="game-name">
+                                    Primordial
+                                </div>
+
+                            </div>
+
+
+                            <div class="game-actions">
+
+                                <div class="subscription">
+                                    Not subscribed
+                                </div>
+
+                                <div class="game-version">
+                                    CS2
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <button
+                id="injectButton"
+                class="inject-button"
+            >
+                <span
+                    class="inject-mark"
+                ></span>
+
+                <span>
+                    Inject
+                </span>
+            </button>
+
+        </main>
+
+
+        <div
+            id="injectionScreen"
+            class="injection-screen"
+            aria-hidden="true"
+        >
+
+            <div class="injection-content">
+
+                <div
+                    id="injectionTitle"
+                    class="injection-title"
+                >
+                    Loading
+                </div>
+
+                <div class="injection-progress">
+
+                    <div
+                        id="injectionProgress"
+                        class="injection-progress-fill"
+                    ></div>
+
+                </div>
+
+                <button
+                    id="cancelInjection"
+                    class="cancel-button"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
 
