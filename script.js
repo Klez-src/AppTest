@@ -321,18 +321,22 @@ async function refreshAccount() {
         return false;
     }
 
+
     try {
         const account =
             await authenticateToken(
                 loaderToken
             );
 
+
         currentAccount =
             account;
+
 
         applySubscriptions(
             account.subscriptions
         );
+
 
         return true;
 
@@ -340,13 +344,16 @@ async function refreshAccount() {
         currentAccount = null;
         loaderToken = null;
 
+
         showAuth();
 
         tokenInput.value = "";
 
+
         showTokenMessage(
             "Your token could not be authenticated."
         );
+
 
         return false;
     }
@@ -374,10 +381,12 @@ function applySubscriptions(
         const productId =
             card.dataset.productId;
 
+
         const status =
             card.querySelector(
                 ".subscription"
             );
+
 
         if (!status) {
             return;
@@ -392,6 +401,7 @@ function applySubscriptions(
             "subscribed",
             subscribed
         );
+
 
         status.classList.toggle(
             "not-subscribed",
@@ -456,6 +466,7 @@ gameTabs.forEach(tab => {
         () => {
             const game =
                 tab.dataset.game;
+
 
             setActiveTab(tab);
 
@@ -552,14 +563,34 @@ async function loadSelected() {
         );
 
 
+    /*
+        USER DOES NOT OWN THIS OPTION
+
+        In WebView2, send the event to the
+        native C++ application so it can show
+        a normal Windows MessageBox.
+
+        When running outside WebView2, retain
+        the original browser alert as fallback.
+    */
+
     if (
         !subscriptions.has(
             productId
         )
     ) {
-        window.alert(
-            "Unable to authenticate this option."
-        );
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(
+                "auth.failed"
+            );
+        } else {
+            window.alert(
+                "Unable to authenticate this option."
+            );
+        }
 
         return;
     }
@@ -616,12 +647,14 @@ async function loadSelected() {
             injectionRunning =
                 false;
 
+
             injectionTimer =
                 setTimeout(
                     () => {
                         injectionScreen.classList.remove(
                             "active"
                         );
+
 
                         injectionScreen.setAttribute(
                             "aria-hidden",
@@ -630,6 +663,7 @@ async function loadSelected() {
                     },
                     300
                 );
+
 
             return;
         }
@@ -670,6 +704,7 @@ cancelInjection.addEventListener(
             clearTimeout(
                 injectionTimer
             );
+
 
             injectionTimer = null;
         }
@@ -731,11 +766,15 @@ closeButton?.addEventListener(
    ========================================================= */
 
 document
-    .querySelector(".topbar-drag-area")
+    .querySelector(
+        ".topbar-drag-area"
+    )
     ?.addEventListener(
         "mousedown",
         event => {
-            if (event.button !== 0) {
+            if (
+                event.button !== 0
+            ) {
                 return;
             }
 
@@ -773,6 +812,7 @@ document
     tokenInput.value =
         savedToken;
 
+
     rememberToken.checked =
         true;
 
@@ -796,5 +836,4 @@ document
 
         tokenInput.focus();
     }
-
 })();
