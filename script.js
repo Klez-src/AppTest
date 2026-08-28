@@ -1,101 +1,107 @@
 "use strict";
 
-const API_URL = "http://127.0.0.1:3000";
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const API_URL =
+    "http://127.0.0.1:3000";
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
 
 let loaderToken = null;
 let currentAccount = null;
 let injectionRunning = false;
 let injectionTimer = null;
 
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
 const tokenSection =
-    document.getElementById("tokenSection");
+    document.getElementById(
+        "tokenSection"
+    );
 
 const loaderSection =
-    document.getElementById("loaderSection");
+    document.getElementById(
+        "loaderSection"
+    );
 
 const tokenInput =
-    document.getElementById("tokenInput");
+    document.getElementById(
+        "tokenInput"
+    );
 
 const rememberToken =
-    document.getElementById("rememberToken");
+    document.getElementById(
+        "rememberToken"
+    );
 
 const authenticateButton =
-    document.getElementById("authenticateButton");
+    document.getElementById(
+        "authenticateButton"
+    );
 
 const tokenMessage =
-    document.getElementById("tokenMessage");
+    document.getElementById(
+        "tokenMessage"
+    );
 
 const gameTabs =
-    document.querySelectorAll(".game-tab");
+    document.querySelectorAll(
+        ".game-tab"
+    );
 
 const gameCards =
-    document.querySelectorAll(".game-card");
+    document.querySelectorAll(
+        ".game-card"
+    );
 
 const injectButton =
-    document.getElementById("injectButton");
+    document.getElementById(
+        "injectButton"
+    );
 
 const injectionScreen =
-    document.getElementById("injectionScreen");
+    document.getElementById(
+        "injectionScreen"
+    );
 
 const injectionTitle =
-    document.getElementById("injectionTitle");
+    document.getElementById(
+        "injectionTitle"
+    );
 
 const injectionProgress =
-    document.getElementById("injectionProgress");
+    document.getElementById(
+        "injectionProgress"
+    );
 
 const cancelInjection =
-    document.getElementById("cancelInjection");
+    document.getElementById(
+        "cancelInjection"
+    );
 
 const minimizeButton =
-    document.getElementById("minimizeButton");
+    document.getElementById(
+        "minimizeButton"
+    );
 
 const closeButton =
-    document.getElementById("closeButton");
-
-
-function postNativeMessage(message) {
-    if (
-        window.chrome &&
-        window.chrome.webview
-    ) {
-        window.chrome.webview.postMessage(
-            message
-        );
-
-        return true;
-    }
-
-    return false;
-}
-
-
-function showAuth() {
-    tokenSection.classList.remove(
-        "hidden"
+    document.getElementById(
+        "closeButton"
     );
 
-    loaderSection.classList.add(
-        "hidden"
-    );
-}
 
-
-function showLoader() {
-    tokenSection.classList.add(
-        "hidden"
-    );
-
-    loaderSection.classList.remove(
-        "hidden"
-    );
-}
-
-
-function showTokenMessage(message) {
-    tokenMessage.textContent =
-        message || "";
-}
-
+/* =========================================================
+   STORAGE
+   ========================================================= */
 
 function readRememberedToken() {
     try {
@@ -126,6 +132,10 @@ function forgetUserToken() {
     } catch {}
 }
 
+
+/* =========================================================
+   API
+   ========================================================= */
 
 async function authenticateToken(token) {
     const response =
@@ -159,6 +169,42 @@ async function authenticateToken(token) {
 }
 
 
+/* =========================================================
+   AUTH UI
+   ========================================================= */
+
+function showAuth() {
+    tokenSection.classList.remove(
+        "hidden"
+    );
+
+    loaderSection.classList.add(
+        "hidden"
+    );
+}
+
+
+function showLoader() {
+    tokenSection.classList.add(
+        "hidden"
+    );
+
+    loaderSection.classList.remove(
+        "hidden"
+    );
+}
+
+
+function showTokenMessage(message) {
+    tokenMessage.textContent =
+        message || "";
+}
+
+
+/* =========================================================
+   AUTHENTICATE
+   ========================================================= */
+
 async function loginWithToken(
     token,
     remember
@@ -174,6 +220,7 @@ async function loginWithToken(
         return false;
     }
 
+
     authenticateButton.disabled =
         true;
 
@@ -181,17 +228,20 @@ async function loginWithToken(
         "Authenticating..."
     );
 
+
     try {
         const account =
             await authenticateToken(
                 token
             );
 
+
         loaderToken =
             token;
 
         currentAccount =
             account;
+
 
         if (remember) {
             rememberUserToken(
@@ -200,6 +250,7 @@ async function loginWithToken(
         } else {
             forgetUserToken();
         }
+
 
         showTokenMessage("");
 
@@ -210,6 +261,7 @@ async function loginWithToken(
         );
 
         return true;
+
     } catch (error) {
         loaderToken = null;
         currentAccount = null;
@@ -220,12 +272,17 @@ async function loginWithToken(
         );
 
         return false;
+
     } finally {
         authenticateButton.disabled =
             false;
     }
 }
 
+
+/* =========================================================
+   AUTH BUTTON
+   ========================================================= */
 
 authenticateButton.addEventListener(
     "click",
@@ -241,7 +298,9 @@ authenticateButton.addEventListener(
 tokenInput.addEventListener(
     "keydown",
     event => {
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
             event.preventDefault();
 
             loginWithToken(
@@ -252,6 +311,10 @@ tokenInput.addEventListener(
     }
 );
 
+
+/* =========================================================
+   REFRESH ACCOUNT
+   ========================================================= */
 
 async function refreshAccount() {
     if (!loaderToken) {
@@ -272,6 +335,7 @@ async function refreshAccount() {
         );
 
         return true;
+
     } catch {
         currentAccount = null;
         loaderToken = null;
@@ -289,6 +353,10 @@ async function refreshAccount() {
 }
 
 
+/* =========================================================
+   SUBSCRIPTIONS
+   ========================================================= */
+
 function applySubscriptions(
     subscriptions
 ) {
@@ -300,6 +368,7 @@ function applySubscriptions(
                 ? subscriptions
                 : []
         );
+
 
     gameCards.forEach(card => {
         const productId =
@@ -314,8 +383,10 @@ function applySubscriptions(
             return;
         }
 
+
         const subscribed =
             owned.has(productId);
+
 
         status.classList.toggle(
             "subscribed",
@@ -327,6 +398,7 @@ function applySubscriptions(
             !subscribed
         );
 
+
         status.textContent =
             subscribed
                 ? "Subscribed"
@@ -335,13 +407,19 @@ function applySubscriptions(
 }
 
 
+/* =========================================================
+   TABS
+   ========================================================= */
+
 function setActiveTab(tab) {
-    gameTabs.forEach(item => {
-        item.classList.toggle(
-            "active",
-            item === tab
-        );
-    });
+    gameTabs.forEach(
+        item => {
+            item.classList.toggle(
+                "active",
+                item === tab
+            );
+        }
+    );
 }
 
 
@@ -358,9 +436,11 @@ function updateGameCards(game) {
                         value.trim()
                 );
 
+
         const visible =
             game === "all" ||
             games.includes(game);
+
 
         card.classList.toggle(
             "hidden-game",
@@ -379,11 +459,17 @@ gameTabs.forEach(tab => {
 
             setActiveTab(tab);
 
-            updateGameCards(game);
+            updateGameCards(
+                game
+            );
         }
     );
 });
 
+
+/* =========================================================
+   CARD SELECTION
+   ========================================================= */
 
 gameCards.forEach(card => {
     card.addEventListener(
@@ -397,11 +483,15 @@ gameCards.forEach(card => {
                 return;
             }
 
-            gameCards.forEach(item => {
-                item.classList.remove(
-                    "selected"
-                );
-            });
+
+            gameCards.forEach(
+                item => {
+                    item.classList.remove(
+                        "selected"
+                    );
+                }
+            );
+
 
             card.classList.add(
                 "selected"
@@ -423,28 +513,37 @@ function getSelectedCard() {
 }
 
 
+/* =========================================================
+   MOCK LOAD ACTION
+   ========================================================= */
+
 async function loadSelected() {
     /*
-        Re-check the server before every
-        load attempt.
+        Always re-check the backend immediately
+        before performing the mock action.
     */
 
     const authenticated =
         await refreshAccount();
 
+
     if (!authenticated) {
         return;
     }
 
+
     const card =
         getSelectedCard();
+
 
     if (!card) {
         return;
     }
 
+
     const productId =
         card.dataset.productId;
+
 
     const subscriptions =
         new Set(
@@ -452,55 +551,59 @@ async function loadSelected() {
             []
         );
 
-    /*
-        User is authenticated, but does
-        not own this particular option.
-
-        Tell the native C++ window to
-        display a Windows message box.
-    */
 
     if (
         !subscriptions.has(
             productId
         )
     ) {
-        postNativeMessage(
-            "auth.failed"
+        window.alert(
+            "Unable to authenticate this option."
         );
 
         return;
     }
 
+
     const name =
         card.dataset.option ||
         "Option";
 
+
     injectionTitle.textContent =
         `Loading ${name}`;
+
 
     injectionProgress.style.width =
         "0%";
 
+
     injectionScreen.classList.add(
         "active"
     );
+
 
     injectionScreen.setAttribute(
         "aria-hidden",
         "false"
     );
 
-    injectionRunning = true;
+
+    injectionRunning =
+        true;
+
 
     let progress = 0;
+
 
     function update() {
         if (!injectionRunning) {
             return;
         }
 
+
         progress += 2;
+
 
         injectionProgress.style.width =
             `${Math.min(
@@ -508,8 +611,10 @@ async function loadSelected() {
                 100
             )}%`;
 
+
         if (progress >= 100) {
-            injectionRunning = false;
+            injectionRunning =
+                false;
 
             injectionTimer =
                 setTimeout(
@@ -529,12 +634,14 @@ async function loadSelected() {
             return;
         }
 
+
         injectionTimer =
             setTimeout(
                 update,
                 30
             );
     }
+
 
     update();
 }
@@ -546,10 +653,16 @@ injectButton.addEventListener(
 );
 
 
+/* =========================================================
+   CANCEL
+   ========================================================= */
+
 cancelInjection.addEventListener(
     "click",
     () => {
-        injectionRunning = false;
+        injectionRunning =
+            false;
+
 
         if (
             injectionTimer !== null
@@ -561,14 +674,17 @@ cancelInjection.addEventListener(
             injectionTimer = null;
         }
 
+
         injectionScreen.classList.remove(
             "active"
         );
+
 
         injectionScreen.setAttribute(
             "aria-hidden",
             "true"
         );
+
 
         injectionProgress.style.width =
             "0%";
@@ -576,12 +692,21 @@ cancelInjection.addEventListener(
 );
 
 
+/* =========================================================
+   WINDOW CONTROLS
+   ========================================================= */
+
 minimizeButton?.addEventListener(
     "click",
     () => {
-        postNativeMessage(
-            "window.minimize"
-        );
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(
+                "window.minimize"
+            );
+        }
     }
 );
 
@@ -589,12 +714,21 @@ minimizeButton?.addEventListener(
 closeButton?.addEventListener(
     "click",
     () => {
-        postNativeMessage(
-            "window.close"
-        );
+        if (
+            window.chrome &&
+            window.chrome.webview
+        ) {
+            window.chrome.webview.postMessage(
+                "window.close"
+            );
+        }
     }
 );
 
+
+/* =========================================================
+   DRAG
+   ========================================================= */
 
 document
     .querySelector(".topbar-drag-area")
@@ -605,16 +739,27 @@ document
                 return;
             }
 
-            postNativeMessage(
-                "window.drag"
-            );
+
+            if (
+                window.chrome &&
+                window.chrome.webview
+            ) {
+                window.chrome.webview.postMessage(
+                    "window.drag"
+                );
+            }
         }
     );
 
 
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
 (async function start() {
     const savedToken =
         readRememberedToken();
+
 
     if (!savedToken) {
         showAuth();
@@ -624,17 +769,25 @@ document
         return;
     }
 
+
     tokenInput.value =
         savedToken;
 
     rememberToken.checked =
         true;
 
+
+    /*
+        Automatically authenticate the saved
+        token when the loader opens.
+    */
+
     const success =
         await loginWithToken(
             savedToken,
             true
         );
+
 
     if (!success) {
         forgetUserToken();
@@ -643,4 +796,5 @@ document
 
         tokenInput.focus();
     }
+
 })();
